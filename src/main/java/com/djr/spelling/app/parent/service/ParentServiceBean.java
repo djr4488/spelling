@@ -3,14 +3,37 @@ package com.djr.spelling.app.parent.service;
 import com.djr.spelling.Location;
 import com.djr.spelling.User;
 import com.djr.spelling.Word;
+import com.djr.spelling.app.exceptions.SpellingException;
+import com.djr.spelling.app.parent.model.UserCreateResponse;
+import org.slf4j.Logger;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
  * Created by IMac on 9/1/2014.
  */
 public class ParentServiceBean {
-	public boolean createParentAccount(User user) {
-		return false;
+	@PersistenceContext(name = "SpellingPersistence")
+	private EntityManager em;
+	@Inject
+	private Logger log;
+
+	public boolean createParentAccount(User user)
+	throws SpellingException {
+		try {
+			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
+			query.setParameter("emailAddress", user.emailAddress);
+			query.getSingleResult();
+			throw new SpellingException("Account already exists with this email");
+		} catch (NoResultException nrEx) {
+			log.debug("createParentAccount() no results found, so good to continue");
+		}
+		em.persist(user);
+		return true;
 	}
 
 	public boolean createChildAccount(User user) {
