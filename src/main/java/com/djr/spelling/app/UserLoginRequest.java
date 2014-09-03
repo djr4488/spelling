@@ -1,4 +1,4 @@
-package com.djr.spelling.app.parent.model;
+package com.djr.spelling.app;
 
 /**
  * Created by danny.rucker on 9/2/14.

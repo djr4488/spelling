@@ -12,12 +12,7 @@ import java.io.Serializable;
 @Table(name = "schools")
 public class School extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
-	@ManyToOne
-	@JoinColumn(name = "state_id")
-	public State state;
-	@ManyToOne
-	@JoinColumn(name = "city_id")
-	public City city;
+
 	@Column(name = "school_name")
 	public String schoolName;
 

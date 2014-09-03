@@ -4,7 +4,7 @@ import com.djr.spelling.Location;
 import com.djr.spelling.User;
 import com.djr.spelling.Word;
 import com.djr.spelling.app.exceptions.SpellingException;
-import com.djr.spelling.app.parent.model.UserCreateResponse;
+import com.djr.spelling.app.parent.restapi.model.UserCreateRequest;
 import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -22,18 +22,17 @@ public class ParentServiceBean {
 	@Inject
 	private Logger log;
 
-	public boolean createParentAccount(User user)
+	public void createParentAccount(User user)
 	throws SpellingException {
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
 			query.setParameter("emailAddress", user.emailAddress);
 			query.getSingleResult();
-			throw new SpellingException("Account already exists with this email");
+			throw new SpellingException("Account already exists");
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
 		}
 		em.persist(user);
-		return true;
 	}
 
 	public boolean createChildAccount(User user) {

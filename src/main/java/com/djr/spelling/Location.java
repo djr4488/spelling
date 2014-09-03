@@ -16,6 +16,12 @@ import java.io.Serializable;
 public class Location extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@ManyToOne
+	@JoinColumn(name = "state_id")
+	public State state;
+	@ManyToOne
+	@JoinColumn(name = "city_id")
+	public City city;
+	@ManyToOne
 	@JoinColumn(name = "school_id")
 	public School school;
 
