@@ -13,9 +13,6 @@ import java.io.Serializable;
 @Table(name = "words")
 public class Word extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
-	@ManyToOne
-	@JoinColumn(name = "location_id")
-	public Location location;
 	@Column(name = "word")
 	public String word;
 

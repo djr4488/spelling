@@ -35,16 +35,12 @@ public class ParentServiceBean {
 		em.persist(user);
 	}
 
-	public boolean createChildAccount(User user) {
-		return false;
+	public void createChildAccount(User user) {
+
 	}
 
-	public boolean createOrFindWord(Word word) {
-		return false;
-	}
+	public void createOrFindWord(Word word) {
 
-	public boolean createOrFindLocation(Location location) {
-		return false;
 	}
 
 	public User findParentAccount(String username, String password) {
@@ -58,4 +54,6 @@ public class ParentServiceBean {
 	public boolean changeChildPassword(User user) {
 		return false;
 	}
+
+
 }

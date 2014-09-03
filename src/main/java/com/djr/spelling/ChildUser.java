@@ -1,12 +1,6 @@
 package com.djr.spelling;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by danny.rucker on 9/2/14.
@@ -28,4 +22,7 @@ public class ChildUser extends Identifiable {
 	@ManyToOne
 	@JoinColumn(name = "location_id")
 	public Location location;
+	@ManyToOne
+	@JoinColumn(name = "grade_id")
+	public Grade grade;
 }
