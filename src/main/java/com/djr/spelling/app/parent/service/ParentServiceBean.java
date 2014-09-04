@@ -1,5 +1,6 @@
 package com.djr.spelling.app.parent.service;
 
+import com.djr.spelling.ChildUser;
 import com.djr.spelling.Location;
 import com.djr.spelling.User;
 import com.djr.spelling.Word;
@@ -35,8 +36,16 @@ public class ParentServiceBean {
 		em.persist(user);
 	}
 
-	public void createChildAccount(User user) {
-
+	public void createChildAccount(ChildUser user)
+	throws SpellingException {
+		try {
+			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
+			query.setParameter("username", user.username);
+			query.getSingleResult();
+			throw new SpellingException("Account already exists");
+		} catch (NoResultException nrEx) {
+			log.debug("createChildAccount() no results found, so continuing");
+		}
 	}
 
 	public void createOrFindWord(Word word) {

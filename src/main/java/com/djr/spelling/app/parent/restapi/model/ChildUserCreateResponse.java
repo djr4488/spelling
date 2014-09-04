@@ -7,11 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * Created by danny.rucker on 9/2/14.
+ * Created by IMac on 9/3/2014.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserCreateResponse implements Serializable {
+public class ChildUserCreateResponse implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
 	private String errorMsg;
@@ -20,14 +20,14 @@ public class UserCreateResponse implements Serializable {
 	@XmlElement
 	private String forwardTo;
 
-	public UserCreateResponse() {}
+	public ChildUserCreateResponse() {}
 
-	public UserCreateResponse(String errorMsg, String errorBold) {
+	public ChildUserCreateResponse(String errorMsg, String errorBold) {
 		this.errorBold = errorBold;
 		this.errorMsg = errorMsg;
 	}
 
-	public UserCreateResponse(String forwardTo) {
+	public ChildUserCreateResponse(String forwardTo) {
 		this.forwardTo = forwardTo;
 	}
 }

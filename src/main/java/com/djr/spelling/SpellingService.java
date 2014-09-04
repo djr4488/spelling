@@ -19,4 +19,8 @@ public class SpellingService {
 	public School createOrFindSchool(String schoolName) {
 		return null;
 	}
+
+	public Grade createOrFindGrade(String gradeName) {
+		return null;
+	}
 }
