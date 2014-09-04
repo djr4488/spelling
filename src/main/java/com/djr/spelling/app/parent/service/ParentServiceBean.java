@@ -7,6 +7,7 @@ import com.djr.spelling.Word;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.restapi.model.UserCreateRequest;
 import org.slf4j.Logger;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * Created by IMac on 9/1/2014.
  */
+@Stateless
 public class ParentServiceBean {
 	@PersistenceContext(name = "SpellingPersistence")
 	private EntityManager em;
@@ -46,6 +48,7 @@ public class ParentServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
 		}
+		em.persist(user);
 	}
 
 	public void createOrFindWord(Word word) {
