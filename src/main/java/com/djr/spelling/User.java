@@ -30,4 +30,10 @@ public class User extends Identifiable implements Serializable {
 		this.password = password;
 		this.emailAddress = emailAddress;
 	}
+
+	public User(User userEditted) {
+		this.username = userEditted.username;
+		this.password = userEditted.password;
+		this.emailAddress = userEditted.password;
+	}
 }

@@ -51,12 +51,12 @@ public class ParentServiceBean {
 		em.persist(user);
 	}
 
-	public void createOrFindWord(Word word) {
-
-	}
-
 	public User findParentAccount(String username, String password) {
 		return null;
+	}
+
+	public void editParentUserSettings(User original, User editted) {
+
 	}
 
 	public List<User> findParentChildren(User user) {
@@ -67,5 +67,7 @@ public class ParentServiceBean {
 		return false;
 	}
 
+	public void createOrFindWord(Word word) {
 
+	}
 }
