@@ -22,16 +22,12 @@ public class User extends Identifiable implements Serializable {
 	public String password;
 	@Column(name = "email_address", unique=true, nullable=false, updatable=true)
 	public String emailAddress;
-	@ManyToOne
-	@JoinColumn(name = "location_id")
-	public Location location;
 
 	public User() {}
 
-	public User(String username, String password, String emailAddress, Location location) {
+	public User(String username, String password, String emailAddress) {
 		this.username = username;
 		this.password = password;
 		this.emailAddress = emailAddress;
-		this.location = location;
 	}
 }
