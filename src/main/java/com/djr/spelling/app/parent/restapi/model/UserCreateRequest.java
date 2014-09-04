@@ -26,8 +26,6 @@ public class UserCreateRequest implements Serializable {
 	@NotNull
 	public String emailAddress;
 
-	@Inject
-	private SpellingService spellingService;
 	public User getUserEntity() {
 		return new User(username, password, emailAddress);
 	}
