@@ -65,19 +65,19 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void editParentUserSettings(User original, User editted) {
+	public void editParentSettings(User original, User editted, String trackingId) {
 
 	}
 
-	public List<User> findParentChildren(User user) {
+	public List<User> findParentChildren(User user, String trackingId) {
 		return null;
 	}
 
-	public boolean changeChildPassword(User user) {
+	public boolean changeChildPassword(User user, String trackingId) {
 		return false;
 	}
 
-	public void createOrFindWord(Word word) {
+	public void createOrFindWord(Word word, String trackingId) {
 
 	}
 }

@@ -92,7 +92,7 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("login")
+	@Path("loginParent")
 	public Response login(ParentLoginRequest request, @Context HttpServletRequest httpReq) {
 		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
 		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
@@ -121,8 +121,8 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editUser")
-	public Response editUser() {
+	@Path("editParent")
+	public Response editParent() {
 		return null;
 	}
 }
