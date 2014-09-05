@@ -24,6 +24,9 @@ public class ParentCreateRequest implements Serializable {
 	public String password;
 	@XmlElement
 	@NotNull
+	public String confirmPassword;
+	@XmlElement
+	@NotNull
 	public String emailAddress;
 
 	public User getUserEntity() {

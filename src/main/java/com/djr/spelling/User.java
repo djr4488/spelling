@@ -36,10 +36,12 @@ public class User extends Identifiable implements Serializable {
 		this.password = password;
 	}
 
+	public User(String password) {
+		this.password = password;
+	}
+
 	public User(User userEditted) {
-		this.username = userEditted.username;
 		this.password = userEditted.password;
-		this.emailAddress = userEditted.password;
 	}
 
 	@Override

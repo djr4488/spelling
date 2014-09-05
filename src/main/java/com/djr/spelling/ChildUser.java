@@ -11,7 +11,9 @@ import javax.persistence.*;
 	@NamedQuery(name="findExistingUserByUserNameAndPassword",
 		query="select user from ChildUser user where user.username = :username and user.password = :password"),
 	@NamedQuery(name = "findExistingChildUserByUsername",
-		query="select user from ChildUser user where user.username = :username")
+		query="select user from ChildUser user where user.username = :username"),
+	@NamedQuery(name = "findChildrenUsersByParentUser",
+		query="select childrenUsers from ChildUser childrenUsers where childrenUsers.parent = :parent")
 })
 public class ChildUser extends Identifiable {
 	@Column(name = "username", unique = true, nullable = false, updatable = false)

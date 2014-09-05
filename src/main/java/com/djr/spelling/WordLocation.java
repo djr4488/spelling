@@ -2,10 +2,7 @@ package com.djr.spelling;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -13,6 +10,11 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "word_locations")
+@NamedQueries({
+	@NamedQuery(name="findWordLocation",
+		query="select wLoc from WordLocation wLoc where wLoc.location = :location and wLoc.grade = :grade and " +
+				"wLoc.word = :word")
+})
 public class WordLocation extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@ManyToOne

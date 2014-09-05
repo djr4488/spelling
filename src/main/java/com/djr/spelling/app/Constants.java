@@ -5,4 +5,5 @@ package com.djr.spelling.app;
  */
 public final class Constants {
 	public static final String TRACKING_ID = "trackingId";
+	public static final String USER_ID = "userId";
 }

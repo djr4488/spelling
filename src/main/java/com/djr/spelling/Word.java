@@ -10,11 +10,17 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "words")
+@Table(name = "words", uniqueConstraints = {@UniqueConstraint(columnNames = { "word" } ) })
+@NamedQueries({
+	@NamedQuery(name="findWord",
+		query = "select w from Word w where w.word = :word and w.metaphone = :metaphone")
+})
 public class Word extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
-	@Column(name = "word")
+	@Column(name = "word", unique=true, nullable=false, updatable=true)
 	public String word;
+	@Column(name = "metaphone")
+	public String metaphone;
 
 	@Override
 	public String toString() {
