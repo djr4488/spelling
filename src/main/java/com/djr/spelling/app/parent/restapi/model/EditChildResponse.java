@@ -7,22 +7,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * Created by danny.rucker on 9/4/14.
+ * Created by IMac on 9/5/2014.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ParentLoginResponse extends BaseResponse implements Serializable {
+public class EditChildResponse extends BaseResponse implements Serializable {
 	private static final long serialVersionUID = 1;
 
-	public ParentLoginResponse() {
+	public EditChildResponse() {
 		super();
 	}
 
-	public ParentLoginResponse(String errorMsg, String errorBold) {
+	public EditChildResponse(String errorMsg, String errorBold) {
 		super(errorMsg, errorBold);
 	}
 
-	public ParentLoginResponse(String forwardTo) {
+	public EditChildResponse(String forwardTo) {
 		super(forwardTo);
 	}
 }

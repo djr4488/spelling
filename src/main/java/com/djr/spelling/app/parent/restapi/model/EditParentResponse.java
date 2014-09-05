@@ -1,8 +1,8 @@
 package com.djr.spelling.app.parent.restapi.model;
 
+import com.djr.spelling.app.BaseResponse;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
@@ -11,23 +11,18 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class EditParentResponse implements Serializable {
+public class EditParentResponse extends BaseResponse implements Serializable {
 	private static final long serialVersionUID = 1;
-	@XmlElement
-	private String errorMsg;
-	@XmlElement
-	private String errorBold;
-	@XmlElement
-	private String forwardTo;
 
-	public EditParentResponse() {}
+	public EditParentResponse() {
+		super();
+	}
 
 	public EditParentResponse(String errorMsg, String errorBold) {
-		this.errorBold = errorBold;
-		this.errorMsg = errorMsg;
+		super(errorMsg, errorBold);
 	}
 
 	public EditParentResponse(String forwardTo) {
-		this.forwardTo = forwardTo;
+		super(forwardTo);
 	}
 }

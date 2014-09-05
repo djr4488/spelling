@@ -42,6 +42,10 @@ public class ChildUser extends Identifiable {
 		this.grade = grade;
 	}
 
+	public ChildUser(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
