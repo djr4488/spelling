@@ -1,11 +1,9 @@
 package com.djr.spelling.app.parent.service;
 
 import com.djr.spelling.ChildUser;
-import com.djr.spelling.Location;
 import com.djr.spelling.User;
 import com.djr.spelling.Word;
 import com.djr.spelling.app.exceptions.SpellingException;
-import com.djr.spelling.app.parent.restapi.model.UserCreateRequest;
 import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,8 +23,9 @@ public class ParentServiceBean {
 	@Inject
 	private Logger log;
 
-	public void createParentAccount(User user)
+	public void createParentAccount(User user, String trackingId)
 	throws SpellingException {
+		log.debug("createParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
 			query.setParameter("emailAddress", user.emailAddress);
@@ -38,8 +37,9 @@ public class ParentServiceBean {
 		em.persist(user);
 	}
 
-	public void createChildAccount(ChildUser user)
+	public void createChildAccount(ChildUser user, String trackingId)
 	throws SpellingException {
+		log.debug("createChildAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
 			query.setParameter("username", user.username);
@@ -51,8 +51,18 @@ public class ParentServiceBean {
 		em.persist(user);
 	}
 
-	public User findParentAccount(String username, String password) {
-		return null;
+	public User findParentAccount(User user, String trackingId)
+	throws SpellingException {
+		log.debug("findParentAccount() user:{}, trackingId:{}", user, trackingId);
+		try {
+			TypedQuery<User> query = em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class);
+			query.setParameter("username", user.username);
+			query.setParameter("password", user.password);
+			return query.getSingleResult();
+		} catch (NoResultException nrEx) {
+			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
+			throw new SpellingException("No user account found or incorrect username / password");
+		}
 	}
 
 	public void editParentUserSettings(User original, User editted) {

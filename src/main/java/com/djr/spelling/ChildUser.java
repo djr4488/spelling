@@ -39,4 +39,13 @@ public class ChildUser extends Identifiable {
 		this.location = location;
 		this.grade = grade;
 	}
+
+	@Override
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("User[username=").append(username).append(", password=****").append(", email_address=");
+		stringBuffer.append(parent.toString()).append(", location=").append(location.toString()).append("grade=")
+			.append(grade.toString()).append("]");
+		return stringBuffer.toString();
+	}
 }

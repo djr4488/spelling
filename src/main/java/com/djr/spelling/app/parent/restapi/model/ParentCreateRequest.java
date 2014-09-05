@@ -1,5 +1,8 @@
 package com.djr.spelling.app.parent.restapi.model;
 
+import com.djr.spelling.*;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,23 +14,19 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class UserCreateResponse implements Serializable {
+public class ParentCreateRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
-	private String errorMsg;
+	@NotNull
+	public String username;
 	@XmlElement
-	private String errorBold;
+	@NotNull
+	public String password;
 	@XmlElement
-	private String forwardTo;
+	@NotNull
+	public String emailAddress;
 
-	public UserCreateResponse() {}
-
-	public UserCreateResponse(String errorMsg, String errorBold) {
-		this.errorBold = errorBold;
-		this.errorMsg = errorMsg;
-	}
-
-	public UserCreateResponse(String forwardTo) {
-		this.forwardTo = forwardTo;
+	public User getUserEntity() {
+		return new User(username, password, emailAddress);
 	}
 }

@@ -31,9 +31,22 @@ public class User extends Identifiable implements Serializable {
 		this.emailAddress = emailAddress;
 	}
 
+	public User(String emailAddress, String password) {
+		this.emailAddress = emailAddress;
+		this.password = password;
+	}
+
 	public User(User userEditted) {
 		this.username = userEditted.username;
 		this.password = userEditted.password;
 		this.emailAddress = userEditted.password;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("User[username=").append(username).append(", password=****").append(", email_address=");
+		stringBuffer.append(emailAddress).append("]");
+		return stringBuffer.toString();
 	}
 }
