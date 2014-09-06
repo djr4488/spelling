@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "child_users", uniqueConstraints = {@UniqueConstraint(columnNames = { "username" } ) })
 @NamedQueries({
-	@NamedQuery(name="findExistingUserByUserNameAndPassword",
+	@NamedQuery(name="findExistingChildUserByUserNameAndPassword",
 		query="select user from ChildUser user where user.username = :username and user.password = :password"),
 	@NamedQuery(name = "findExistingChildUserByUsername",
 		query="select user from ChildUser user where user.username = :username"),

@@ -2,9 +2,7 @@ package com.djr.spelling;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +14,7 @@ import java.util.Date;
 public class Week extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@Column(name = "week_start")
+	@Temporal(TemporalType.DATE)
 	public Date weekStart;
 
 	@Override

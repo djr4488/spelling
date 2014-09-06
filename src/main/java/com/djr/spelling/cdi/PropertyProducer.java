@@ -1,5 +1,6 @@
 package com.djr.spelling.cdi;
 
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ public class PropertyProducer {
 	private Logger logger;
 	private static final String propertyFile = "/app/spelling/conf/spelling.properties";
 	private Properties properties;
+	private static final DoubleMetaphone dm = new DoubleMetaphone();
 
 	@PostConstruct
 	public void loadProperties() {
@@ -64,4 +66,15 @@ public class PropertyProducer {
 				properties.getProperty(className + "." + member));
 		return Integer.parseInt(properties.getProperty(className + "." + member));
 	}
+
+	@Produces
+	public DoubleMetaphone getDoubleMetaphone(InjectionPoint injectionPoint) {
+		logger.debug("getDoubleMetaphone()");
+		String className = injectionPoint.getMember().getDeclaringClass().getSimpleName();
+		String member = injectionPoint.getMember().getName();
+		logger.debug("getDoubleMetaphone() - {}.{}={}", className, member,
+				properties.getProperty(className + "." + member));
+		return dm;
+	}
+
 }
