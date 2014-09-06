@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="jdbc/SpellingPersistence">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>jdbc/SpellingDatabase</jta-data-source>
+        <class>com.djr.spelling.ChildUser</class>
+        <class>com.djr.spelling.City</class>
+        <class>com.djr.spelling.Grade</class>
+        <class>com.djr.spelling.Location</class>
+        <class>com.djr.spelling.School</class>
+        <class>com.djr.spelling.Sentence</class>
+        <class>com.djr.spelling.State</class>
+        <class>com.djr.spelling.Statistic</class>
+        <class>com.djr.spelling.User</class>
+        <class>com.djr.spelling.Week</class>
+        <class>com.djr.spelling.Word</class>
+        <class>com.djr.spelling.WordLocation</class>
+        <properties>
+            <property
+                    name="eclipselink.logging.level.sql"
+                    value="FINE"/>
+            <property
+                    name="eclipselink.logging.parameters"
+                    value="true"/>
+            <property
+                    name="eclipselink.ddl-generation.output-mode"
+                    value="database"/>
+            <property
+                    name="eclipselink.ddl-generation"
+                    value="create-or-extend-tables"/>
+        </properties>
+    </persistence-unit>
+</persistence>

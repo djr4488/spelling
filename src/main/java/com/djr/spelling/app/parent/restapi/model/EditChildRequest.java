@@ -17,6 +17,9 @@ public class EditChildRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
 	@NotNull
+	public String username;
+	@XmlElement
+	@NotNull
 	public String originalPassword;
 	@XmlElement
 	@NotNull
@@ -26,6 +29,6 @@ public class EditChildRequest implements Serializable {
 	public String confirmPassword;
 
 	public ChildUser getUserEntity() {
-		return new ChildUser(password);
+		return new ChildUser(username, password);
 	}
 }

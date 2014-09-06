@@ -104,6 +104,20 @@ public class ParentServiceBean {
 		}
 	}
 
+	public ChildUser findParentChild(User parent, ChildUser child, String trackingId)
+	throws SpellingException {
+		log.debug("findParentChild() parent:{}, child:{}, trackingId:{}", parent, child, trackingId);
+		try {
+			TypedQuery<ChildUser> query = em.createNamedQuery("findChildByParentAndChild", ChildUser.class);
+			query.setParameter("parent", parent);
+			query.setParameter("username", child.username);
+			return query.getSingleResult();
+		} catch (NoResultException nrEx) {
+			log.debug("findParentChild() no child found. trackingId:{}", trackingId);
+			throw new SpellingException("No child found for parent");
+		}
+	}
+
 	public void editChildPassword(User user, ChildUser original, ChildUser edited, String trackingId) {
 		log.debug("findParentChildren() user:{}, original:{}, edited:{}, trackingId:{}", user, original, edited, trackingId);
 		original.password = edited.password;

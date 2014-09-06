@@ -13,7 +13,9 @@ import javax.persistence.*;
 	@NamedQuery(name = "findExistingChildUserByUsername",
 		query="select user from ChildUser user where user.username = :username"),
 	@NamedQuery(name = "findChildrenUsersByParentUser",
-		query="select childrenUsers from ChildUser childrenUsers where childrenUsers.parent = :parent")
+		query="select childrenUsers from ChildUser childrenUsers where childrenUsers.parent = :parent"),
+	@NamedQuery(name = "findChildByParentAndChild",
+		query="select child from ChildUser child where child.parent = :parent and child.username = :username")
 })
 public class ChildUser extends Identifiable {
 	@Column(name = "username", unique = true, nullable = false, updatable = false)
@@ -40,6 +42,11 @@ public class ChildUser extends Identifiable {
 		this.parent = user;
 		this.location = location;
 		this.grade = grade;
+	}
+
+	public ChildUser(String username, String password) {
+		this.username = username;
+		this.password = password;
 	}
 
 	public ChildUser(String password) {

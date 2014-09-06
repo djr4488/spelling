@@ -1,5 +1,6 @@
 package com.djr.spelling.app.parent.restapi;
 
+import com.djr.spelling.ChildUser;
 import com.djr.spelling.User;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
@@ -37,7 +38,7 @@ public class ParentApi {
 		if (request != null) {
 			try {
 				parentService.createParentAccount(request.getUserEntity(), trackingId);
-				resp = new ParentCreateResponse("parentLanding");
+				resp = new ParentCreateResponse(Constants.PARENT_LANDING);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spellingEx) {
 				resp = new ParentCreateResponse("It appears the email address already exists.", "Oops!");
@@ -68,7 +69,7 @@ public class ParentApi {
 				parentService.createChildAccount(
 						request.getChildUserEntity((User) httpReq.getSession(false).getAttribute("user")),
 						trackingId);
-				resp = new ChildUserCreateResponse("createChildUserLanding");
+				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new ChildUserCreateResponse("Apparently the child user name already exists.", "Oops!");
@@ -128,7 +129,7 @@ public class ParentApi {
 			try {
 				User originalUser = parentService.findParentAccount(userId, trackingId);
 				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
-				resp = new EditParentResponse("parentLanding");
+				resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
@@ -148,31 +149,98 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editChild")
-	public Response editChild(EditParentRequest request, @Context HttpServletRequest httpReq) {
+	@Path("findParentChildren")
+	public Response findParentChildren(EditParentRequest request, @Context HttpServletRequest httpReq) {
 		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
 		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
-		log.info("editParent() request:{}, trackingId:{}", request, trackingId);
+		log.info("findParentChildren() request:{}, trackingId:{}", request, trackingId);
 		EditParentResponse resp;
 		Response response;
 		if (request != null) {
 			try {
 				User originalUser = parentService.findParentAccount(userId, trackingId);
 				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
-				resp = new EditParentResponse("parentLanding");
+				resp = new EditParentResponse(Constants.FIND_PARENT_CHILDREN);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
-				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
+				resp = new EditParentResponse("There was an issue finding children for this parent.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
-				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
+				resp = new EditParentResponse("We had a pretty big oops moment.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
 		} else {
 			resp = new EditParentResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
 		}
-		log.info("editParent() completed. trackingId:{}", trackingId);
+		log.info("findParentChildren() completed. trackingId:{}", trackingId);
 		return response;
 	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("getChild")
+	public Response getChild(EditChildRequest request, @Context HttpServletRequest httpReq) {
+		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
+		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
+		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
+		EditChildResponse resp;
+		Response response;
+		if (request != null) {
+			try {
+				User parent = parentService.findParentAccount(userId, trackingId);
+				ChildUser child = parentService.findParentChild(parent, request.getUserEntity(), trackingId);
+				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
+				resp.username = child.username;
+				response = Response.status(Response.Status.OK).entity(resp).build();
+			} catch (SpellingException spEx) {
+				resp = new EditChildResponse("There was a problem finding the child by this name.  Try again later?", "Oops!");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			} catch (Exception ex) {
+				resp = new EditChildResponse("Big oops moment, sorry.  Try again later?", "Doh!");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			}
+		} else {
+			resp = new EditChildResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
+			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+		}
+		log.info("editChild() completed. trackingId:{}", trackingId);
+		return response;
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("editChild/{editChildId}")
+	public Response editChild(@PathParam("editChildId") String username, EditChildRequest request, @Context HttpServletRequest httpReq) {
+		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
+		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
+		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
+		EditChildResponse resp;
+		Response response;
+		if (request != null) {
+			request.username = username;
+			try {
+				User parent = parentService.findParentAccount(userId, trackingId);
+				ChildUser originalUser = parentService.findParentChild(parent, request.getUserEntity(), trackingId);
+				parentService.editChildPassword(parent, originalUser, request.getUserEntity(), trackingId);
+				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
+				response = Response.status(Response.Status.OK).entity(resp).build();
+			} catch (SpellingException spEx) {
+				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			} catch (Exception ex) {
+				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			}
+		} else {
+			resp = new EditChildResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
+			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+		}
+		log.info("editChild() completed. trackingId:{}", trackingId);
+		return response;
+	}
+
+
 }
