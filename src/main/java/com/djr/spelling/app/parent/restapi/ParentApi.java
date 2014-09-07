@@ -39,6 +39,7 @@ public class ParentApi {
 		TrackingIdResponse tir = new TrackingIdResponse();
 		tir.trackingId = UUID.randomUUID().toString();
 		tir.forwardTo = Constants.HOME;
+		authService.addTrackingId(tir.trackingId, null);
 		return Response.ok().entity(tir).build();
 	}
 
@@ -50,7 +51,7 @@ public class ParentApi {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
 				parentService.createParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
@@ -111,7 +112,7 @@ public class ParentApi {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
 				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentLoginResponse("parentLanding");
