@@ -34,11 +34,11 @@ public class ParentApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createParentUser")
-	public Response createParentUserPageLoad() {
+	@Path("getTrackingId")
+	public Response getTrackingId() {
 		TrackingIdResponse tir = new TrackingIdResponse();
 		tir.trackingId = UUID.randomUUID().toString();
-		tir.forwardTo = Constants.CREATE_PARENT_LANDING;
+		tir.forwardTo = Constants.HOME;
 		return Response.ok().entity(tir).build();
 	}
 
@@ -46,11 +46,11 @@ public class ParentApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createParentUser/{trackingId}")
-	public Response createParentUser(@PathParam("trackingId") String trackingId, ParentCreateRequest request) {
+	public Response createParentUser(@PathParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request) {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
+		if (request != null) {
 			try {
 				parentService.createParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
@@ -74,8 +74,8 @@ public class ParentApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createChildUser/{trackingId}")
-	public Response createChildUser(ChildUserCreateRequest request, @PathParam("trackingId") String trackingId,
-	                                @HeaderParam("auth-token") String authToken) {
+	public Response createChildUser(ChildUserCreateRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
+	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
 		ChildUserCreateResponse resp;
 		Response response;
@@ -107,11 +107,11 @@ public class ParentApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("loginParent/{trackingId}")
-	public Response login(@PathParam("trackingId") String trackingId, ParentLoginRequest request) {
+	public Response login(@PathParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request) {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
+		if (request != null) {
 			try {
 				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentLoginResponse("parentLanding");
@@ -142,8 +142,8 @@ public class ParentApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("editParent/{trackingId}/{parentId}")
-	public Response editParent(EditParentRequest request, @PathParam("trackingId") String trackingId,
-	                           @PathParam("parentId") Integer userId, @HeaderParam("auth-token") String authToken) {
+	public Response editParent(EditParentRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
+	                           @PathParam(Constants.PARENT_ID) Integer userId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("editParent() request:{}, trackingId:{}, userId:{}", request, trackingId, userId);
 		EditParentResponse resp;
 		Response response;
@@ -173,8 +173,8 @@ public class ParentApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("findParentChildren//{trackingId}/{parentId}")
-	public Response findParentChildren(@PathParam("trackingId") String trackingId,
-	                                   @PathParam("parentId") Integer userId, @HeaderParam("auth-token") String authToken) {
+	public Response findParentChildren(@PathParam(Constants.TRACKING_ID) String trackingId,
+	                                   @PathParam(Constants.PARENT_ID) Integer userId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
 		Response response;

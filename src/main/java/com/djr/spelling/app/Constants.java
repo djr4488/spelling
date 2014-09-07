@@ -12,6 +12,7 @@ public final class Constants {
 	public static final String AUTH_TOKEN = "auth-token";
 
 	//parent landing constants
+	public static final String HOME = "homeLanding";
 	public static final String PARENT_LANDING = "parentLanding";
 	public static final String CREATE_PARENT_LANDING = "createParentLanding";
 	public static final String LOGIN_LANDING = "loginLanding";
