@@ -6,6 +6,7 @@ import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
+import com.djr.spelling.app.services.auth.AuthService;
 import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,6 +15,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by danny.rucker on 9/2/14.
@@ -25,20 +28,32 @@ public class ParentApi {
 	private Logger log;
 	@Inject
 	private ParentServiceBean parentService;
+	@Inject
+	private AuthService authService;
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("createParentUser")
+	public Response createParentUserPageLoad() {
+		TrackingIdResponse tir = new TrackingIdResponse();
+		tir.trackingId = UUID.randomUUID().toString();
+		tir.forwardTo = Constants.CREATE_PARENT_LANDING;
+		return Response.ok().entity(tir).build();
+	}
 
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createParentUser")
-	public Response createParentUser(ParentCreateRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
+	@Path("createParentUser/{trackingId}")
+	public Response createParentUser(@PathParam("trackingId") String trackingId, ParentCreateRequest request) {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
 				parentService.createParentAccount(request.getUserEntity(), trackingId);
-				resp = new ParentCreateResponse(Constants.PARENT_LANDING);
+				resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spellingEx) {
 				resp = new ParentCreateResponse("It appears the email address already exists.", "Oops!");
@@ -58,18 +73,20 @@ public class ParentApi {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createChildUser")
-	public Response createChildUser(ChildUserCreateRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
+	@Path("createChildUser/{trackingId}")
+	public Response createChildUser(ChildUserCreateRequest request, @PathParam("trackingId") String trackingId,
+	                                @HeaderParam("auth-token") String authToken) {
 		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
 		ChildUserCreateResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
 				parentService.createChildAccount(
-						request.getChildUserEntity((User) httpReq.getSession(false).getAttribute("user")),
+						request.getChildUserEntity(parentService.findParentAccount(authService.getUserId(trackingId),
+								trackingId)),
 						trackingId);
 				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
+				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new ChildUserCreateResponse("Apparently the child user name already exists.", "Oops!");
@@ -89,16 +106,18 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("loginParent")
-	public Response login(ParentLoginRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
+	@Path("loginParent/{trackingId}")
+	public Response login(@PathParam("trackingId") String trackingId, ParentLoginRequest request) {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
-				parentService.findParentAccount(request.getUserEntity(), trackingId);
+				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentLoginResponse("parentLanding");
+				resp.authToken = authService.getAuthToken(trackingId);
+				resp.id = parent.id;
+				authService.addTrackingId(trackingId, parent.id);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new ParentLoginResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!");
@@ -107,8 +126,12 @@ public class ParentApi {
 				resp = new ParentLoginResponse("We seem to have a problem figuring out how to login today.  Try again?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
-		} else {
+		} else if (request == null) {
 			resp = new ParentLoginResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
+			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+		} else {
+			resp = new ParentLoginResponse("Request invalid", "Oops!");
+			resp.forwardTo = Constants.LOGIN_LANDING;
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
 		}
 		log.info("login() completed. trackingId:{}", trackingId);
@@ -118,18 +141,18 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editParent")
-	public Response editParent(EditParentRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
-		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
-		log.info("editParent() request:{}, trackingId:{}", request, trackingId);
+	@Path("editParent/{trackingId}/{parentId}")
+	public Response editParent(EditParentRequest request, @PathParam("trackingId") String trackingId,
+	                           @PathParam("parentId") Integer userId, @HeaderParam("auth-token") String authToken) {
+		log.info("editParent() request:{}, trackingId:{}, userId:{}", request, trackingId, userId);
 		EditParentResponse resp;
 		Response response;
-		if (request != null) {
+		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
 				User originalUser = parentService.findParentAccount(userId, trackingId);
 				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
 				resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
+				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
@@ -149,28 +172,30 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("findParentChildren")
-	public Response findParentChildren(EditParentRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
-		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
-		log.info("findParentChildren() request:{}, trackingId:{}", request, trackingId);
-		EditParentResponse resp;
+	@Path("findParentChildren//{trackingId}/{parentId}")
+	public Response findParentChildren(@PathParam("trackingId") String trackingId,
+	                                   @PathParam("parentId") Integer userId, @HeaderParam("auth-token") String authToken) {
+		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
+		FindChildrenResponse resp;
 		Response response;
-		if (request != null) {
+		if (authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
-				User originalUser = parentService.findParentAccount(userId, trackingId);
-				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
-				resp = new EditParentResponse(Constants.FIND_PARENT_CHILDREN);
+				User parent = parentService.findParentAccount(userId, trackingId);
+				List<ChildUser> children = parentService.findParentChildren(parent, trackingId);
+				resp = new FindChildrenResponse();
+				resp.setParentChildren(children);
+				resp.forwardTo = Constants.FIND_PARENT_CHILDREN;
+				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
-				resp = new EditParentResponse("There was an issue finding children for this parent.  Try again later?", "Oops!");
+				resp = new FindChildrenResponse("There was an issue finding children for this parent.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
-				resp = new EditParentResponse("We had a pretty big oops moment.  Try again later?", "Doh!");
+				resp = new FindChildrenResponse("We had a pretty big oops moment.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
 		} else {
-			resp = new EditParentResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
+			resp = new FindChildrenResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
 		}
 		log.info("findParentChildren() completed. trackingId:{}", trackingId);
@@ -180,19 +205,19 @@ public class ParentApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("getChild")
-	public Response getChild(EditChildRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
-		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
-		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
+	@Path("getChild/{trackingId}/{parentId}/{childId}")
+	public Response getChild(@PathParam(Constants.TRACKING_ID) String trackingId,
+	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
+	                         @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+		log.info("getChild() trackingId:{}, parentId:{}, childId:{}", trackingId, parentId, childId);
 		EditChildResponse resp;
 		Response response;
-		if (request != null) {
+		if (authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
-				User parent = parentService.findParentAccount(userId, trackingId);
-				ChildUser child = parentService.findParentChild(parent, request.getUserEntity(), trackingId);
+				ChildUser child = parentService.findParentChild(childId, trackingId);
 				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
 				resp.username = child.username;
+				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new EditChildResponse("There was a problem finding the child by this name.  Try again later?", "Oops!");
@@ -212,20 +237,19 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editChild/{editChildId}")
-	public Response editChild(@PathParam("editChildId") String username, EditChildRequest request, @Context HttpServletRequest httpReq) {
-		String trackingId = (String)httpReq.getSession(false).getAttribute(Constants.TRACKING_ID);
-		Integer userId = (Integer)httpReq.getSession(false).getAttribute(Constants.USER_ID);
+	@Path("editChild/{trackingId}/{parentId}/{childId}")
+	public Response editChild(EditChildRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
+	                          @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
+	                          @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		Response response;
-		if (request != null) {
-			request.username = username;
+		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
-				User parent = parentService.findParentAccount(userId, trackingId);
-				ChildUser originalUser = parentService.findParentChild(parent, request.getUserEntity(), trackingId);
-				parentService.editChildPassword(parent, originalUser, request.getUserEntity(), trackingId);
+				ChildUser originalUser = parentService.findParentChild(childId, trackingId);
+				parentService.editChildPassword(originalUser, request.getUserEntity(), trackingId);
 				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
+				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");

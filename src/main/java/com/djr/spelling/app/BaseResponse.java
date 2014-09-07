@@ -19,6 +19,10 @@ public class BaseResponse implements Serializable {
 	public String errorBold;
 	@XmlElement
 	public String forwardTo;
+	@XmlElement(name = "auth-token")
+	public String authToken;
+	@XmlElement
+	public Integer id;
 
 	public BaseResponse() {}
 
