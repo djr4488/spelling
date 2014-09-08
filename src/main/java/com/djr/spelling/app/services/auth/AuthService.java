@@ -2,7 +2,6 @@ package com.djr.spelling.app.services.auth;
 
 import com.djr.spelling.app.services.auth.model.AuthModel;
 import com.djr.spelling.app.services.auth.util.HashingUtil;
-import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import javax.ejb.Schedule;
@@ -29,6 +28,7 @@ public class AuthService {
 		String authTokenCalc = "<timestamp>"+trackingAuthMap.get(trackingId).timestamp.toString()+"</timestamp><tracking>"+
 				trackingId+"</tracking>";
 		String hashed = hashingUtil.generateHmacHash(authTokenCalc);
+		log.debug("validateAuthToken() trackingId:{}, generatedAuth:{}", trackingId, hashed);
 		return authToken.trim().equalsIgnoreCase(hashed.trim());
 	}
 

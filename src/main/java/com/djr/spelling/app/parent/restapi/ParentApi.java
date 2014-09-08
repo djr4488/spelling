@@ -113,11 +113,10 @@ public class ParentApi {
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
 				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
+				authService.addTrackingId(trackingId, parent.id);
 				resp = new ParentLoginResponse("parentLanding");
 				resp.authToken = authService.getAuthToken(trackingId);
-				System.out.println("authToken: " + resp.authToken);
 				resp.id = parent.id;
-				authService.addTrackingId(trackingId, parent.id);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new ParentLoginResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!");
