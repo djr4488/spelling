@@ -1,5 +1,6 @@
 package com.djr.spelling;
 
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -25,9 +26,9 @@ public class User extends Identifiable implements Serializable {
 
 	public User() {}
 
-	public User(String username, String password, String emailAddress) {
+	public User(String username, String password, String emailAddress, AuthService authService) {
 		this.username = username;
-		this.password = password;
+		this.password = authService.getPasswordHash(password);
 		this.emailAddress = emailAddress;
 	}
 

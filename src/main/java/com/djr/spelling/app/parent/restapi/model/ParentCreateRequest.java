@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.*;
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +30,7 @@ public class ParentCreateRequest implements Serializable {
 	@NotNull
 	public String emailAddress;
 
-	public User getUserEntity() {
-		return new User(username, password, emailAddress);
+	public User getUserEntity(AuthService authService) {
+		return new User(username, password, emailAddress, authService);
 	}
 }

@@ -52,6 +52,7 @@ public class AuthService {
 	}
 
 	public String getAuthToken(String trackingId) {
+		log.debug("getAuthToken() trackingId:{}", trackingId);
 		String authTokenCalc = "<timestamp>"+trackingAuthMap.get(trackingId).timestamp.toString()+"</timestamp><tracking>"+
 				trackingId+"</tracking>";
 		return hashingUtil.generateHmacHash(authTokenCalc);
@@ -61,11 +62,18 @@ public class AuthService {
 		return trackingAuthMap.get(trackingId).userId;
 	}
 
+	public String getPasswordHash(String password) {
+		log.debug("getPasswordHash()");
+		String passwordMessage = "<password>"+password+"</password>";
+		return hashingUtil.generateHmacHash(passwordMessage);
+	}
+
 	@Schedule(minute = "*/5")
 	public void removeExpired() {
 		if (timeAuthMap.keySet().iterator().hasNext() &&
 				timeAuthMap.keySet().iterator().next().isBeforeNow() &&
 				!isCleaning) {
+			log.debug("removeExpired() cleaning up authTokens");
 			synchronized(lock) {
 				Iterator<DateTime> timeAuthMapKeys = timeAuthMap.keySet().iterator();
 				DateTime maxTimeInMap =
@@ -87,6 +95,7 @@ public class AuthService {
 					timeAuthMapKeys.remove();
 				}
 			}
+			log.debug("removeExpired() completed");
 		}
 	}
 }

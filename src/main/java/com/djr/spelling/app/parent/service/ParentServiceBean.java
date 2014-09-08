@@ -201,4 +201,8 @@ public class ParentServiceBean {
 			em.merge(originalWord);
 		}
 	}
+
+	public boolean confirmPasswords(String password, String confirmPassword) {
+		return password.equals(confirmPassword);
+	}
 }

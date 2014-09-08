@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.*;
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +20,8 @@ public class ChildUserCreateRequest implements Serializable {
 	public String username;
 	@XmlElement
 	public String password;
+	@XmlElement
+	public String confirmPassword;
 	@XmlElement(name = "state")
 	public String stateName;
 	@XmlElement(name = "city")
@@ -32,13 +35,13 @@ public class ChildUserCreateRequest implements Serializable {
 	@XmlElement
 	public String gradeName;
 
-	public ChildUser getChildUserEntity(SpellingService spellingService, User user) {
+	public ChildUser getChildUserEntity(SpellingService spellingService, User user, AuthService authService) {
 		School school = spellingService.createOrFindSchool(getSchoolEntity(schoolName, isPrivate, isHome));
 		State state = spellingService.createOrFindState(getStateEntity(stateName));
 		City city = spellingService.createOrFindCity(getCityEntity(cityName));
 		Grade grade = spellingService.createOrFindGrade(getGradeEntity(gradeName));
 		Location location = spellingService.createOrFindLocation(getLocationEntity(state, city, school));
-		return new ChildUser(username, password, location, grade, user);
+		return new ChildUser(username, password, location, grade, user, authService);
 	}
 
 	private Grade getGradeEntity(String gradeName) {

@@ -53,8 +53,13 @@ public class ParentApi {
 		ParentCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
+			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
+				resp = new ParentCreateResponse("Passwords not the same.", "It seems ");
+				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
+				return response;
+			}
 			try {
-				parentService.createParentAccount(request.getUserEntity(), trackingId);
+				parentService.createParentAccount(request.getUserEntity(authService), trackingId);
 				resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
 			} catch (SpellingException spellingEx) {
@@ -83,9 +88,14 @@ public class ParentApi {
 		ChildUserCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
+			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
+				resp = new ChildUserCreateResponse("Passwords not the same.", "It seems ");
+				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
+				return response;
+			}
 			try {
 				parentService.createChildAccount(request.getChildUserEntity(spellingService,
-					parentService.findParentAccount(parentId, trackingId)),trackingId);
+					parentService.findParentAccount(parentId, trackingId), authService),trackingId);
 				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
@@ -151,6 +161,11 @@ public class ParentApi {
 		EditParentResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
+			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
+				resp = new EditParentResponse("Passwords not the same.", "It seems ");
+				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
+				return response;
+			}
 			try {
 				User originalUser = parentService.findParentAccount(userId, trackingId);
 				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
@@ -173,10 +188,10 @@ public class ParentApi {
 		return response;
 	}
 
-	@POST
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("findParentChildren//{trackingId}/{parentId}")
+	@Path("findParentChildren/{trackingId}/{parentId}")
 	public Response findParentChildren(@PathParam(Constants.TRACKING_ID) String trackingId,
 	                                   @PathParam(Constants.PARENT_ID) Integer userId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
@@ -222,6 +237,7 @@ public class ParentApi {
 				ChildUser child = parentService.findParentChild(childId, trackingId);
 				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
 				resp.username = child.username;
+				resp.childId = child.id;
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
@@ -251,6 +267,11 @@ public class ParentApi {
 		EditChildResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
+			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
+				resp = new EditChildResponse("Passwords not the same.", "It seems ");
+				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
+				return response;
+			}
 			try {
 				ChildUser originalUser = parentService.findParentChild(childId, trackingId);
 				parentService.editChildPassword(originalUser, request.getUserEntity(), trackingId);
@@ -272,6 +293,4 @@ public class ParentApi {
 		log.info("editChild() completed. trackingId:{}", trackingId);
 		return response;
 	}
-
-
 }

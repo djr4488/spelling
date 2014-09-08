@@ -1,5 +1,6 @@
 package com.djr.spelling;
 
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.persistence.*;
 
 /**
@@ -36,9 +37,9 @@ public class ChildUser extends Identifiable {
 
 	}
 
-	public ChildUser(String username, String password, Location location, Grade grade, User user) {
+	public ChildUser(String username, String password, Location location, Grade grade, User user, AuthService authService) {
 		this.username = username;
-		this.password = password;
+		this.password = authService.getPasswordHash(password);
 		this.parent = user;
 		this.location = location;
 		this.grade = grade;

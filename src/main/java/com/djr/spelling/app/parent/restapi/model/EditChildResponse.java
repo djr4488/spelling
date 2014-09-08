@@ -16,6 +16,8 @@ public class EditChildResponse extends BaseResponse implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
 	public String username;
+	@XmlElement
+	public Integer childId;
 
 	public EditChildResponse() {
 		super();
