@@ -12,7 +12,7 @@ import java.io.Serializable;
 	@NamedQuery(name="findExistingUserByEmailAddress",
 		query="select user from User user where user.emailAddress = :emailAddress"),
 	@NamedQuery(name="findExistingUserByUserNameAndPassword",
-		query="select user from User user where user.username = :username and user.password = :password")
+		query="select user from User user where user.emailAddress = :emailAddress and user.password = :password")
 })
 public class User extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;

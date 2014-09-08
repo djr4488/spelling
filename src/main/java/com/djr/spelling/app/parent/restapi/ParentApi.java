@@ -10,9 +10,7 @@ import com.djr.spelling.app.services.auth.AuthService;
 import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -117,6 +115,7 @@ public class ParentApi {
 				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
 				resp = new ParentLoginResponse("parentLanding");
 				resp.authToken = authService.getAuthToken(trackingId);
+				System.out.println("authToken: " + resp.authToken);
 				resp.id = parent.id;
 				authService.addTrackingId(trackingId, parent.id);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();

@@ -63,7 +63,7 @@ public class ParentServiceBean {
 		log.debug("findParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class);
-			query.setParameter("username", user.username);
+			query.setParameter("emailAddress", user.emailAddress);
 			query.setParameter("password", user.password);
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {

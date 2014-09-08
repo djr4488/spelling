@@ -40,10 +40,10 @@ public class AuthService {
 	}
 
 	public void addTrackingId(String trackingId, Integer userId) {
-		log.debug("addTrackingId() trackingId:{}", trackingId);
-		trackingAuthMap.put(trackingId, new AuthModel(trackingId, userId));
+		log.debug("addTrackingId() trackingId:{}, userId:{}", trackingId, userId);
 		synchronized(lock) {
-			AuthModel authModel = trackingAuthMap.get(trackingId);
+			AuthModel authModel = new AuthModel(trackingId, userId);
+			trackingAuthMap.put(trackingId, authModel);
 			if (!timeAuthMap.containsKey(authModel.exipiry)) {
 				timeAuthMap.put(authModel.exipiry, new HashSet<AuthModel>());
 			}
