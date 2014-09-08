@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.restapi;
 
 import com.djr.spelling.ChildUser;
+import com.djr.spelling.SpellingService;
 import com.djr.spelling.User;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
@@ -28,6 +29,8 @@ public class ParentApi {
 	private ParentServiceBean parentService;
 	@Inject
 	private AuthService authService;
+	@Inject
+	private SpellingService spellingService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -58,6 +61,7 @@ public class ParentApi {
 				resp = new ParentCreateResponse("It appears the email address already exists.", "Oops!");
 				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("createParentUser() ", ex);
 				resp = new ParentCreateResponse("We seemed to have an issue creating your account.  Try again?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -72,18 +76,16 @@ public class ParentApi {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createChildUser/{trackingId}")
+	@Path("createChildUser/{trackingId}/{parentId}")
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
-	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	                                @PathParam("parentId") Integer parentId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
 		ChildUserCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
-				parentService.createChildAccount(
-						request.getChildUserEntity(parentService.findParentAccount(authService.getUserId(trackingId),
-								trackingId)),
-						trackingId);
+				parentService.createChildAccount(request.getChildUserEntity(spellingService,
+					parentService.findParentAccount(parentId, trackingId)),trackingId);
 				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
@@ -91,6 +93,7 @@ public class ParentApi {
 				resp = new ChildUserCreateResponse("Apparently the child user name already exists.", "Oops!");
 				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("createChildUser() ", ex);
 				resp = new ChildUserCreateResponse("We seemed to have an issue creating the child's account.  Try again?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -122,6 +125,7 @@ public class ParentApi {
 				resp = new ParentLoginResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!");
 				response = Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("login() ", ex);
 				resp = new ParentLoginResponse("We seem to have a problem figuring out how to login today.  Try again?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -157,6 +161,7 @@ public class ParentApi {
 				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("editParent() ", ex);
 				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -190,6 +195,7 @@ public class ParentApi {
 				resp = new FindChildrenResponse("There was an issue finding children for this parent.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("findParentChildren() ", ex);
 				resp = new FindChildrenResponse("We had a pretty big oops moment.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -222,6 +228,7 @@ public class ParentApi {
 				resp = new EditChildResponse("There was a problem finding the child by this name.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("getChild() ", ex);
 				resp = new EditChildResponse("Big oops moment, sorry.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
@@ -254,6 +261,7 @@ public class ParentApi {
 				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			} catch (Exception ex) {
+				log.error("editChild() ", ex);
 				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}

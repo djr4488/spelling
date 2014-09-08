@@ -26,16 +26,38 @@ public class ChildUserCreateRequest implements Serializable {
 	@XmlElement
 	public String schoolName;
 	@XmlElement
+	public boolean isPrivate;
+	@XmlElement
+	public boolean isHome;
+	@XmlElement
 	public String gradeName;
 
-	@Inject
-	private SpellingService spellingService;
-	public ChildUser getChildUserEntity(User user) {
-		School school = spellingService.createOrFindSchool(schoolName);
-		State state = spellingService.createOrFindState(stateName);
-		City city = spellingService.createOrFindCity(cityName);
-		Grade grade = spellingService.createOrFindGrade(gradeName);
-		Location location = spellingService.createOrFindLocation(school, state, city);
+	public ChildUser getChildUserEntity(SpellingService spellingService, User user) {
+		School school = spellingService.createOrFindSchool(getSchoolEntity(schoolName, isPrivate, isHome));
+		State state = spellingService.createOrFindState(getStateEntity(stateName));
+		City city = spellingService.createOrFindCity(getCityEntity(cityName));
+		Grade grade = spellingService.createOrFindGrade(getGradeEntity(gradeName));
+		Location location = spellingService.createOrFindLocation(getLocationEntity(state, city, school));
 		return new ChildUser(username, password, location, grade, user);
+	}
+
+	private Grade getGradeEntity(String gradeName) {
+		return new Grade(gradeName);
+	}
+
+	private City getCityEntity(String cityName) {
+		return new City(cityName);
+	}
+
+	private State getStateEntity(String stateAbbreviation) {
+		return new State(stateAbbreviation);
+	}
+
+	private School getSchoolEntity(String schoolName, boolean isPrivate, boolean isHome) {
+		return new School(schoolName, isPrivate, isHome);
+	}
+
+	private Location getLocationEntity(State state, City city, School school) {
+		return new Location(state, city, school);
 	}
 }

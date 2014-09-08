@@ -3,7 +3,7 @@
 
     <persistence-unit name="jdbc/SpellingPersistence">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/SpellingDatabase</jta-data-source>
+        <jta-data-source>jdbc/spelling</jta-data-source>
         <class>com.djr.spelling.ChildUser</class>
         <class>com.djr.spelling.City</class>
         <class>com.djr.spelling.Grade</class>

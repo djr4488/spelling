@@ -10,11 +10,30 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "schools")
+@NamedQueries({
+	@NamedQuery(name="findSchool",
+		query="select school from School school where school.schoolName = :school and school.isPrivate = :isPrivate and" +
+			" school.isHome = :isHome")
+})
 public class School extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 
 	@Column(name = "school_name")
 	public String schoolName;
+	@Column(name = "is_private")
+	public boolean isPrivate;
+	@Column(name = "is_home")
+	public boolean isHome;
+
+	public School() {
+
+	}
+
+	public School(String schoolName, boolean isPrivate, boolean isHome) {
+		this.schoolName = schoolName;
+		this.isPrivate = isPrivate;
+		this.isHome = isHome;
+	}
 
 	@Override
 	public String toString() {

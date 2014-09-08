@@ -23,7 +23,7 @@ import java.util.List;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ParentServiceBean {
-	@PersistenceContext(name = "SpellingPersistence")
+	@PersistenceContext(name = "jdbc/SpellingPersistence")
 	private EntityManager em;
 	@Inject
 	private Logger log;
@@ -55,6 +55,7 @@ public class ParentServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
 		}
+		log.debug("createChildAccount() persisting childUser:{}", user);
 		em.persist(user);
 	}
 
