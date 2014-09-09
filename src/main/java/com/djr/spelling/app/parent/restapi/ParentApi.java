@@ -314,10 +314,11 @@ public class ParentApi {
 			try {
 				User parent = parentService.findParentAccount(parentId, trackingId);
 				ChildUser child = parentService.findParentChild(childId, trackingId);
-				WordLocation wordLocation = getWordLocationEntity(child);
 				Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
-				parentService.createOrFindWordLocation(wordLocation, word, trackingId);
+				WordLocation wordLocation = getWordLocationEntity(child, word);
+				parentService.createOrFindWordLocation(wordLocation, trackingId);
 				parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);
+				//set week information
 
 				resp = new AddWordResponse("addWord");
 				resp.id = parentId;
@@ -341,10 +342,11 @@ public class ParentApi {
 		return response;
 	}
 
-	private WordLocation getWordLocationEntity(ChildUser child) {
+	private WordLocation getWordLocationEntity(ChildUser child, Word word) {
 		WordLocation wordLocation = new WordLocation();
 		wordLocation.grade = child.grade;
 		wordLocation.location = child.location;
+		wordLocation.word = word;
 		return wordLocation;
 	}
 

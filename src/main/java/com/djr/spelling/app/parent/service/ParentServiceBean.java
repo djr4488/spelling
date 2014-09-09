@@ -145,7 +145,7 @@ public class ParentServiceBean {
 		return existingWord;
 	}
 
-	private Word findWord(Word word, String trackingId) {
+	public Word findWord(Word word, String trackingId) {
 		log.debug("findWord() word:{}, trackingId:{}", word, trackingId);
 		try {
 			TypedQuery<Word> query = em.createNamedQuery("findWord", Word.class);
@@ -160,13 +160,13 @@ public class ParentServiceBean {
 		}
 	}
 
-	private WordLocation findWordLocation(WordLocation wordLocation, Word word, String trackingId) {
+	private WordLocation findWordLocation(WordLocation wordLocation, String trackingId) {
 		log.debug("findWordLocation() wordLocation:{}, word:{}, trackingId:{}", wordLocation, trackingId);
 		try {
 			TypedQuery<WordLocation> query = em.createNamedQuery("findWordLocation", WordLocation.class);
 			query.setParameter("location", wordLocation.location);
 			query.setParameter("grade", wordLocation.grade);
-			query.setParameter("word", word);
+			query.setParameter("word", wordLocation.word);
 			WordLocation foundLocation = query.getSingleResult();
 			log.debug("findWordLocation() foundLocation:{}, trackingId{}", foundLocation, trackingId);
 			return foundLocation;
@@ -176,18 +176,18 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void createOrFindWordLocation(WordLocation wordLocation, Word word, String trackingId)
+	public void createOrFindWordLocation(WordLocation wordLocation, String trackingId)
 	throws SpellingException {
 		WordLocation existingWordLocation = null;
 		try {
-			existingWordLocation = findWordLocation(wordLocation, word, trackingId);
+			existingWordLocation = findWordLocation(wordLocation, trackingId);
 			if (existingWordLocation == null) {
 				existingWordLocation = wordLocation;
 				em.persist(existingWordLocation);
 			}
 		} catch (Exception ex) {
 			log.debug("createOrFindWord() word probably was created at same time. trackingId:{}", trackingId);
-			existingWordLocation = findWordLocation(wordLocation, word, trackingId);
+			existingWordLocation = findWordLocation(wordLocation, trackingId);
 			if (existingWordLocation == null) {
 				throw new SpellingException("Something has gone horribly wrong with this word location!");
 			}
