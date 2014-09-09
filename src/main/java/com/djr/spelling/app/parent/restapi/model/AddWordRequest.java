@@ -27,11 +27,9 @@ public class AddWordRequest implements Serializable {
 	@XmlElement
 	public String sentence;
 	@XmlElement
-	@Temporal(TemporalType.DATE)
 	@NotNull
 	public Date startOfWeek;
 	@XmlElement
-	@Temporal(TemporalType.DATE)
 	@NotNull
 	public Date endOfWeek;
 

@@ -26,6 +26,9 @@ public class WordLocation extends Identifiable implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "grade_id")
 	public Grade grade;
+	@ManyToOne
+	@JoinColumn(name = "week_id")
+	public Week week;
 
 	@Override
 	public String toString() {

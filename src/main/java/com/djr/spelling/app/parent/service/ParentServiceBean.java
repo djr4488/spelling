@@ -3,6 +3,7 @@ package com.djr.spelling.app.parent.service;
 import com.djr.spelling.ChildUser;
 import com.djr.spelling.Sentence;
 import com.djr.spelling.User;
+import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.SpellingException;
@@ -16,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -146,7 +148,7 @@ public class ParentServiceBean {
 	}
 
 	public Word findWord(Word word, String trackingId) {
-		log.debug("findWord() word:{}, trackingId:{}", word, trackingId);
+		log.debug("findWord() trackingId:{}", trackingId);
 		try {
 			TypedQuery<Word> query = em.createNamedQuery("findWord", Word.class);
 			query.setParameter("word", word.word);
@@ -160,24 +162,9 @@ public class ParentServiceBean {
 		}
 	}
 
-	private WordLocation findWordLocation(WordLocation wordLocation, String trackingId) {
-		log.debug("findWordLocation() wordLocation:{}, word:{}, trackingId:{}", wordLocation, trackingId);
-		try {
-			TypedQuery<WordLocation> query = em.createNamedQuery("findWordLocation", WordLocation.class);
-			query.setParameter("location", wordLocation.location);
-			query.setParameter("grade", wordLocation.grade);
-			query.setParameter("word", wordLocation.word);
-			WordLocation foundLocation = query.getSingleResult();
-			log.debug("findWordLocation() foundLocation:{}, trackingId{}", foundLocation, trackingId);
-			return foundLocation;
-		} catch (NoResultException nrEx) {
-			log.debug("findWordLocation() nothing found. trackingId:{}", trackingId);
-			return null;
-		}
-	}
-
 	public void createOrFindWordLocation(WordLocation wordLocation, String trackingId)
 	throws SpellingException {
+		log.debug("createOrFindWordLocation() wordLocation:{}, trackingId:{}", wordLocation, trackingId);
 		WordLocation existingWordLocation = null;
 		try {
 			existingWordLocation = findWordLocation(wordLocation, trackingId);
@@ -194,8 +181,25 @@ public class ParentServiceBean {
 		}
 	}
 
+	private WordLocation findWordLocation(WordLocation wordLocation, String trackingId) {
+		log.debug("findWordLocation() trackingId:{}", trackingId);
+		try {
+			TypedQuery<WordLocation> query = em.createNamedQuery("findWordLocation", WordLocation.class);
+			query.setParameter("location", wordLocation.location);
+			query.setParameter("grade", wordLocation.grade);
+			query.setParameter("word", wordLocation.word);
+			WordLocation foundLocation = query.getSingleResult();
+			log.debug("findWordLocation() foundLocation:{}, trackingId{}", foundLocation, trackingId);
+			return foundLocation;
+		} catch (NoResultException nrEx) {
+			log.debug("findWordLocation() nothing found. trackingId:{}", trackingId);
+			return null;
+		}
+	}
+
 	public void createOrFindWordSentence(Sentence sentence, String trackingId)
 	throws SpellingException {
+		log.debug("createOrFindWordSentence() sentence:{}, trackingId:{}", sentence, trackingId);
 		Sentence existingSentence = null;
 		try {
 			existingSentence = findSentence(sentence, trackingId);
@@ -204,16 +208,16 @@ public class ParentServiceBean {
 				em.persist(existingSentence);
 			}
 		} catch (Exception ex) {
-			log.debug("createOrFindWordSentence() sentence/word combo probably exists already.", trackingId);
+			log.debug("createOrFindWordSentence() sentence/word combo probably exists already. trackingId:{}", trackingId);
 			existingSentence = findSentence(sentence, trackingId);
 			if (existingSentence == null) {
-				throw new SpellingException("Somethign has gone horribly wrong with this sentence creation!");
+				throw new SpellingException("Something has gone horribly wrong with this sentence creation!");
 			}
 		}
 	}
 
 	private Sentence findSentence(Sentence sentence, String trackingId) {
-		log.debug("findSentence() sentence:{}, trackingId:{}", sentence, trackingId);
+		log.debug("findSentence() trackingId:{}", trackingId);
 		try {
 			TypedQuery<Sentence> query = em.createNamedQuery("findSentence", Sentence.class);
 			query.setParameter("sentence", sentence.sentence);
@@ -221,6 +225,39 @@ public class ParentServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findSentence() no results found. trackingId:{}", trackingId);
+			return null;
+		}
+	}
+
+	public Week createOrFindWeek(Week week, String trackingId)
+	throws SpellingException {
+		log.debug("createOrFindWeek() week:{}, trackingId:{}", week, trackingId);
+		Week existingWeek = null;
+		try {
+			existingWeek = findWeek(week, trackingId);
+			if (existingWeek == null) {
+				existingWeek = week;
+				em.persist(existingWeek);
+			}
+		} catch (Exception ex) {
+			log.debug("createOrFindWeek() week likely exists already. trackingId:{}", trackingId);
+			existingWeek = findWeek(week, trackingId);
+			if (existingWeek == null) {
+				throw new SpellingException("Something has gone horribly wrong with this week creation!");
+			}
+		}
+		return existingWeek;
+	}
+
+	private Week findWeek(Week week, String trackingId) {
+		log.debug("findWeek() trackingId:{}", trackingId);
+		try {
+			TypedQuery<Week> query = em.createNamedQuery("findWeek", Week.class);
+			query.setParameter("weekStart", week.weekStart);
+			query.setParameter("weekEnd", week.weekEnd);
+			return query.getSingleResult();
+		} catch (NoResultException nrEx) {
+			log.debug("findWeek() no results found. trackingId:{}", trackingId);
 			return null;
 		}
 	}

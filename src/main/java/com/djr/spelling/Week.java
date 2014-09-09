@@ -11,11 +11,25 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "weeks")
+@NamedQueries({
+	@NamedQuery(name="findWeek",
+		query="select week from Week week where week.weekStart = :weekStart and week.weekEnd = :weekEnd")
+})
 public class Week extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@Column(name = "week_start")
 	@Temporal(TemporalType.DATE)
 	public Date weekStart;
+	@Column(name = "week_end")
+	@Temporal(TemporalType.DATE)
+	public Date weekEnd;
+
+	public Week() {}
+
+	public Week(Date weekStart, Date weekEnd) {
+		this.weekStart = weekStart;
+		this.weekEnd = weekEnd;
+	}
 
 	@Override
 	public String toString() {

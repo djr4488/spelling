@@ -4,6 +4,7 @@ import com.djr.spelling.ChildUser;
 import com.djr.spelling.Sentence;
 import com.djr.spelling.SpellingService;
 import com.djr.spelling.User;
+import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.Constants;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -315,11 +317,10 @@ public class ParentApi {
 				User parent = parentService.findParentAccount(parentId, trackingId);
 				ChildUser child = parentService.findParentChild(childId, trackingId);
 				Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
-				WordLocation wordLocation = getWordLocationEntity(child, word);
+				Week week = parentService.createOrFindWeek(getWeekEntity(request.startOfWeek, request.endOfWeek), trackingId);
+				WordLocation wordLocation = getWordLocationEntity(child, word, week);
 				parentService.createOrFindWordLocation(wordLocation, trackingId);
 				parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);
-				//set week information
-
 				resp = new AddWordResponse("addWord");
 				resp.id = parentId;
 				resp.childId = childId;
@@ -342,15 +343,20 @@ public class ParentApi {
 		return response;
 	}
 
-	private WordLocation getWordLocationEntity(ChildUser child, Word word) {
+	private WordLocation getWordLocationEntity(ChildUser child, Word word, Week week) {
 		WordLocation wordLocation = new WordLocation();
 		wordLocation.grade = child.grade;
 		wordLocation.location = child.location;
 		wordLocation.word = word;
+		wordLocation.week = week;
 		return wordLocation;
 	}
 
 	private Sentence getSentenceEntity(String sentence, Word word) {
 		return new Sentence(sentence, word);
+	}
+
+	private Week getWeekEntity(Date startWeek, Date endWeek) {
+		return new Week(startWeek, endWeek);
 	}
 }
