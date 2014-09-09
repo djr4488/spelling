@@ -1,13 +1,17 @@
 package com.djr.spelling.app.parent.restapi;
 
 import com.djr.spelling.ChildUser;
+import com.djr.spelling.Sentence;
 import com.djr.spelling.SpellingService;
 import com.djr.spelling.User;
+import com.djr.spelling.Word;
+import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,6 +35,8 @@ public class ParentApi {
 	private AuthService authService;
 	@Inject
 	private SpellingService spellingService;
+	@Inject
+	private DoubleMetaphone dm;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -44,7 +50,7 @@ public class ParentApi {
 		return Response.ok().entity(tir).build();
 	}
 
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createParentUser/{trackingId}")
@@ -78,7 +84,7 @@ public class ParentApi {
 		return response;
 	}
 
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createChildUser/{trackingId}/{parentId}")
@@ -151,7 +157,7 @@ public class ParentApi {
 		return response;
 	}
 
-	@POST
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("editParent/{trackingId}/{parentId}")
@@ -256,7 +262,7 @@ public class ParentApi {
 		return response;
 	}
 
-	@POST
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("editChild/{trackingId}/{parentId}/{childId}")
@@ -292,5 +298,57 @@ public class ParentApi {
 		}
 		log.info("editChild() completed. trackingId:{}", trackingId);
 		return response;
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("addWord/{trackingId}/{parentId}/{childId}")
+	public Response addWord(AddWordRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
+							@PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
+							@HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+		log.info("addWord() request:{}, trackingId:{}", request, trackingId);
+		AddWordResponse resp;
+		Response response;
+		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
+			try {
+				User parent = parentService.findParentAccount(parentId, trackingId);
+				ChildUser child = parentService.findParentChild(childId, trackingId);
+				WordLocation wordLocation = getWordLocationEntity(child);
+				Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
+				parentService.createOrFindWordLocation(wordLocation, word, trackingId);
+				parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);
+
+				resp = new AddWordResponse("addWord");
+				resp.id = parentId;
+				resp.childId = childId;
+				resp.authToken = authService.getAuthToken(trackingId);
+				resp.forwardTo = Constants.ADD_WORD;
+				return Response.status(Response.Status.CREATED).entity(resp).build();
+			} catch (SpellingException spEx) {
+				resp = new AddWordResponse("Something prevented me from adding this word.", "Can you try again?");
+				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
+			} catch (Exception ex) {
+				log.error("addWord() trackingId:{}, Exception:{}", trackingId, ex);
+				resp = new AddWordResponse("It appears there was a problem.  If it keeps not working, send " +
+					trackingId + " to djr4488(dot)(at)gmail(dot)com");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			}
+		} else {
+			resp = new AddWordResponse("Something was'nt quite right with the request, can you try again?", "Doh!");
+			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+		}
+		return response;
+	}
+
+	private WordLocation getWordLocationEntity(ChildUser child) {
+		WordLocation wordLocation = new WordLocation();
+		wordLocation.grade = child.grade;
+		wordLocation.location = child.location;
+		return wordLocation;
+	}
+
+	private Sentence getSentenceEntity(String sentence, Word word) {
+		return new Sentence(sentence, word);
 	}
 }

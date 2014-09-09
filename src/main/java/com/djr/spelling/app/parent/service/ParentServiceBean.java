@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.service;
 
 import com.djr.spelling.ChildUser;
+import com.djr.spelling.Sentence;
 import com.djr.spelling.User;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
@@ -124,9 +125,9 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void createOrFindWord(User user, WordLocation wordLocation, Word word, String trackingId)
+	public Word createOrFindWord(User user, Word word, String trackingId)
 	throws SpellingException {
-		log.debug("createOrFindWord() user:{}, wordLocation:{}, word:{}, trackingId:{}", user, wordLocation, word, trackingId);
+		log.debug("createOrFindWord() user:{}, word:{}, trackingId:{}", user, word, trackingId);
 		Word existingWord = null;
 		try {
 			existingWord = findWord(word, trackingId);
@@ -141,7 +142,7 @@ public class ParentServiceBean {
 				throw new SpellingException("Something has gone horribly wrong with this word.");
 			}
 		}
-		createOrFindWordLocation(wordLocation, existingWord, trackingId);
+		return existingWord;
 	}
 
 	private Word findWord(Word word, String trackingId) {
@@ -175,7 +176,7 @@ public class ParentServiceBean {
 		}
 	}
 
-	private void createOrFindWordLocation(WordLocation wordLocation, Word word, String trackingId)
+	public void createOrFindWordLocation(WordLocation wordLocation, Word word, String trackingId)
 	throws SpellingException {
 		WordLocation existingWordLocation = null;
 		try {
@@ -190,6 +191,37 @@ public class ParentServiceBean {
 			if (existingWordLocation == null) {
 				throw new SpellingException("Something has gone horribly wrong with this word location!");
 			}
+		}
+	}
+
+	public void createOrFindWordSentence(Sentence sentence, String trackingId)
+	throws SpellingException {
+		Sentence existingSentence = null;
+		try {
+			existingSentence = findSentence(sentence, trackingId);
+			if (existingSentence == null) {
+				existingSentence = sentence;
+				em.persist(existingSentence);
+			}
+		} catch (Exception ex) {
+			log.debug("createOrFindWordSentence() sentence/word combo probably exists already.", trackingId);
+			existingSentence = findSentence(sentence, trackingId);
+			if (existingSentence == null) {
+				throw new SpellingException("Somethign has gone horribly wrong with this sentence creation!");
+			}
+		}
+	}
+
+	private Sentence findSentence(Sentence sentence, String trackingId) {
+		log.debug("findSentence() sentence:{}, trackingId:{}", sentence, trackingId);
+		try {
+			TypedQuery<Sentence> query = em.createNamedQuery("findSentence", Sentence.class);
+			query.setParameter("sentence", sentence.sentence);
+			query.setParameter("word", sentence.word);
+			return query.getSingleResult();
+		} catch (NoResultException nrEx) {
+			log.debug("findSentence() no results found. trackingId:{}", trackingId);
+			return null;
 		}
 	}
 

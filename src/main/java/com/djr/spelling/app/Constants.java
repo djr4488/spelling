@@ -20,4 +20,5 @@ public final class Constants {
 	public static final String EDIT_PARENT_LANDING = "editParentLanding";
 	public static final String FIND_PARENT_CHILDREN = "findChildrenLanding";
 	public static final String EDIT_CHILD_LANDING = "editChildLanding";
+	public static final String ADD_WORD = "addWord";
 }

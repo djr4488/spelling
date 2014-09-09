@@ -22,6 +22,13 @@ public class Word extends Identifiable implements Serializable {
 	@Column(name = "metaphone")
 	public String metaphone;
 
+	public Word() {}
+
+	public Word(String word, String metaphone) {
+		this.word = word;
+		this.metaphone = metaphone;
+	}
+
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

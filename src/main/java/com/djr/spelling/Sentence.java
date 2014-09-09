@@ -10,6 +10,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "sentences")
+@NamedQueries({
+	@NamedQuery(name="findSentence",
+		query="select sentence from Sentence sentence where sentence.sentence = :sentence and sentence.word = :word")
+})
 public class Sentence extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@ManyToOne
@@ -17,6 +21,19 @@ public class Sentence extends Identifiable implements Serializable {
 	public Word word;
 	@Column(name = "sentence")
 	public String sentence;
+
+	public Sentence() {
+
+	}
+
+	public Sentence(String sentence) {
+		this.sentence = sentence;
+	}
+
+	public Sentence(String sentence, Word word) {
+		this.sentence = sentence;
+		this.word = word;
+	}
 
 	@Override
 	public String toString() {

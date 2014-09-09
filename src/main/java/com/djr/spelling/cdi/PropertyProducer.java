@@ -74,6 +74,7 @@ public class PropertyProducer {
 		String member = injectionPoint.getMember().getName();
 		logger.debug("getDoubleMetaphone() - {}.{}={}", className, member,
 				properties.getProperty(className + "." + member));
+		dm.setMaxCodeLen(6);
 		return dm;
 	}
 
