@@ -5,6 +5,8 @@ import com.djr.spelling.app.services.auth.util.HashingUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import javax.ejb.Schedule;
+import javax.ejb.Schedules;
+import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.*;
@@ -13,6 +15,7 @@ import java.util.*;
  * Created by IMac on 9/6/2014.
  */
 @ApplicationScoped
+@Singleton
 public class AuthService {
 	private static final Object lock = new Object();
 	private static boolean isCleaning = false;
@@ -68,7 +71,9 @@ public class AuthService {
 		return hashingUtil.generateHmacHash(passwordMessage);
 	}
 
-	@Schedule(minute = "*/5")
+	@Schedules({
+		@Schedule(minute = "*/5")
+	})
 	public void removeExpired() {
 		if (timeAuthMap.keySet().iterator().hasNext() &&
 				timeAuthMap.keySet().iterator().next().isBeforeNow() &&
