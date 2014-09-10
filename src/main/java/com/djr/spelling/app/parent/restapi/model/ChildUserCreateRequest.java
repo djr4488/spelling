@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.*;
+import com.djr.spelling.app.BaseRequest;
 import com.djr.spelling.app.services.auth.AuthService;
 import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,7 +15,7 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ChildUserCreateRequest implements Serializable {
+public class ChildUserCreateRequest extends BaseRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
 	public String username;
@@ -62,5 +63,22 @@ public class ChildUserCreateRequest implements Serializable {
 
 	private Location getLocationEntity(State state, City city, School school) {
 		return new Location(state, city, school);
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("childUserCreateRequest[");
+		sb.append("username=").append(username).append(", ");
+		sb.append("password=").append("****").append(", ");
+		sb.append("confirmPassword=").append("****").append(", ");
+		sb.append("stateName=").append(stateName).append(", ");
+		sb.append("cityName=").append(cityName).append(", ");
+		sb.append("schoolName=").append(schoolName).append(", ");
+		sb.append("isPrivate=").append(isPrivate).append(", ");
+		sb.append("isHome=").append(isHome).append(", ");
+		sb.append("gradeName=").append(gradeName).append(", ");
+		sb.append("]");
+		return sb.toString();
 	}
 }

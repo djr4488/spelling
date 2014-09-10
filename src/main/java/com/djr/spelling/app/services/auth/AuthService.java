@@ -70,11 +70,13 @@ public class AuthService {
 
 	@Schedule(minute = "*/5")
 	public void removeExpired() {
+		log.debug("removeExpired() checking...");
 		if (timeAuthMap.keySet().iterator().hasNext() &&
 				timeAuthMap.keySet().iterator().next().isBeforeNow() &&
 				!isCleaning) {
 			log.debug("removeExpired() cleaning up authTokens");
 			synchronized(lock) {
+				isCleaning = true;
 				Iterator<DateTime> timeAuthMapKeys = timeAuthMap.keySet().iterator();
 				DateTime maxTimeInMap =
 						((TreeMap<DateTime, HashSet<AuthModel>>) timeAuthMap).descendingKeySet().first();
@@ -94,6 +96,7 @@ public class AuthService {
 					}
 					timeAuthMapKeys.remove();
 				}
+				isCleaning = false;
 			}
 			log.debug("removeExpired() completed");
 		}

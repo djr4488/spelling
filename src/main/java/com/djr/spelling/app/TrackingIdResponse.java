@@ -1,4 +1,4 @@
-package com.djr.spelling.app.parent.restapi.model;
+package com.djr.spelling.app;
 
 import com.djr.spelling.app.BaseResponse;
 import javax.xml.bind.annotation.XmlAccessType;

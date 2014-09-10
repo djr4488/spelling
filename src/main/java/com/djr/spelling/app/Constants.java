@@ -21,4 +21,8 @@ public final class Constants {
 	public static final String FIND_PARENT_CHILDREN = "findChildrenLanding";
 	public static final String EDIT_CHILD_LANDING = "editChildLanding";
 	public static final String ADD_WORD = "addWord";
+
+	//child landing constants
+	public static final String CHILD_LOGIN="childLoginLanding";
+
 }

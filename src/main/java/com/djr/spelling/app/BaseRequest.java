@@ -1,18 +1,19 @@
-package com.djr.spelling.app.child.model;
+package com.djr.spelling.app;
 
-import com.djr.spelling.Sentence;
-import com.djr.spelling.Word;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * Created by IMac on 9/1/2014.
+ * Created by IMac on 9/9/2014.
  */
-public class WordStructure implements Serializable {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+public class BaseRequest implements Serializable {
 	private static final long serialVersionUID = 1;
-	public Word word;
-	public Sentence sentence;
 
 	@Override
 	public String toString() {
