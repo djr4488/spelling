@@ -2,6 +2,7 @@ package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.Sentence;
 import com.djr.spelling.Word;
+import com.djr.spelling.app.BaseRequest;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,7 +16,7 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class EditWordRequest implements Serializable {
+public class EditWordRequest extends BaseRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 
 	@XmlElement

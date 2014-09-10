@@ -1,6 +1,7 @@
 package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.User;
+import com.djr.spelling.app.BaseRequest;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,7 +14,7 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class EditParentRequest implements Serializable {
+public class EditParentRequest extends BaseRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 	@XmlElement
 	@NotNull
@@ -27,5 +28,10 @@ public class EditParentRequest implements Serializable {
 
 	public User getUserEntity() {
 		return new User(password);
+	}
+
+	@Override
+	public String toString() {
+		return "editParentRequest[originalPassword=****, password=****, confirmPassword=****]";
 	}
 }

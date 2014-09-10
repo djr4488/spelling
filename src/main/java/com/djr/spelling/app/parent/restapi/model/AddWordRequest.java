@@ -2,6 +2,7 @@ package com.djr.spelling.app.parent.restapi.model;
 
 
 import com.djr.spelling.Word;
+import com.djr.spelling.app.BaseRequest;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,7 +19,7 @@ import java.util.Date;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class AddWordRequest implements Serializable {
+public class AddWordRequest extends BaseRequest implements Serializable {
 	private static final long serialVersionUID = 1;
 
 	@XmlElement

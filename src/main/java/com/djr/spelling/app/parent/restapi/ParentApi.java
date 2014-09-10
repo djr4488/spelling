@@ -7,6 +7,7 @@ import com.djr.spelling.User;
 import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
+import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.restapi.model.*;
@@ -28,7 +29,7 @@ import java.util.UUID;
  */
 @ApplicationScoped
 @Path("parent")
-public class ParentApi {
+public class ParentApi extends BaseApi {
 	@Inject
 	private Logger log;
 	@Inject
@@ -39,18 +40,6 @@ public class ParentApi {
 	private SpellingService spellingService;
 	@Inject
 	private DoubleMetaphone dm;
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("getTrackingId")
-	public Response getTrackingId() {
-		TrackingIdResponse tir = new TrackingIdResponse();
-		tir.trackingId = UUID.randomUUID().toString();
-		tir.forwardTo = Constants.HOME;
-		authService.addTrackingId(tir.trackingId, null);
-		return Response.ok().entity(tir).build();
-	}
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -103,7 +92,7 @@ public class ParentApi {
 			}
 			try {
 				parentService.createChildAccount(request.getChildUserEntity(spellingService,
-					parentService.findParentAccount(parentId, trackingId), authService),trackingId);
+						parentService.findParentAccount(parentId, trackingId), authService), trackingId);
 				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.CREATED).entity(resp).build();
@@ -126,7 +115,7 @@ public class ParentApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("loginParent/{trackingId}")
+	@Path("login/{trackingId}")
 	public Response login(@PathParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request) {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
