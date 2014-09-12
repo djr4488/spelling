@@ -23,6 +23,8 @@ public final class Constants {
 	public static final String ADD_WORD = "addWord";
 
 	//child landing constants
+	public static final String CHILD_HOME = "childHomeLanding";
 	public static final String CHILD_LOGIN="childLoginLanding";
+	public static final String CHILD_QUIZ_LANDING="childQuizLanding";
 
 }

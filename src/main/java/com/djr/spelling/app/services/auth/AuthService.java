@@ -72,7 +72,7 @@ public class AuthService {
 	}
 
 	@Schedules({
-		@Schedule(minute = "*/5")
+		@Schedule(second = "0", minute = "*/5", hour="*")
 	})
 	public void removeExpired() {
 		log.debug("removeExpired() checking...");
