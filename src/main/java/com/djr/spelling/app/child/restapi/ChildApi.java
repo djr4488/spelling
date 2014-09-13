@@ -6,6 +6,7 @@ import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.child.model.ChildLoginRequest;
 import com.djr.spelling.app.child.model.ChildLoginResponse;
+import com.djr.spelling.app.child.model.GetQuizResponse;
 import com.djr.spelling.app.child.service.ChildServiceBean;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.services.auth.AuthService;
@@ -35,7 +36,7 @@ public class ChildApi extends BaseApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("login/{trackingId}")
-	public Response login(@PathParam("trackingId") String trackingId, ChildLoginRequest request) {
+	public Response login(@HeaderParam("trackingId") String trackingId, ChildLoginRequest request) {
 		log.info("login() trackingId:{}, request:{}", trackingId, request);
 		Response response = null;
 		ChildLoginResponse resp;
@@ -50,12 +51,44 @@ public class ChildApi extends BaseApi {
 				resp = new ChildLoginResponse("Couldn't match the username and password", "Try again?");
 				response = Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
 			} catch (Exception ex) {
-
+				resp = new ChildLoginResponse("Had a problem handling your request.", "Try again?");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
 		} else {
-			resp = new ChildLoginResponse("Something wasn't right with the request", "Oops!");
+			resp = new ChildLoginResponse("Something wasn't right with the request.", "Oops!");
 			resp.forwardTo = Constants.CHILD_HOME;
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+		}
+		return response;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("getQuiz/{timeType}/{locationType}/{childId}")
+	public Response getQuiz(@HeaderParam("trackingId") String trackingId, @HeaderParam("auth-token") String authToken,
+	                        @PathParam("timeType") String timeType, @PathParam("locationType") String locationType,
+	                        @PathParam("childId") Integer childId) {
+		log.info("getQuiz() trackingId{}, timeType:{}, locationType:{}, childId:{}", trackingId, timeType, locationType,
+				childId);
+		Response response = null;
+		GetQuizResponse resp;
+		if (authService.validateTrackingId(trackingId, authToken, false)) {
+			try {
+				resp = new GetQuizResponse(Constants.TAKE_QUIZ);
+				resp.authToken = authService.getAuthToken(trackingId);
+				resp.quizWordWrapper = childServiceBean.getQuiz(timeType, locationType, childId, trackingId);
+				response = Response.status(Response.Status.OK).entity(resp).build();
+			} catch (SpellingException spEx) {
+				resp = new GetQuizResponse("Had a problem generating your quiz.", "Try again?");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			} catch (Exception ex) {
+				resp = new GetQuizResponse("Had a problem handling your request.", "Try again?");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			}
+		} else {
+			resp = new GetQuizResponse("Something wasn't right with the request", "Oops!");
+			response = Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
 		}
 		return response;
 	}

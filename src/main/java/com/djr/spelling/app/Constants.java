@@ -26,5 +26,6 @@ public final class Constants {
 	public static final String CHILD_HOME = "childHomeLanding";
 	public static final String CHILD_LOGIN="childLoginLanding";
 	public static final String CHILD_QUIZ_LANDING="childQuizLanding";
+	public static final String TAKE_QUIZ = "takeQuizLanding";
 
 }

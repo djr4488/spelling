@@ -2,6 +2,7 @@ package com.djr.spelling.app.child.service;
 
 
 import com.djr.spelling.ChildUser;
+import com.djr.spelling.app.child.model.QuizWordWrapper;
 import com.djr.spelling.app.exceptions.SpellingException;
 import org.slf4j.Logger;
 import javax.inject.Inject;
@@ -30,6 +31,17 @@ public class ChildServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("findChildUser() no results found");
 			throw new SpellingException("No child found");
+		}
+	}
+
+	public QuizWordWrapper getQuiz(String timeType, String locationType, Integer childId, String trackingId)
+	throws SpellingException {
+		QuizWordWrapper quizWordWrapper = null;
+		try {
+			return quizWordWrapper;
+		} catch (NoResultException nrEx) {
+			log.debug("getQuiz() no results found");
+			throw new SpellingException("Something went wrong generating quiz");
 		}
 	}
 }
