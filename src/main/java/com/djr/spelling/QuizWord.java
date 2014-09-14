@@ -20,4 +20,11 @@ public class QuizWord extends Identifiable implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="word_location_id")
 	public WordLocation wordLocation;
+
+	public QuizWord() {}
+
+	public QuizWord(Quiz quiz, WordLocation wordLocation) {
+		this.quiz = quiz;
+		this.wordLocation = wordLocation;
+	}
 }

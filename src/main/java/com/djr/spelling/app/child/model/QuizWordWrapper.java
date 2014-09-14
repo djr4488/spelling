@@ -16,11 +16,14 @@ public class QuizWordWrapper implements Serializable {
 	private static final long serialVersionUID = 1;
 
 	@XmlElement
-	public List<QuizWord> quizWords;
+	public List<QuizWordModel> quizWords;
+	@XmlElement
+	public Integer quizId;
 
 	public QuizWordWrapper() {}
 
-	public QuizWordWrapper(List<QuizWord> quizWords) {
+	public QuizWordWrapper(List<QuizWordModel> quizWords, Integer quizId) {
 		this.quizWords = quizWords;
+		this.quizId = quizId;
 	}
 }

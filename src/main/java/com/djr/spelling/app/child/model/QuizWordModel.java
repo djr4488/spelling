@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Created by IMac on 9/13/2014.
  */
-public class QuizWord implements Serializable {
+public class QuizWordModel implements Serializable {
 	private static final long serialVersionUID = 1;
 
 	@XmlElement
@@ -16,9 +16,9 @@ public class QuizWord implements Serializable {
 	@XmlElement
 	public String sentence;
 
-	public QuizWord() {}
+	public QuizWordModel() {}
 
-	public QuizWord(Integer id, String word, String sentence) {
+	public QuizWordModel(Integer id, String word, String sentence) {
 		this.id = id;
 		this.word = word;
 		this.sentence = sentence;

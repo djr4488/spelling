@@ -65,11 +65,11 @@ public class ChildApi extends BaseApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("getQuiz/{timeType}/{locationType}/{childId}")
-	public Response getQuiz(@HeaderParam("trackingId") String trackingId, @HeaderParam("auth-token") String authToken,
+	@Path("createQuiz/{timeType}/{locationType}/{childId}")
+	public Response createQuiz(@HeaderParam("trackingId") String trackingId, @HeaderParam("auth-token") String authToken,
 	                        @PathParam("timeType") String timeType, @PathParam("locationType") String locationType,
 	                        @PathParam("childId") Integer childId) {
-		log.info("getQuiz() trackingId{}, timeType:{}, locationType:{}, childId:{}", trackingId, timeType, locationType,
+		log.info("createQuiz() trackingId{}, timeType:{}, locationType:{}, childId:{}", trackingId, timeType, locationType,
 				childId);
 		Response response = null;
 		GetQuizResponse resp;
@@ -77,7 +77,7 @@ public class ChildApi extends BaseApi {
 			try {
 				resp = new GetQuizResponse(Constants.TAKE_QUIZ);
 				resp.authToken = authService.getAuthToken(trackingId);
-				resp.quizWordWrapper = childServiceBean.getQuiz(timeType, locationType, childId, trackingId);
+				resp.quizWordWrapper = childServiceBean.createQuiz(timeType, locationType, childId, trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
 			} catch (SpellingException spEx) {
 				resp = new GetQuizResponse("Had a problem generating your quiz.", "Try again?");
