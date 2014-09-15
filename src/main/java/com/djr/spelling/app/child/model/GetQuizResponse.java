@@ -17,8 +17,6 @@ public class GetQuizResponse extends BaseResponse implements Serializable {
 
 	@XmlElement
 	public QuizWordWrapper quizWordWrapper;
-	@XmlElement
-	public Integer quizId;
 
 	public GetQuizResponse() {
 		super();

@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Table(name = "sentences")
 @NamedQueries({
 	@NamedQuery(name="findSentence",
-		query="select sentence from Sentence sentence where sentence.sentence = :sentence and sentence.word = :word")
+		query="select sentence from Sentence sentence where sentence.sentence = :sentence and sentence.word = :word"),
+	@NamedQuery(name="findQuizSentence",
+		query="select sentence from Sentence sentence where sentence.word = :word")
 })
 public class Sentence extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;

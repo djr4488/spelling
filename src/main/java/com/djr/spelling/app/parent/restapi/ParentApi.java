@@ -44,8 +44,8 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createParentUser/{trackingId}")
-	public Response createParentUser(@PathParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request) {
+	@Path("createParentUser")
+	public Response createParentUser(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request) {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
@@ -78,9 +78,10 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createChildUser/{trackingId}/{parentId}")
-	public Response createChildUser(ChildUserCreateRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
-	                                @PathParam("parentId") Integer parentId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("createChildUser/{parentId}")
+	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
+	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
+	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
 		ChildUserCreateResponse resp;
 		Response response;
@@ -115,8 +116,8 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("login/{trackingId}")
-	public Response login(@PathParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request) {
+	@Path("login")
+	public Response login(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request) {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
@@ -151,9 +152,10 @@ public class ParentApi extends BaseApi {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editParent/{trackingId}/{parentId}")
-	public Response editParent(EditParentRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
-	                           @PathParam(Constants.PARENT_ID) Integer userId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("editParent/{parentId}")
+	public Response editParent(EditParentRequest request, @PathParam(Constants.PARENT_ID) Integer userId,
+	                           @HeaderParam(Constants.TRACKING_ID) String trackingId,
+	                           @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
 		log.info("editParent() request:{}, trackingId:{}, userId:{}", request, trackingId, userId);
 		EditParentResponse resp;
 		Response response;
@@ -188,9 +190,10 @@ public class ParentApi extends BaseApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("findParentChildren/{trackingId}/{parentId}")
-	public Response findParentChildren(@PathParam(Constants.TRACKING_ID) String trackingId,
-	                                   @PathParam(Constants.PARENT_ID) Integer userId, @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("findParentChildren/{parentId}")
+	public Response findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
+	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
+	                                   @PathParam(Constants.PARENT_ID) Integer userId) {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
 		Response response;
@@ -222,10 +225,9 @@ public class ParentApi extends BaseApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("getChild/{trackingId}/{parentId}/{childId}")
-	public Response getChild(@PathParam(Constants.TRACKING_ID) String trackingId,
-	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
-	                         @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("getChild/{parentId}/{childId}")
+	public Response getChild(@HeaderParam(Constants.TRACKING_ID) String trackingId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
+	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId) {
 		log.info("getChild() trackingId:{}, parentId:{}, childId:{}", trackingId, parentId, childId);
 		EditChildResponse resp;
 		Response response;
@@ -256,10 +258,10 @@ public class ParentApi extends BaseApi {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("editChild/{trackingId}/{parentId}/{childId}")
-	public Response editChild(EditChildRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
-	                          @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
-	                          @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("editChild/{parentId}/{childId}")
+	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
+	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
+	                          @HeaderParam(Constants.TRACKING_ID) String trackingId) {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		Response response;
@@ -294,10 +296,10 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("addWord/{trackingId}/{parentId}/{childId}")
-	public Response addWord(AddWordRequest request, @PathParam(Constants.TRACKING_ID) String trackingId,
-							@PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId,
-							@HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	@Path("addWord/{parentId}/{childId}")
+	public Response addWord(AddWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
+	                        @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
+	                        @HeaderParam(Constants.TRACKING_ID) String trackingId) {
 		log.info("addWord() request:{}, trackingId:{}", request, trackingId);
 		AddWordResponse resp;
 		Response response;

@@ -1,14 +1,12 @@
 package com.djr.spelling.app.child.service;
 
 
-import com.djr.spelling.ChildUser;
-import com.djr.spelling.Quiz;
-import com.djr.spelling.QuizWord;
-import com.djr.spelling.WordLocation;
+import com.djr.spelling.*;
 import com.djr.spelling.app.child.model.QuizWordModel;
 import com.djr.spelling.app.child.model.QuizWordWrapper;
 import com.djr.spelling.app.exceptions.SpellingException;
 import org.slf4j.Logger;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +15,7 @@ import java.util.List;
 /**
  * Created by IMac on 9/1/2014.
  */
+@Stateless
 public class ChildServiceBean {
 	@Inject
 	private Logger log;
@@ -51,8 +50,9 @@ public class ChildServiceBean {
 			for (WordLocation wl : wordLocations) {
 				QuizWord qw = new QuizWord(quiz, wl);
 				em.persist(qw);
-				//todo: find sentence
-				String sentence = null;
+				TypedQuery<Sentence> sentenceQuery = em.createNamedQuery("findQuizSentence", Sentence.class);
+				sentenceQuery.setParameter("word", wl.word);
+				String sentence = sentenceQuery.setMaxResults(1).getSingleResult().sentence;
 				QuizWordModel qwm = new QuizWordModel(qw.id, wl.word.word, sentence);
 				qwmList.add(qwm);
 			}
