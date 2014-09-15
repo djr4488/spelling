@@ -35,7 +35,7 @@ public class ChildApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("login/{trackingId}")
+	@Path("login")
 	public Response login(@HeaderParam("trackingId") String trackingId, ChildLoginRequest request) {
 		log.info("login() trackingId:{}, request:{}", trackingId, request);
 		Response response = null;
