@@ -2,6 +2,7 @@ package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.User;
 import com.djr.spelling.app.BaseRequest;
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,8 +24,8 @@ public class ParentLoginRequest extends BaseRequest implements Serializable {
 	@NotNull
 	public String password;
 
-	public User getUserEntity() {
-		return new User(emailAddress, password);
+	public User getUserEntity(AuthService authService) {
+		return new User(emailAddress, authService.getPasswordHash(password));
 	}
 
 	@Override

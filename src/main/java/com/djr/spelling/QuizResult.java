@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by IMac on 9/10/2014.
  */
 @Entity
-@Table(name = "quizzes")
+@Table(name = "quiz_results")
 @NamedQueries({
 	@NamedQuery(name="findQuizzesByChild",
 		query="select quiz from QuizResult quiz where quiz.child = :child")

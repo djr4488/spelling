@@ -123,7 +123,7 @@ public class ParentApi extends BaseApi {
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
-				User parent = parentService.findParentAccount(request.getUserEntity(), trackingId);
+				User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
 				authService.addTrackingId(trackingId, parent.id);
 				resp = new ParentLoginResponse("parentLanding");
 				resp.authToken = authService.getAuthToken(trackingId);

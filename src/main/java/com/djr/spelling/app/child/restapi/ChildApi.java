@@ -42,7 +42,8 @@ public class ChildApi extends BaseApi {
 		ChildLoginResponse resp;
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			try {
-				ChildUser childUser = childServiceBean.findChildUser(request.username, request.password, trackingId);
+				ChildUser childUser = childServiceBean.findChildUser(request.username, authService.getPasswordHash(request.password),
+						trackingId);
 				resp = new ChildLoginResponse(Constants.CHILD_QUIZ_LANDING);
 				resp.authToken = authService.getAuthToken(trackingId);
 				resp.id = childUser.id;
