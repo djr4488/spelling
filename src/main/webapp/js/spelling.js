@@ -19,7 +19,7 @@ spellingApp.config(['$routeProvider',
     }
 ]);
 
-spellingApp.service('trackingIdService', function ($http) {
+spellingApp.service('trackingIdParentService', function ($http) {
     this.getTrackingId = function () {
         return $http.get('/api/parent/getTrackingId');
     };
