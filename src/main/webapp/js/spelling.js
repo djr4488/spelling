@@ -19,8 +19,8 @@ spellingApp.config(['$routeProvider',
     }
 ]);
 
-spellingApp.service('getTrackingId', function ($http) {
-    this.getGameOptions = function () {
+spellingApp.service('trackingIdService', function ($http) {
+    this.getTrackingId = function () {
         return $http.get('/api/parent/getTrackingId');
     };
 });
