@@ -3,7 +3,9 @@
  */
 var spellingApp = angular.module('spellingApp', [
     'ngRoute',
-    'trackingIdController'
+    'trackingIdParentService',
+    'trackingIdController',
+    'parentLoginController'
 ]);
 
 spellingApp.config(['$routeProvider',
@@ -19,16 +21,15 @@ spellingApp.config(['$routeProvider',
                 templateUrl: 'aboutMe.html'
             }).
             when('/parent', {
-                templateUrl: 'parentHome.html',
+                templateUrl: 'parent/home.html',
                 controller: 'TrackingIdCtrl'
-            }).otherwise({
+            }).
+            when('/parent-login', {
+                templateUrl: 'parent/login.html',
+                controller: 'ParentLoginCtrl'
+            }).
+            otherwise({
                 redirectTo: '/home'
             });
     }
 ]);
-
-spellingApp.service('trackingIdParentService', function ($http) {
-    this.getTrackingId = function () {
-        return $http.get('/api/parent/getTrackingId');
-    };
-});
