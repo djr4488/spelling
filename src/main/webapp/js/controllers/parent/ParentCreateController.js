@@ -25,10 +25,28 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
         }
         $scope.createParent = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
-            $http.put(url, req, config).success(
-
+            $http.post($scope.url, $scope.req, config).success(
+                function (data, status) {
+                    $scope.status = status;
+                    $scope.resp = data;
+                    if ($scope.resp.parentCreateResponse.errorMsg != null &&
+                        $scope.resp.parentCreateResponse.errorMsg.length > 0) {
+                        $scope.errorMsg = $scope.resp.parentCreateResponse.errorMsg;
+                        $scope.errorBold = $scope.resp.parentCreateResponse.errorBold;
+                    } else {
+                        if ($scope.resp.parentCreateResponse.forwardTo == 'loginLanding') {
+                            window.location.replace('#parent-login');
+                        }
+                    }
+                }
             ).error(
-
+                function (data, status) {
+                    console.log("Failed request");
+                    console.log(data);
+                    console.log(status);
+                    $scope.data = data || "Request failed.";
+                    $scope.status = status;
+                }
             )
         }
     }

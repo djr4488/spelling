@@ -1,0 +1,47 @@
+<div id="titlebox" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#home">Spelling Bees</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#login">Sign In</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="alert alert-warning" ng-show="errorMsg">
+    <strong>{{errorBold}} </strong>{{errorMsg}}
+</div>
+<div class="container">
+    <form class="form-create">
+        <h2 class="form-create-heading">Create an account</h2>
+        <input type="email" ng-model="req.parentCreateRequest.emailAddress" placeholder="Email address"
+               class="form-control"/>
+        <input type="text" ng-model="req.parentCreateRequest.username" placeholder="Alias" class="form-control"/>
+        <input id="password" type="password" ng-model="req.parentCreateRequest.password" placeholder="password"
+               class="form-control"/>
+        <input id="confirmPassword" type="password" ng-model="req.parentCreateRequest.confirmPassword"
+               placeholder="Confirm password" class="form-control"/><br/>
+        <button id="create" ng-click="createParent()" class="btn btn-lg btn-primary btn-block">Create Account</button>
+    </form>
+</div>
+<hr class="featurette-divider"/>
+<div class="container marketing">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Epiphany!</h2>
+
+            <p>I remember, I have a <a href="#parent-login">login!</a></p>
+        </div>
+        <div class="col-lg-6">
+            <h2>I sorta remember</h2>
+
+            <p>I have a login but I <a href="#forgotPassword">forgot my password!</a></p>
+        </div>
+    </div>
+</div>
