@@ -39,6 +39,8 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                     } else {
                         console.log("In redirect page");
                         console.log($scope.resp.parentLoginResponse.forwardTo);
+                        $rootScope.authToken = $scope.resp.parentLoginResponse.authToken;
+                        $rootScope.parentId = $scope.resp.parentLoginResponse.id;
                         if ($scope.resp.parentLoginResponse.forwardTo == 'parentLanding') {
                             window.location.replace('#parentLanding');
                         }
