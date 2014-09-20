@@ -12,9 +12,17 @@ spellingApp.config(['$routeProvider',
             when('/home', {
                 templateUrl: 'home.html'
             }).
-            when('/parentHome', {
+            when('/about', {
+                templateUrl: 'about.html'
+            }).
+            when('/about-me', {
+                templateUrl: 'aboutMe.html'
+            }).
+            when('/parent', {
                 templateUrl: 'parentHome.html',
                 controller: 'TrackingIdCtrl'
+            }).otherwise({
+                redirectTo: '/home'
             });
     }
 ]);

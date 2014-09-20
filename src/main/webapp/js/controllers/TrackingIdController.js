@@ -3,7 +3,7 @@
  */
 var trackingIdController = angular.module('trackingIdController', []);
 
-trackingIdController.controller('TrackingIdCtrl', function ($rootScope, $scope, trackingIdService, $filter) {
+trackingIdController.controller('TrackingIdCtrl', function ($rootScope, $scope, trackingIdParentService, $filter) {
     $scope.resp = {
         trackingIdResponse: {
             forwardTo: "",
@@ -14,7 +14,7 @@ trackingIdController.controller('TrackingIdCtrl', function ($rootScope, $scope, 
     }
     init();
     function init() {
-        trackingIdService.getTrackingId.then(
+        trackingIdParentService.getTrackingId().then(
             function(data) {
                 $scope.resp.trackingIdResponse = data.data.trackingIdResponse;
                 if ($scope.resp.trackingIdResponse.trackingId != null &&
