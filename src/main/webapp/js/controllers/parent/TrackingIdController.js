@@ -20,7 +20,6 @@ trackingIdController.controller('TrackingIdCtrl', function ($rootScope, $scope, 
                 if ($scope.resp.trackingIdResponse.trackingId != null &&
                     $scope.resp.trackingIdResponse.trackingId.length != 0) {
                     $rootScope.trackingId = $scope.resp.trackingIdResponse.trackingId;
-                    console.log("trackingId stored: " + $rootScope.trackingId);
                 }
             }
         );
