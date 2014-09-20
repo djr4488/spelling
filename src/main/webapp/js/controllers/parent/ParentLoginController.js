@@ -5,7 +5,6 @@ var parentLoginController = angular.module("parentLoginController", []);
 
 parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$http',
     function($rootScope, $scope, $http) {
-        $scope.method = 'POST';
         $scope.url = '/api/parent/login';
         $scope.req = {
             parentLoginRequest: {
@@ -22,7 +21,6 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                 id: ""
             }
         }
-        console.log("trackingId: " + $rootScope.trackingId);
         $scope.login = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
             $http.post($scope.url, $scope.req, config).success(
