@@ -6,7 +6,8 @@ var spellingApp = angular.module('spellingApp', [
     'trackingIdParentService',
     'trackingIdController',
     'parentLoginController',
-    'parentCreateController'
+    'parentCreateController',
+    'createChildController'
 ]);
 
 spellingApp.config(['$routeProvider',
@@ -32,6 +33,10 @@ spellingApp.config(['$routeProvider',
             when('/parent-create', {
                 templateUrl: 'parent/create.html',
                 controller: 'ParentCreateCtrl'
+            }).
+            when('/create-child', {
+                templateUrl: 'parent/createChild.html',
+                controller: 'CreateChildCtrl'
             }).
             otherwise({
                 redirectTo: '/home'
