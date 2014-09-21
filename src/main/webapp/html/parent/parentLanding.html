@@ -1,0 +1,46 @@
+<div id="titlebox" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#home">Spelling Bees</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="alert alert-warning" ng-show="errorMsg">
+    <strong>{{errorBold}} </strong>{{errorMsg}}
+</div>
+<div class="alert alert-success" ng-show="msg">
+    <strong>{{msgBold}} </strong>{{msg}}
+</div>
+<div class="container">
+    <div class="container">
+        <div class="jumbotron">
+            <h2>Spelling Bees - Parent Pages</h2>
+            <p>As a parent you have control over your children, you can create their accounts, change their passwords, and even check on their progress.</p>
+            <p>Children, can take quizzes for weekly words from school, national words at grade level, or just practice any word available in the database.</p>
+            <p>You can add words, sentences, and soon definitions to words.</p>
+            <p>Below you can pick what it is you want to do!</p>
+        </div>
+    </div>
+</div>
+<hr class="featurette-divider"/>
+<div class="container marketing">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Manage children</h2>
+            <p><a href="#create-child">Create</a> a child account</p>
+            <p><a href="edit-child">Edit</a> a child account</p>
+            <p><a href="#edit-word">Check </a>how your child is doing</p>
+        </div>
+        <div class="col-lg-6">
+            <h2>Manage words</h2>
+            <p><a href="#create-word">Create</a> a new word</p>
+            <p><a href="#edit-word">Edit </a> incorrectly spelled words</p>
+        </div>
+    </div>
+</div>

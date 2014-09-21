@@ -34,6 +34,9 @@ spellingApp.config(['$routeProvider',
                 templateUrl: 'parent/create.html',
                 controller: 'ParentCreateCtrl'
             }).
+            when('/parent-landing', {
+                templateUrl: 'parent/parentLanding.html'
+            }).
             when('/create-child', {
                 templateUrl: 'parent/createChild.html',
                 controller: 'CreateChildCtrl'

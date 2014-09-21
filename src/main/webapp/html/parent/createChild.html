@@ -18,7 +18,7 @@
 <div class="container">
     <form class="form-create">
         <h2 class="form-create-heading">Create an account</h2>
-        <input type="email" ng-model="req.childUserCreateRequest.username" placeholder="User name"
+        <input type="text" ng-model="req.childUserCreateRequest.username" placeholder="User name"
                class="form-control"/>
         <input id="password" type="password" ng-model="req.childUserCreateRequest.password" placeholder="password"
                class="form-control"/>
@@ -28,10 +28,13 @@
         <input type="text" ng-model="req.childUserCreateRequest.cityName" placeholder="City" class="form-control"/>
         <input type="text" ng-model="req.childUserCreateRequest.schoolName" placeholder="School" class="form-control"/>
         <input type="text" ng-model="req.childUserCreateRequest.gradeName" placeholder="Grade" class="form-control"/>
-        <input type="checkbox" ng-model="req.childUserCreateRequest.isPrivate" placeholder="Is this a private school?"
-               class="form-control"/>
-        <input type="checkbox" ng-model="req.childUserCreateRequest.isHome" placeholder="Is this home school?"
-               class="form-control"/><br/>
+        <div class="checkbox-inline">
+            <label><input type="checkbox" ng-model="req.childUserCreateRequest.isPrivate" class="form-control">Is this a private school?</label>
+        </div>
+        <div class="checkbox-inline">
+            <label><input type="checkbox" ng-model="req.childUserCreateRequest.isHome" class="form-control">Is this a home school?</label>
+        </div>
+        <p>If neither of the above two boxes are checked, this is considered a public school.</p>
         <button id="create" ng-click="createChild()" class="btn btn-lg btn-primary btn-block">Create Child</button>
     </form>
 </div>

@@ -40,7 +40,7 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                         $rootScope.authToken = $scope.resp.parentLoginResponse.authToken;
                         $rootScope.parentId = $scope.resp.parentLoginResponse.id;
                         if ($scope.resp.parentLoginResponse.forwardTo == 'parentLanding') {
-                            window.location.replace('#parentLanding');
+                            window.location.replace('#parent-landing');
                         }
                     }
                 }
