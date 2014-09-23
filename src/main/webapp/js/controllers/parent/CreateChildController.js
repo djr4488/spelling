@@ -5,14 +5,14 @@ var createChildController = angular.module("createChildController", []);
 
 createChildController.controller('CreateChildCtrl', ['$rootScope', '$scope', '$http',
     function($rootScope, $scope, $http) {
-        $scope.url = '/api/parent/createChildUser' + $rootScope.parentId;
+        $scope.url = '/api/parent/createChildUser/' + $rootScope.parentId;
         $scope.req = {
             childUserCreateRequest: {
                 username: "",
                 password: "",
                 confirmPassword: "",
-                stateName: "",
-                cityName: "",
+                state: "",
+                city: "",
                 schoolName: "",
                 gradeName: "",
                 isPrivate: false,
@@ -39,6 +39,7 @@ createChildController.controller('CreateChildCtrl', ['$rootScope', '$scope', '$h
                         $scope.errorMsg = $scope.resp.childUserCreateResponse.errorMsg;
                         $scope.errorBold = $scope.resp.childUserCreateResponse.errorBold;
                     } else {
+                        $rootScope.authToken = $scope.resp.authToken;
                         if ($scope.resp.childUserCreateResponse.forwardTo == 'createChildLanding') {
                             window.location.replace('#create-child');
                         }

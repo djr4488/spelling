@@ -82,7 +82,7 @@ public class ParentApi extends BaseApi {
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
-		log.info("createChildUser() request:{}, trackingId:{}", request, trackingId);
+		log.info("createChildUser() request:{}, trackingId:{}, parentId:{}", request, trackingId, parentId);
 		ChildUserCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
