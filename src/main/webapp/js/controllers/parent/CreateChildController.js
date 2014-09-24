@@ -39,7 +39,7 @@ createChildController.controller('CreateChildCtrl', ['$rootScope', '$scope', '$h
                         $scope.errorMsg = $scope.resp.childUserCreateResponse.errorMsg;
                         $scope.errorBold = $scope.resp.childUserCreateResponse.errorBold;
                     } else {
-                        $rootScope.authToken = $scope.resp.authToken;
+                        $rootScope.authToken = $scope.resp.childUserCreateResponse.authToken;
                         if ($scope.resp.childUserCreateResponse.forwardTo == 'createChildLanding') {
                             window.location.replace('#create-child');
                         }
