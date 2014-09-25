@@ -329,7 +329,7 @@ public class ParentApi extends BaseApi {
 				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 			}
 		} else {
-			resp = new AddWordResponse("Something was'nt quite right with the request, can you try again?", "Doh!");
+			resp = new AddWordResponse("Something wasn't quite right with the request, can you try again?", "Doh!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
 		}
 		return response;
