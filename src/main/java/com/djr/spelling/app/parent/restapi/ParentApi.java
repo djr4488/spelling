@@ -193,16 +193,17 @@ public class ParentApi extends BaseApi {
 	@Path("findParentChildren/{parentId}")
 	public Response findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                                   @PathParam(Constants.PARENT_ID) Integer userId) {
+	                                   @PathParam(Constants.PARENT_ID) String userId) {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
 		Response response;
+		Integer uid = Integer.parseInt(userId);
 		if (authService.validateTrackingId(trackingId, authToken, false)) {
 			try {
-				User parent = parentService.findParentAccount(userId, trackingId);
+				User parent = parentService.findParentAccount(uid, trackingId);
 				List<ChildUser> children = parentService.findParentChildren(parent, trackingId);
 				resp = new FindChildrenResponse();
-				resp.setParentChildren(children);
+				resp.parentChildren = new ParentChildren(children);
 				resp.forwardTo = Constants.FIND_PARENT_CHILDREN;
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();
