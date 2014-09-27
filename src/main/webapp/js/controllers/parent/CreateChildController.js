@@ -5,7 +5,7 @@ var createChildController = angular.module("createChildController", []);
 
 createChildController.controller('CreateChildCtrl', ['$rootScope', '$scope', '$http',
     function($rootScope, $scope, $http) {
-        $scope.url = '/api/parent/createChildUser/' + $rootScope.parentId;
+        $scope.url = '/api/parent/'+$rootScope.parentId+'/createChildUser';
         $scope.req = {
             childUserCreateRequest: {
                 username: "",
