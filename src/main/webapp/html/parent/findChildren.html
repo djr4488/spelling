@@ -17,3 +17,8 @@
 <div class="alert alert-success" ng-show="msg">
     <strong>{{msgBold}} </strong>{{msg}}
 </div>
+<div class="container">
+    <div ng-repeat="child in children" class="panel panel-default">
+        <div class="panel-heading"><strong>{{child.username}}</strong></div>
+    </div>
+</div>
