@@ -18,7 +18,17 @@
     <strong>{{msgBold}} </strong>{{msg}}
 </div>
 <div class="container">
-    <div ng-repeat="child in children" class="panel panel-default">
-        <div class="panel-heading"><strong>{{child.username}}</strong></div>
-    </div>
+    <accordion close-others="oneAtATime">
+        <accordion-group heading="{{child.username}}" ng-repeat="child in children">
+            <div class="navbar navbar">
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#{{child.id}}">Edit</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
 </div>
+

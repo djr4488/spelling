@@ -3,6 +3,7 @@
  */
 var spellingApp = angular.module('spellingApp', [
     'ngRoute',
+    'ui.bootstrap',
     'trackingIdParentService',
     'trackingIdController',
     'parentLoginController',
