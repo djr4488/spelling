@@ -2,6 +2,7 @@ package com.djr.spelling;
 
 import com.djr.spelling.app.services.auth.AuthService;
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by danny.rucker on 9/2/14.
@@ -32,6 +33,9 @@ public class ChildUser extends Identifiable {
 	@ManyToOne
 	@JoinColumn(name = "grade_id")
 	public Grade grade;
+	@Column(name="last_login")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date lastLogin;
 
 	public ChildUser() {
 

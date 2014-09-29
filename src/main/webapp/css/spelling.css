@@ -126,6 +126,11 @@ body {
     margin-left: 10px;
 }
 
+.displayfield .col-lg-6 p {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .stats .col-lg-8 {
     margin-bottom: 10px;
     text-align: center;
