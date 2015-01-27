@@ -256,10 +256,10 @@ public class ParentApi extends BaseApi {
 		return response;
 	}
 
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/child/{childId}")
+	@Path("{parentId}/editChild/{childId}")
 	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                          @HeaderParam(Constants.TRACKING_ID) String trackingId) {
@@ -274,7 +274,7 @@ public class ParentApi extends BaseApi {
 			}
 			try {
 				ChildUser originalUser = parentService.findParentChild(childId, trackingId);
-				parentService.editChildPassword(originalUser, request.getUserEntity(), trackingId);
+				parentService.editChildPassword(originalUser, authService.getPasswordHash(request.password), trackingId);
 				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
 				resp.authToken = authService.getAuthToken(trackingId);
 				response = Response.status(Response.Status.OK).entity(resp).build();

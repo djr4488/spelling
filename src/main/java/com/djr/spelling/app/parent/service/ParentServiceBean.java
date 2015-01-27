@@ -119,9 +119,9 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void editChildPassword(ChildUser original, ChildUser edited, String trackingId) {
-		log.debug("findParentChildren() original:{}, edited:{}, trackingId:{}", original, edited, trackingId);
-		original.password = edited.password;
+	public void editChildPassword(ChildUser original, String password, String trackingId) {
+		log.debug("findParentChildren() original:{}, password:{}, trackingId:{}", original, password, trackingId);
+		original.password = password;
 		if (!em.contains(original)) {
 			em.merge(original);
 		}

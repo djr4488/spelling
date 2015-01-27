@@ -22,14 +22,14 @@
         <accordion-group heading="{{child.username}}" ng-repeat="child in children">
             <form class="form-signin">
                 <h2 class="form-signin-heading">Provide the original and new passwords below</h2>
-                <input type="hidden" ng-model="req.editChildRequest.childId" value="{{child.id}}" class="form-control"/>
+                <input type="hidden" ng-model="req.editChildRequest.childId" ng-value="{{child.id}}" value="{{child.id}}" class="form-control"/>
                 <input type="password" ng-model="req.editChildRequest.originalPassword" placeholder="Original password"
                        class="form-control"/>
                 <input type="password" ng-model="req.editChildRequest.password" placeholder="New password"
                        class="form-control"/>
                 <input type="password" ng-model="req.editChildRequest.confirmPassword" placeholder="Confirm password"
                        class="form-control"/>
-                <button id="editChildPassword" ng-click="editChildPassword()" class="btn btn-lg btn-primary btn-block">Change Password</button>
+                <button id="editChildPassword" ng-click="editChild(child.id)" class="btn btn-lg btn-primary btn-block">Change Password</button>
             </form>
         </accordion-group>
     </accordion>

@@ -10,7 +10,8 @@ var spellingApp = angular.module('spellingApp', [
     'parentCreateController',
     'createChildController',
     'findParentChildrenService',
-    'findParentChildrenController'
+    'findParentChildrenController',
+    'editChildController'
 ]);
 
 spellingApp.config(['$routeProvider',
@@ -46,7 +47,7 @@ spellingApp.config(['$routeProvider',
             }).
             when('/find-children', {
                 templateUrl: 'parent/findChildren.html',
-                controller: 'FindParentChildrenCtrl'
+                controller: 'EditChildCtrl'
             }).
             otherwise({
                 redirectTo: '/home'
