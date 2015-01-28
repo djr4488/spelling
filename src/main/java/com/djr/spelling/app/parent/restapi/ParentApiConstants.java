@@ -10,4 +10,7 @@ public class ParentApiConstants {
 	public static final String EMAIL_EXISTS = "Email exists";
 	public static final String GENERAL_CREATE = "General create";
 	public static final String CREATE_INVALID_TRACKING = "Create invalid tracking";
+	public static final String CHILD_NOT_CONFIRMED = "Child not confirmed";
+	public static final String CHILD_EXISTS = "Child exists";
+	public static final String CHILD_CREATE_GENERAL_FAIL = "Child create general fail";
 }

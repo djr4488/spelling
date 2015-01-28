@@ -75,25 +75,12 @@ public class ParentApi extends BaseApi {
 		ChildUserCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
-				resp = new ChildUserCreateResponse("Passwords not the same.", "It seems ");
-				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
-				return response;
-			}
-			try {
-				parentService.createChildAccount(request.getChildUserEntity(spellingService,
-						parentService.findParentAccount(parentId, trackingId), authService), trackingId);
-				resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
-				resp.authToken = authService.getAuthToken(trackingId);
-				response = Response.status(Response.Status.CREATED).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new ChildUserCreateResponse("Apparently the child user name already exists.", "Oops!");
-				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("createChildUser() ", ex);
-				resp = new ChildUserCreateResponse("We seemed to have an issue creating the child's account.  Try again?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
+			parentService.confirmPasswords(request.password, request.confirmPassword);
+			parentService.createChildAccount(request.getChildUserEntity(spellingService,
+					parentService.findParentAccount(parentId, trackingId), authService), trackingId);
+			resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
+			resp.authToken = authService.getAuthToken(trackingId);
+			response = Response.status(Response.Status.CREATED).entity(resp).build();
 		} else {
 			resp = new ChildUserCreateResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();

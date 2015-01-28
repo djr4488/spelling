@@ -53,15 +53,18 @@ public class ParentServiceBean {
 	}
 
 	public void createChildAccount(ChildUser user, String trackingId)
-	throws SpellingException {
+	throws ParentAuthException {
 		log.debug("createChildAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
 			query.setParameter("username", user.username);
 			query.getSingleResult();
-			throw new SpellingException("Account already exists");
+			throw new ParentAuthException(ParentApiConstants.CHILD_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
+		} catch (Exception ex) {
+			log.debug("createChildAccount() exception occurred", ex);
+			throw new ParentAuthException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
 		}
 		log.debug("createChildAccount() persisting childUser:{}", user);
 		em.persist(user);
