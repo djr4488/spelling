@@ -51,6 +51,9 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                     console.log(status);
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
+                    $scope.resp = data;
+                    $scope.errorMsg = $scope.resp.parentLoginResponse.errorMsg;
+                    $scope.errorBold = $scope.resp.parentLoginResponse.errorBold;
                 }
             )
         };

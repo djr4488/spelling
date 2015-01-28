@@ -117,26 +117,18 @@ public class ParentApi extends BaseApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("login")
-	public Response login(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request) {
+	public Response login(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentLoginRequest request)
+	throws Exception {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
-			try {
-				User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
-				authService.addTrackingId(trackingId, parent.id);
-				resp = new ParentLoginResponse("parentLanding");
-				resp.authToken = authService.getAuthToken(trackingId);
-				resp.id = parent.id;
-				response = Response.status(Response.Status.CREATED).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new ParentLoginResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!");
-				response = Response.status(Response.Status.UNAUTHORIZED).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("login() ", ex);
-				resp = new ParentLoginResponse("We seem to have a problem figuring out how to login today.  Try again?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
+			User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
+			authService.addTrackingId(trackingId, parent.id);
+			resp = new ParentLoginResponse("parentLanding");
+			resp.authToken = authService.getAuthToken(trackingId);
+			resp.id = parent.id;
+			response = Response.status(Response.Status.CREATED).entity(resp).build();
 		} else if (request == null) {
 			resp = new ParentLoginResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();

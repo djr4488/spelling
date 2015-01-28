@@ -7,6 +7,7 @@ import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.SpellingException;
+import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import javax.ejb.Stateless;
@@ -63,7 +64,7 @@ public class ParentServiceBean {
 	}
 
 	public User findParentAccount(User user, String trackingId)
-	throws SpellingException {
+	throws ParentAuthException {
 		log.debug("findParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class);
@@ -72,7 +73,10 @@ public class ParentServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
-			throw new SpellingException("No user account found or incorrect username / password");
+			throw new ParentAuthException("PARENT,LOGIN,NOT FOUND");
+		} catch (Exception ex) {
+			log.debug("findParentAccount() general exception occurred", ex);
+			throw new ParentAuthException("PARENT,LOGIN,GENERAL");
 		}
 	}
 
