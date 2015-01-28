@@ -1,6 +1,7 @@
-package com.djr.spelling.app.parent.restapi;
+package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
+import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import com.djr.spelling.app.parent.restapi.model.ChildUserCreateResponse;
 import com.djr.spelling.app.parent.restapi.model.ParentCreateResponse;
 import com.djr.spelling.app.parent.restapi.model.ParentLoginResponse;
