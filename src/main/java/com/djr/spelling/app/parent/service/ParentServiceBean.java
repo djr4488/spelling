@@ -8,6 +8,7 @@ import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
+import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import javax.ejb.Stateless;
@@ -35,15 +36,18 @@ public class ParentServiceBean {
 	private DoubleMetaphone doubleMetaphone;
 
 	public void createParentAccount(User user, String trackingId)
-	throws SpellingException {
+	throws ParentAuthException {
 		log.debug("createParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
 			query.setParameter("emailAddress", user.emailAddress);
 			query.getSingleResult();
-			throw new SpellingException("Account already exists");
+			throw new ParentAuthException(ParentApiConstants.EMAIL_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
+		} catch (Exception ex) {
+			log.debug("createParentAccount() exception occurred", ex);
+			throw new ParentAuthException(ParentApiConstants.GENERAL_CREATE);
 		}
 		em.persist(user);
 	}
@@ -73,10 +77,10 @@ public class ParentServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
-			throw new ParentAuthException("PARENT,LOGIN,NOT FOUND");
+			throw new ParentAuthException(ParentApiConstants.USER_NOT_FOUND);
 		} catch (Exception ex) {
 			log.debug("findParentAccount() general exception occurred", ex);
-			throw new ParentAuthException("PARENT,LOGIN,GENERAL");
+			throw new ParentAuthException(ParentApiConstants.GENERAL_AUTH);
 		}
 	}
 
@@ -275,7 +279,11 @@ public class ParentServiceBean {
 		}
 	}
 
-	public boolean confirmPasswords(String password, String confirmPassword) {
-		return password.equals(confirmPassword);
+	public boolean confirmPasswords(String password, String confirmPassword)
+	throws Exception {
+		if (!password.equals(confirmPassword)) {
+			throw new ParentAuthException(ParentApiConstants.NOT_CONFIRMED);
+		}
+		return true;
 	}
 }

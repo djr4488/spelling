@@ -10,6 +10,7 @@ import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
+import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
@@ -45,31 +46,18 @@ public class ParentApi extends BaseApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createParent")
-	public Response createParentUser(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request) {
+	public Response createParentUser(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request)
+	throws Exception {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
-			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
-				resp = new ParentCreateResponse("Passwords not the same.", "It seems ");
-				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
-				return response;
-			}
-			try {
-				parentService.createParentAccount(request.getUserEntity(authService), trackingId);
-				resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
-				response = Response.status(Response.Status.CREATED).entity(resp).build();
-			} catch (SpellingException spellingEx) {
-				resp = new ParentCreateResponse("It appears the email address already exists.", "Oops!");
-				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("createParentUser() ", ex);
-				resp = new ParentCreateResponse("We seemed to have an issue creating your account.  Try again?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
+			parentService.confirmPasswords(request.password, request.confirmPassword);
+			parentService.createParentAccount(request.getUserEntity(authService), trackingId);
+			resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
+			response = Response.status(Response.Status.CREATED).entity(resp).build();
 		} else {
-			resp = new ParentCreateResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
+			throw new ParentAuthException(ParentApiConstants.CREATE_INVALID_TRACKING);
 		}
 		log.info("createUser() completed. trackingId:{}", trackingId);
 		return response;
@@ -81,7 +69,8 @@ public class ParentApi extends BaseApi {
 	@Path("{parentId}/createChild")
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
-	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken)
+	throws Exception {
 		log.info("createChildUser() request:{}, trackingId:{}, parentId:{}", request, trackingId, parentId);
 		ChildUserCreateResponse resp;
 		Response response;
@@ -147,7 +136,8 @@ public class ParentApi extends BaseApi {
 	@Path("{parentId}/edit}")
 	public Response editParent(EditParentRequest request, @PathParam(Constants.PARENT_ID) Integer userId,
 	                           @HeaderParam(Constants.TRACKING_ID) String trackingId,
-	                           @HeaderParam(Constants.AUTH_TOKEN) String authToken) {
+	                           @HeaderParam(Constants.AUTH_TOKEN) String authToken)
+	throws Exception {
 		log.info("editParent() request:{}, trackingId:{}, userId:{}", request, trackingId, userId);
 		EditParentResponse resp;
 		Response response;
@@ -254,7 +244,8 @@ public class ParentApi extends BaseApi {
 	@Path("{parentId}/editChild/{childId}")
 	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                          @HeaderParam(Constants.TRACKING_ID) String trackingId) {
+	                          @HeaderParam(Constants.TRACKING_ID) String trackingId)
+	throws Exception {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		Response response;
