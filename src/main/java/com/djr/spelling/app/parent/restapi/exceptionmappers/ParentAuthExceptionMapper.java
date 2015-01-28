@@ -14,6 +14,9 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthException> {
+	private static final Logger log = LoggerFactory.getLogger(ParentAuthExceptionMapper.class);
+	@Context
+	private HttpServletRequest request;
 	@Override
 	public Response toResponse(ParentAuthException e) {
 		switch(e.getMessage()) {
