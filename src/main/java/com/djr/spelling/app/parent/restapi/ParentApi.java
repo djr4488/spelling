@@ -11,6 +11,7 @@ import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
+import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
@@ -75,7 +76,11 @@ public class ParentApi extends BaseApi {
 		ChildUserCreateResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			parentService.confirmPasswords(request.password, request.confirmPassword);
+			try {
+				parentService.confirmPasswords(request.password, request.confirmPassword);
+			} catch (ParentAuthException paEx) {
+				throw new ParentManageChildrenException(ParentApiConstants.CHILD_NOT_CONFIRMED);
+			}
 			parentService.createChildAccount(request.getChildUserEntity(spellingService,
 					parentService.findParentAccount(parentId, trackingId), authService), trackingId);
 			resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);

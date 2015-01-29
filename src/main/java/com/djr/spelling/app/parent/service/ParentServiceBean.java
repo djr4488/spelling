@@ -8,6 +8,7 @@ import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
+import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class ParentServiceBean {
 	}
 
 	public void createChildAccount(ChildUser user, String trackingId)
-	throws ParentAuthException {
+	throws ParentManageChildrenException {
 		log.debug("createChildAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
@@ -64,7 +65,7 @@ public class ParentServiceBean {
 			log.debug("createChildAccount() no results found, so continuing");
 		} catch (Exception ex) {
 			log.debug("createChildAccount() exception occurred", ex);
-			throw new ParentAuthException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
+			throw new ParentManageChildrenException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
 		}
 		log.debug("createChildAccount() persisting childUser:{}", user);
 		em.persist(user);
