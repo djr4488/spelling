@@ -2,9 +2,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
-import com.djr.spelling.app.parent.restapi.model.ChildUserCreateResponse;
-import com.djr.spelling.app.parent.restapi.model.ParentCreateResponse;
-import com.djr.spelling.app.parent.restapi.model.ParentLoginResponse;
+import com.djr.spelling.app.parent.restapi.model.ParentErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +21,7 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 	private HttpServletRequest request;
 	@Override
 	public Response toResponse(ParentAuthException e) {
-		log.error("toResponse() ", e);
+		log.error("toResponse() request:{}, exception:{}", request, e);
 		switch(e.getMessage()) {
 			case ParentApiConstants.USER_NOT_FOUND: {
 				return handleParentAuthException();
@@ -43,6 +41,12 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 			case ParentApiConstants.CREATE_INVALID_TRACKING: {
 				return handleCreateInvalidTracking();
 			}
+			case ParentApiConstants.FIND_PARENT_BY_ID: {
+				return handleFindParentById();
+			}
+			case ParentApiConstants.FIND_PARENT_BY_ID_GENERAL_FAILURE: {
+				return handleFindParentByIdGeneralFailure();
+			}
 			default: {
 				return Response.serverError().build();
 			}
@@ -50,35 +54,45 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 	}
 
 	public Response handleParentAuthException() {
-		return getParentLoginResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!", Response.Status.UNAUTHORIZED);
+		return getParentErrorResponse("Well, wouldn't you know it, can't seem to log you in.", "Oops!",
+				Response.Status.UNAUTHORIZED);
 	}
 
 	public Response handleParentAuthGeneralException() {
-		return getParentLoginResponse("seems we cannot log anybody in right now.  Try again?", "Doh! It is bad when it ", Response.Status.INTERNAL_SERVER_ERROR);
+		return getParentErrorResponse("seems we cannot log anybody in right now.  Try again?",
+				"Doh! It is bad when it ", Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
 	public Response handleNotConfirmedPassword() {
-		return getParentCreateResponse("Passwords not the some.", "It seems ", Response.Status.NOT_ACCEPTABLE);
+		return getParentErrorResponse("Passwords not the some.", "It seems ", Response.Status.NOT_ACCEPTABLE);
 	}
 
 	public Response handleEmailExists() {
-		return getParentCreateResponse("It appears the email address already exists.", "Oops!", Response.Status.CONFLICT);
+		return getParentErrorResponse("It appears the email address already exists.", "Oops!", Response.Status.CONFLICT);
 	}
 
 	public Response handleGeneralCreate() {
-		return getParentCreateResponse("We seemed to have an issue creating your account.  Try again?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+		return getParentErrorResponse("We seemed to have an issue creating your account.  Try again?", "Doh!",
+				Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
 	public Response handleCreateInvalidTracking() {
-		return getParentCreateResponse("Something wasn't quite right with the request, can you try again?", "Oops!", Response.Status.BAD_REQUEST);
+		return getParentErrorResponse("Something wasn't quite right with the request, can you try again?", "Oops!",
+				Response.Status.BAD_REQUEST);
 	}
 
-	public Response getParentLoginResponse(String msg, String bold, Response.Status status) {
-		return getResponse(status, new ParentLoginResponse(msg, bold));
+	public Response handleFindParentById() {
+		return getParentErrorResponse("It appears there was a problem changing your password.  Try again later?", "Oops!",
+				Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
-	public Response getParentCreateResponse(String msg, String bold, Response.Status status) {
-		return getResponse(status, new ParentCreateResponse(msg, bold));
+	public Response handleFindParentByIdGeneralFailure() {
+		return getParentErrorResponse("It appears there was a problem changing your password.  Try again later?", "Doh!",
+				Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response getParentErrorResponse(String msg, String bold, Response.Status status) {
+		return getResponse(status, new ParentErrorResponse(msg, bold));
 	}
 
 	public Response getResponse(Response.Status status, Object entity) {

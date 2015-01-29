@@ -23,6 +23,15 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
                 id: ""
             }
         }
+        $scope.errorResp = {
+            parentErrorResponse: {
+                errorMsg: "",
+                errorBold: "",
+                forwardTo: "",
+                authToken: "",
+                id: ""
+            }
+        }
         $scope.createParent = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
             $http.post($scope.url, $scope.req, config).success(
@@ -46,6 +55,8 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
                     console.log(status);
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
+                    $scope.errorMsg = $scope.resp.parentErrorResponse.errorMsg;
+                    $scope.errorBold = $scope.resp.parentErrorResponse.errorBold;
                 }
             )
         }

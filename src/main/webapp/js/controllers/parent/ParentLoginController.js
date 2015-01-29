@@ -21,6 +21,15 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                 id: ""
             }
         }
+        $scope.errorResp = {
+            parentErrorResponse: {
+                errorMsg: "",
+                errorBold: "",
+                forwardTo: "",
+                authToken: "",
+                id: ""
+            }
+        }
         $scope.login = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
             $http.post($scope.url, $scope.req, config).success(
@@ -52,8 +61,8 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
                     $scope.resp = data;
-                    $scope.errorMsg = $scope.resp.parentLoginResponse.errorMsg;
-                    $scope.errorBold = $scope.resp.parentLoginResponse.errorBold;
+                    $scope.errorMsg = $scope.resp.parentErrorResponse.errorMsg;
+                    $scope.errorBold = $scope.resp.parentErrorResponse.errorBold;
                 }
             )
         };

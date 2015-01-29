@@ -7,7 +7,7 @@ findParentChildrenService.service('findParentChildrenService', function ($http, 
     this.findParentChildren = function () {
         console.log("findParentChildren() trackingId:" + $rootScope.trackingId + " auth-token:" + $rootScope.authToken);
         var config = {headers: { 'trackingId': $rootScope.trackingId, 'auth-token': $rootScope.authToken }};
-        var url = '/api/parent/'+$rootScope.parentId+'/children';
+        var url = '/api/parent/sp/'+$rootScope.parentId+'/children';
         return $http.get(url, config);
     };
 });

@@ -89,13 +89,13 @@ public class ParentServiceBean {
 	}
 
 	public User findParentAccount(Integer userId, String trackingId)
-	throws SpellingException {
+	throws ParentAuthException {
 		log.debug("findParentAccount() userId:{}, trackingId:{}", userId, trackingId);
 		try {
 			return em.find(User.class, userId);
 		} catch (Exception ex) {
-			log.error("findParentAccount() trackingId:{}", trackingId);
-			throw new SpellingException("Something went wrong when attempting to find parent account " + userId);
+			log.error("findParentAccount() trackingId:{}, userId:{}", trackingId, userId);
+			throw new ParentAuthException(ParentApiConstants.FIND_PARENT_BY_ID);
 		}
 	}
 

@@ -46,12 +46,13 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("createParent")
+	@Path("sp/createParent")
 	public Response createParentUser(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request)
 	throws Exception {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
+		//TODO token validation should occur in a WebFilter
 		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
 			parentService.confirmPasswords(request.password, request.confirmPassword);
 			parentService.createParentAccount(request.getUserEntity(authService), trackingId);
@@ -67,7 +68,7 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/createChild")
+	@Path("sp/{parentId}/createChild")
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken)
@@ -125,7 +126,7 @@ public class ParentApi extends BaseApi {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/edit}")
+	@Path("sp/{parentId}/edit}")
 	public Response editParent(EditParentRequest request, @PathParam(Constants.PARENT_ID) Integer userId,
 	                           @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                           @HeaderParam(Constants.AUTH_TOKEN) String authToken)
@@ -134,25 +135,12 @@ public class ParentApi extends BaseApi {
 		EditParentResponse resp;
 		Response response;
 		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
-				resp = new EditParentResponse("Passwords not the same.", "It seems ");
-				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
-				return response;
-			}
-			try {
-				User originalUser = parentService.findParentAccount(userId, trackingId);
-				parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
-				resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
-				resp.authToken = authService.getAuthToken(trackingId);
-				response = Response.status(Response.Status.OK).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("editParent() ", ex);
-				resp = new EditParentResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
+			parentService.confirmPasswords(request.password, request.confirmPassword);
+			User originalUser = parentService.findParentAccount(userId, trackingId);
+			parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
+			resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
+			resp.authToken = authService.getAuthToken(trackingId);
+			response = Response.status(Response.Status.OK).entity(resp).build();
 		} else {
 			resp = new EditParentResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
 			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
@@ -164,7 +152,7 @@ public class ParentApi extends BaseApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/children")
+	@Path("sp/{parentId}/children")
 	public Response findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                                   @PathParam(Constants.PARENT_ID) String userId) {
@@ -200,7 +188,7 @@ public class ParentApi extends BaseApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/child/{childId}")
+	@Path("sp/{parentId}/child/{childId}")
 	public Response getChild(@HeaderParam(Constants.TRACKING_ID) String trackingId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId) {
 		log.info("getChild() trackingId:{}, parentId:{}, childId:{}", trackingId, parentId, childId);
@@ -233,7 +221,7 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/editChild/{childId}")
+	@Path("sp/{parentId}/editChild/{childId}")
 	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                          @HeaderParam(Constants.TRACKING_ID) String trackingId)
@@ -272,7 +260,7 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{parentId}/word/{childId}")
+	@Path("sp/{parentId}/word/{childId}")
 	public Response addWord(AddWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                        @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                        @HeaderParam(Constants.TRACKING_ID) String trackingId) {

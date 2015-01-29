@@ -3,6 +3,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import com.djr.spelling.app.parent.restapi.model.ChildUserCreateResponse;
+import com.djr.spelling.app.parent.restapi.model.ParentErrorResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -29,19 +30,20 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 	}
 
 	public Response handleChildNotConfirmed() {
-		return getChildUserCreateResponse("Passwords not the same.", "It seems ", Response.Status.NOT_ACCEPTABLE);
+		return getParentErrorResponse("Passwords not the same.", "It seems ", Response.Status.NOT_ACCEPTABLE);
 	}
 
 	public Response handleChildExists() {
-		return getChildUserCreateResponse("Apparently the child user name already exists.", "Oops!", Response.Status.CONFLICT);
+		return getParentErrorResponse("Apparently the child user name already exists.", "Oops!",
+				Response.Status.CONFLICT);
 	}
 
 	public Response handleChildCreateGeneralFail() {
-		return getChildUserCreateResponse("We seemed to have an issue creating the child's account.  Try again?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+		return getParentErrorResponse("We seemed to have an issue creating the child's account.  Try again?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
-	public Response getChildUserCreateResponse(String msg, String bold, Response.Status status) {
-		return getResponse(status, new ChildUserCreateResponse(msg, bold));
+	public Response getParentErrorResponse(String msg, String bold, Response.Status status) {
+		return getResponse(status, new ParentErrorResponse(msg, bold));
 	}
 
 	public Response getResponse(Response.Status status, Object entity) {
