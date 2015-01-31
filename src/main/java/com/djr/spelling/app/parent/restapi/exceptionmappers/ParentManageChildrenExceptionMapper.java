@@ -4,6 +4,10 @@ import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import com.djr.spelling.app.ErrorResponse;
 import com.djr.spelling.app.parent.restapi.model.FindChildrenResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -11,8 +15,12 @@ import javax.ws.rs.ext.ExceptionMapper;
  * Created by IMac on 1/28/2015.
  */
 public class ParentManageChildrenExceptionMapper implements ExceptionMapper<ParentManageChildrenException> {
+	private static final Logger log = LoggerFactory.getLogger(ParentManageChildrenExceptionMapper.class);
+	@Context
+	private HttpServletRequest request;
 	@Override
 	public Response toResponse(ParentManageChildrenException e) {
+		log.error("toResponse() request:{}, ex:{}", request, e);
 		switch (e.getMessage()) {
 			case ParentApiConstants.CHILD_NOT_CONFIRMED: {
 				return handleChildNotConfirmed();
@@ -28,6 +36,15 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 			}
 			case ParentApiConstants.FIND_PARENT_CHILDREN_FAILED: {
 				return handleFindParentChildrenFailed();
+			}
+			case ParentApiConstants.NO_CHILD_BY_ID: {
+				return handleNoChildById();
+			}
+			case ParentApiConstants.FIND_PARENT_CHILD_FAILED: {
+				return handleFindParentChildFailed();
+			}
+			case ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED: {
+				return handleEditChildPasswordFailed();
 			}
 			default: {
 				return Response.serverError().build();
@@ -54,6 +71,18 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 
 	public Response handleFindParentChildrenFailed() {
 		return getParentErrorResponse("We had a pretty big oops moment.  Try again later?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response handleNoChildById() {
+		return getParentErrorResponse("There was a problem finding the child by this name.  Try again later?", "Oops!", Response.Status.NOT_FOUND);
+	}
+
+	public Response handleFindParentChildFailed() {
+		return getParentErrorResponse("Big oops moment, sorry.  Try again later?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response handleEditChildPasswordFailed() {
+		return getParentErrorResponse("It appears there was a problem changing your password.  Try again later?", "Oops!", Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
 	public Response getFindChildrenResponse(String msg, String bold, Response.Status status) {

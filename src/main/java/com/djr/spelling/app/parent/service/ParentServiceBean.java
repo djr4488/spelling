@@ -9,6 +9,7 @@ import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
+import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
@@ -123,26 +124,33 @@ public class ParentServiceBean {
 	}
 
 	public ChildUser findParentChild(Integer childId, String trackingId)
-	throws SpellingException {
+	throws ParentManageChildrenException {
 		log.debug("findParentChild() childId:{}, trackingId:{}", childId, trackingId);
 		try {
 			return em.find(ChildUser.class, childId);
 		} catch (NoResultException nrEx) {
 			log.debug("findParentChild() no child found. trackingId:{}", trackingId);
-			throw new SpellingException("No child found for parent");
+			throw new ParentManageChildrenException(ParentApiConstants.NO_CHILD_BY_ID);
+		} catch (Exception ex) {
+			throw new ParentManageChildrenException(ParentApiConstants.FIND_PARENT_CHILD_FAILED);
 		}
 	}
 
-	public void editChildPassword(ChildUser original, String password, String trackingId) {
+	public void editChildPassword(ChildUser original, String password, String trackingId)
+	throws ParentManageChildrenException {
 		log.debug("findParentChildren() original:{}, password:{}, trackingId:{}", original, password, trackingId);
 		original.password = password;
-		if (!em.contains(original)) {
-			em.merge(original);
+		try {
+			if (!em.contains(original)) {
+				em.merge(original);
+			}
+		} catch (Exception ex) {
+			throw new ParentManageChildrenException(ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED);
 		}
 	}
 
 	public Word createOrFindWord(User user, Word word, String trackingId)
-	throws SpellingException {
+	throws ParentWordException {
 		log.debug("createOrFindWord() user:{}, word:{}, trackingId:{}", user, word, trackingId);
 		Word existingWord = null;
 		try {
@@ -155,7 +163,8 @@ public class ParentServiceBean {
 			log.debug("createOrFindWord() word probably was created at same time. trackingId:{}", trackingId);
 			existingWord = findWord(word, trackingId);
 			if (existingWord == null) {
-				throw new SpellingException("Something has gone horribly wrong with this word.");
+				log.error("createOrFindWord() ex:{}", ex);
+				throw new ParentWordException(ParentApiConstants.CREATE_OR_FIND_WORD_FAILED);
 			}
 		}
 		return existingWord;
@@ -177,7 +186,7 @@ public class ParentServiceBean {
 	}
 
 	public void createOrFindWordLocation(WordLocation wordLocation, String trackingId)
-	throws SpellingException {
+	throws ParentWordException {
 		log.debug("createOrFindWordLocation() wordLocation:{}, trackingId:{}", wordLocation, trackingId);
 		WordLocation existingWordLocation = null;
 		try {
@@ -190,7 +199,8 @@ public class ParentServiceBean {
 			log.debug("createOrFindWord() word probably was created at same time. trackingId:{}", trackingId);
 			existingWordLocation = findWordLocation(wordLocation, trackingId);
 			if (existingWordLocation == null) {
-				throw new SpellingException("Something has gone horribly wrong with this word location!");
+				log.error("createOrFindWordLocation ex:{}", ex);
+				throw new ParentWordException(ParentApiConstants.CREATE_OR_FIND_WORD_LOCATION_FAILED);
 			}
 		}
 	}
@@ -212,7 +222,7 @@ public class ParentServiceBean {
 	}
 
 	public void createOrFindWordSentence(Sentence sentence, String trackingId)
-	throws SpellingException {
+	throws ParentWordException {
 		log.debug("createOrFindWordSentence() sentence:{}, trackingId:{}", sentence, trackingId);
 		Sentence existingSentence = null;
 		try {
@@ -225,7 +235,8 @@ public class ParentServiceBean {
 			log.debug("createOrFindWordSentence() sentence/word combo probably exists already. trackingId:{}", trackingId);
 			existingSentence = findSentence(sentence, trackingId);
 			if (existingSentence == null) {
-				throw new SpellingException("Something has gone horribly wrong with this sentence creation!");
+				log.error("createOrFindWordSentence() ex:{}", ex);
+				throw new ParentWordException(ParentApiConstants.CREATE_OR_FIND_WORD_SENTENCE_FAILED);
 			}
 		}
 	}
@@ -244,7 +255,7 @@ public class ParentServiceBean {
 	}
 
 	public Week createOrFindWeek(Week week, String trackingId)
-	throws SpellingException {
+	throws ParentWordException {
 		log.debug("createOrFindWeek() week:{}, trackingId:{}", week, trackingId);
 		Week existingWeek = null;
 		try {
@@ -257,7 +268,8 @@ public class ParentServiceBean {
 			log.debug("createOrFindWeek() week likely exists already. trackingId:{}", trackingId);
 			existingWeek = findWeek(week, trackingId);
 			if (existingWeek == null) {
-				throw new SpellingException("Something has gone horribly wrong with this week creation!");
+				log.error("createOrFindWeek() ex:{}",ex);
+				throw new ParentWordException(ParentApiConstants.CREATE_OR_FIND_WEEK_FAILED);
 			}
 		}
 		return existingWeek;

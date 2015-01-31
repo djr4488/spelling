@@ -12,6 +12,7 @@ import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
+import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
@@ -111,17 +112,12 @@ public class ParentApi extends BaseApi {
 		log.info("editParent() request:{}, trackingId:{}, userId:{}", request, trackingId, userId);
 		EditParentResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			parentService.confirmPasswords(request.password, request.confirmPassword);
-			User originalUser = parentService.findParentAccount(userId, trackingId);
-			parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
-			resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
-			resp.authToken = authService.getAuthToken(trackingId);
-			response = Response.status(Response.Status.OK).entity(resp).build();
-		} else {
-			resp = new EditParentResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		parentService.confirmPasswords(request.password, request.confirmPassword);
+		User originalUser = parentService.findParentAccount(userId, trackingId);
+		parentService.editParentPassword(originalUser, request.getUserEntity(), trackingId);
+		resp = new EditParentResponse(Constants.EDIT_PARENT_LANDING);
+		resp.authToken = authService.getAuthToken(trackingId);
+		response = Response.status(Response.Status.OK).entity(resp).build();
 		log.info("editParent() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -154,30 +150,17 @@ public class ParentApi extends BaseApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("sp/{parentId}/child/{childId}")
 	public Response getChild(@HeaderParam(Constants.TRACKING_ID) String trackingId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId) {
+	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId)
+	throws ParentManageChildrenException {
 		log.info("getChild() trackingId:{}, parentId:{}, childId:{}", trackingId, parentId, childId);
 		EditChildResponse resp;
 		Response response;
-		if (authService.validateTrackingId(trackingId, authToken, false)) {
-			try {
-				ChildUser child = parentService.findParentChild(childId, trackingId);
-				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
-				resp.username = child.username;
-				resp.childId = child.id;
-				resp.authToken = authService.getAuthToken(trackingId);
-				response = Response.status(Response.Status.OK).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new EditChildResponse("There was a problem finding the child by this name.  Try again later?", "Oops!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("getChild() ", ex);
-				resp = new EditChildResponse("Big oops moment, sorry.  Try again later?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
-		} else {
-			resp = new EditChildResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		ChildUser child = parentService.findParentChild(childId, trackingId);
+		resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
+		resp.username = child.username;
+		resp.childId = child.id;
+		resp.authToken = authService.getAuthToken(trackingId);
+		response = Response.status(Response.Status.OK).entity(resp).build();
 		log.info("editChild() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -189,34 +172,16 @@ public class ParentApi extends BaseApi {
 	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                          @HeaderParam(Constants.TRACKING_ID) String trackingId)
-	throws Exception {
+	throws ParentAuthException, ParentManageChildrenException {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			if (!parentService.confirmPasswords(request.password, request.confirmPassword)) {
-				resp = new EditChildResponse("Passwords not the same.", "It seems ");
-				response = Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
-				return response;
-			}
-			try {
-				ChildUser originalUser = parentService.findParentChild(childId, trackingId);
-				parentService.editChildPassword(originalUser, authService.getPasswordHash(request.password), trackingId);
-				resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
-				resp.authToken = authService.getAuthToken(trackingId);
-				response = Response.status(Response.Status.OK).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Oops!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("editChild() ", ex);
-				resp = new EditChildResponse("It appears there was a problem changing your password.  Try again later?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
-		} else {
-			resp = new EditChildResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		parentService.confirmPasswords(request.password, request.confirmPassword);
+		ChildUser originalUser = parentService.findParentChild(childId, trackingId);
+		parentService.editChildPassword(originalUser, authService.getPasswordHash(request.password), trackingId);
+		resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
+		resp.authToken = authService.getAuthToken(trackingId);
+		response = Response.status(Response.Status.OK).entity(resp).build();
 		log.info("editChild() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -227,39 +192,24 @@ public class ParentApi extends BaseApi {
 	@Path("sp/{parentId}/word/{childId}")
 	public Response addWord(AddWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                        @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                        @HeaderParam(Constants.TRACKING_ID) String trackingId) {
+	                        @HeaderParam(Constants.TRACKING_ID) String trackingId)
+	throws ParentAuthException, ParentManageChildrenException, ParentWordException {
 		log.info("addWord() request:{}, trackingId:{}", request, trackingId);
 		AddWordResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			try {
-				User parent = parentService.findParentAccount(parentId, trackingId);
-				ChildUser child = parentService.findParentChild(childId, trackingId);
-				Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
-				Week week = parentService.createOrFindWeek(getWeekEntity(request.startOfWeek, request.endOfWeek), trackingId);
-				WordLocation wordLocation = getWordLocationEntity(child, word, week);
-				parentService.createOrFindWordLocation(wordLocation, trackingId);
-				parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);
-				resp = new AddWordResponse("addWord");
-				resp.id = parentId;
-				resp.childId = childId;
-				resp.authToken = authService.getAuthToken(trackingId);
-				resp.forwardTo = Constants.ADD_WORD;
-				return Response.status(Response.Status.CREATED).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new AddWordResponse("Something prevented me from adding this word.", "Can you try again?");
-				response = Response.status(Response.Status.CONFLICT).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("addWord() trackingId:{}, Exception:{}", trackingId, ex);
-				resp = new AddWordResponse("It appears there was a problem.  If it keeps not working, send " +
-					trackingId + " to djr4488(dot)(at)gmail(dot)com");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
-		} else {
-			resp = new AddWordResponse("Something wasn't quite right with the request, can you try again?", "Doh!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
-		return response;
+		User parent = parentService.findParentAccount(parentId, trackingId);
+		ChildUser child = parentService.findParentChild(childId, trackingId);
+		Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
+		Week week = parentService.createOrFindWeek(getWeekEntity(request.startOfWeek, request.endOfWeek), trackingId);
+		WordLocation wordLocation = getWordLocationEntity(child, word, week);
+		parentService.createOrFindWordLocation(wordLocation, trackingId);
+		parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);
+		resp = new AddWordResponse("addWord");
+		resp.id = parentId;
+		resp.childId = childId;
+		resp.authToken = authService.getAuthToken(trackingId);
+		resp.forwardTo = Constants.ADD_WORD;
+		return Response.status(Response.Status.CREATED).entity(resp).build();
 	}
 
 	private WordLocation getWordLocationEntity(ChildUser child, Word word, Week week) {
