@@ -2,7 +2,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.parent.exceptions.ParentAuthException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
-import com.djr.spelling.app.parent.restapi.model.ParentErrorResponse;
+import com.djr.spelling.app.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +92,7 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 	}
 
 	public Response getParentErrorResponse(String msg, String bold, Response.Status status) {
-		return getResponse(status, new ParentErrorResponse(msg, bold));
+		return getResponse(status, new ErrorResponse(msg, bold));
 	}
 
 	public Response getResponse(Response.Status status, Object entity) {

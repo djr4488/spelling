@@ -2,8 +2,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
-import com.djr.spelling.app.parent.restapi.model.ChildUserCreateResponse;
-import com.djr.spelling.app.parent.restapi.model.ParentErrorResponse;
+import com.djr.spelling.app.ErrorResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -43,7 +42,7 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 	}
 
 	public Response getParentErrorResponse(String msg, String bold, Response.Status status) {
-		return getResponse(status, new ParentErrorResponse(msg, bold));
+		return getResponse(status, new ErrorResponse(msg, bold));
 	}
 
 	public Response getResponse(Response.Status status, Object entity) {

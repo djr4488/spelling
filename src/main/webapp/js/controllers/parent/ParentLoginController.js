@@ -22,7 +22,7 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
             }
         }
         $scope.errorResp = {
-            parentErrorResponse: {
+            errorResponse: {
                 errorMsg: "",
                 errorBold: "",
                 forwardTo: "",
@@ -61,8 +61,8 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
                     $scope.resp = data;
-                    $scope.errorMsg = $scope.resp.parentErrorResponse.errorMsg;
-                    $scope.errorBold = $scope.resp.parentErrorResponse.errorBold;
+                    $scope.errorMsg = $scope.resp.errorResponse.errorMsg;
+                    $scope.errorBold = $scope.resp.errorResponse.errorBold;
                 }
             )
         };

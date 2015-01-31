@@ -1,4 +1,4 @@
-package com.djr.spelling.app.parent.restapi.model;
+package com.djr.spelling.app;
 
 import com.djr.spelling.app.BaseResponse;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,18 +11,18 @@ import java.io.Serializable;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class ParentErrorResponse extends BaseResponse implements Serializable {
+public class ErrorResponse extends BaseResponse implements Serializable {
 	private static final long serialVersionUID = 1;
 
-	public ParentErrorResponse() {
+	public ErrorResponse() {
 		super();
 	}
 
-	public ParentErrorResponse(String errorMsg, String errorBold) {
+	public ErrorResponse(String errorMsg, String errorBold) {
 		super(errorMsg, errorBold);
 	}
 
-	public ParentErrorResponse(String forwardTo) {
+	public ErrorResponse(String forwardTo) {
 		super(forwardTo);
 	}
 }

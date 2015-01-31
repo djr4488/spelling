@@ -18,6 +18,6 @@ public class SpellingApplication extends Application {
 	@Override
 	public Set<Class<?>> getClasses() {
 		return new HashSet<Class<?>>(Arrays.asList(ParentApi.class, ChildApi.class, SpellingExceptionMapper.class,
-				ParentAuthExceptionMapper.class, ParentManageChildrenExceptionMapper.class ));
+				ParentAuthExceptionMapper.class, ParentManageChildrenExceptionMapper.class, AuthFilter.class ));
 	}
 }

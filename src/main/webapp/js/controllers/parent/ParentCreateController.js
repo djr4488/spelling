@@ -24,7 +24,7 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
             }
         }
         $scope.errorResp = {
-            parentErrorResponse: {
+            errorResponse: {
                 errorMsg: "",
                 errorBold: "",
                 forwardTo: "",
@@ -55,8 +55,8 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
                     console.log(status);
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
-                    $scope.errorMsg = $scope.resp.parentErrorResponse.errorMsg;
-                    $scope.errorBold = $scope.resp.parentErrorResponse.errorBold;
+                    $scope.errorMsg = $scope.resp.errorResponse.errorMsg;
+                    $scope.errorBold = $scope.resp.errorResponse.errorBold;
                 }
             )
         }

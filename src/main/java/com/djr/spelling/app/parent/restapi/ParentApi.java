@@ -46,7 +46,7 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("sp/createParent")
+	@Path("createParent")
 	public Response createParentUser(@HeaderParam(Constants.TRACKING_ID) String trackingId, ParentCreateRequest request)
 	throws Exception {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
