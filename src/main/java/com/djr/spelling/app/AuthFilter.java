@@ -26,23 +26,40 @@ public class AuthFilter implements ContainerRequestFilter {
 		String path = context.getUriInfo().getPath();
 		String trackingId;
 		String authToken;
+		String msg = null;
+		String bold = null;
+		Response.Status status = null;
 		boolean authenticated = false;
 		if (path.contains("parent/sp/")) {
 			trackingId = context.getHeaderString(Constants.TRACKING_ID);
 			authToken = context.getHeaderString(Constants.AUTH_TOKEN);
 			authenticated = authService.validateTrackingId(trackingId, authToken, false);
+			msg = "Didn't recognize you!  Maybe you typed the wrong password or need to create a user name?";
+			bold = "Oops!";
+			status = Response.Status.UNAUTHORIZED;
 		} else if (path.contains("parent/login")) {
 			trackingId = context.getHeaderString(Constants.TRACKING_ID);
 			authenticated = authService.validateTrackingId(trackingId, null, true);
+			if (!authenticated) {
+				msg = "Haven't seen you around these parts!  Try again now, and it outta be all kinds of good.";
+				bold = "Oops!";
+				status = Response.Status.UNAUTHORIZED;
+			} else if (context.getRequest() == null) {
+				msg = "Something wasn't quite right with the request, can you try again?";
+				bold = "Oops!";
+				status = Response.Status.BAD_REQUEST;
+			}
 		} else {
 			authenticated = true;
 		}
 		if (!authenticated) {
-			context.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(getErrorResponse()).build());
+			log.debug("filter() aborting with status:{}, msg:{}, bold:{}", status, msg, bold);
+			context.abortWith(Response.status(status).entity(getErrorResponse(msg, bold)).build());
 		}
+		log.debug("filter() completed");
 	}
 
-	private ErrorResponse getErrorResponse() {
-		return new ErrorResponse("Didn't recognize you?  Create an account maybe?", "Ooops!");
+	private ErrorResponse getErrorResponse(String msg, String bold) {
+		return new ErrorResponse(msg, bold);
 	}
 }

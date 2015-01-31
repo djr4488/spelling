@@ -52,15 +52,10 @@ public class ParentApi extends BaseApi {
 		log.info("createParentUser() request:{}, trackingId:{}", request, trackingId);
 		ParentCreateResponse resp;
 		Response response;
-		//TODO token validation should occur in a WebFilter
-		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
-			parentService.confirmPasswords(request.password, request.confirmPassword);
-			parentService.createParentAccount(request.getUserEntity(authService), trackingId);
-			resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
-			response = Response.status(Response.Status.CREATED).entity(resp).build();
-		} else {
-			throw new ParentAuthException(ParentApiConstants.CREATE_INVALID_TRACKING);
-		}
+		parentService.confirmPasswords(request.password, request.confirmPassword);
+		parentService.createParentAccount(request.getUserEntity(authService), trackingId);
+		resp = new ParentCreateResponse(Constants.LOGIN_LANDING);
+		response = Response.status(Response.Status.CREATED).entity(resp).build();
 		log.info("createUser() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -72,25 +67,16 @@ public class ParentApi extends BaseApi {
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken)
-	throws Exception {
+	throws ParentAuthException, ParentManageChildrenException {
 		log.info("createChildUser() request:{}, trackingId:{}, parentId:{}", request, trackingId, parentId);
 		ChildUserCreateResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, authToken, false)) {
-			try {
-				parentService.confirmPasswords(request.password, request.confirmPassword);
-			} catch (ParentAuthException paEx) {
-				throw new ParentManageChildrenException(ParentApiConstants.CHILD_NOT_CONFIRMED);
-			}
-			parentService.createChildAccount(request.getChildUserEntity(spellingService,
-					parentService.findParentAccount(parentId, trackingId), authService), trackingId);
-			resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
-			resp.authToken = authService.getAuthToken(trackingId);
-			response = Response.status(Response.Status.CREATED).entity(resp).build();
-		} else {
-			resp = new ChildUserCreateResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		parentService.confirmPasswords(request.password, request.confirmPassword);
+		parentService.createChildAccount(request.getChildUserEntity(spellingService,
+				parentService.findParentAccount(parentId, trackingId), authService), trackingId);
+		resp = new ChildUserCreateResponse(Constants.CREATE_CHILD_LANDING);
+		resp.authToken = authService.getAuthToken(trackingId);
+		response = Response.status(Response.Status.CREATED).entity(resp).build();
 		log.info("createChildUser() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -104,21 +90,12 @@ public class ParentApi extends BaseApi {
 		log.info("login() request:{}, trackingId:{}", request, trackingId);
 		ParentLoginResponse resp;
 		Response response;
-		if (request != null && authService.validateTrackingId(trackingId, null, true)) {
-			User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
-			authService.addTrackingId(trackingId, parent.id);
-			resp = new ParentLoginResponse("parentLanding");
-			resp.authToken = authService.getAuthToken(trackingId);
-			resp.id = parent.id;
-			response = Response.status(Response.Status.CREATED).entity(resp).build();
-		} else if (request == null) {
-			resp = new ParentLoginResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		} else {
-			resp = new ParentLoginResponse("Request invalid", "Oops!");
-			resp.forwardTo = Constants.LOGIN_LANDING;
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
+		authService.addTrackingId(trackingId, parent.id);
+		resp = new ParentLoginResponse("parentLanding");
+		resp.authToken = authService.getAuthToken(trackingId);
+		resp.id = parent.id;
+		response = Response.status(Response.Status.CREATED).entity(resp).build();
 		log.info("login() completed. trackingId:{}", trackingId);
 		return response;
 	}
@@ -155,32 +132,19 @@ public class ParentApi extends BaseApi {
 	@Path("sp/{parentId}/children")
 	public Response findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                                   @PathParam(Constants.PARENT_ID) String userId) {
+	                                   @PathParam(Constants.PARENT_ID) String userId)
+	throws ParentManageChildrenException, ParentAuthException {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
 		Response response;
 		Integer uid = Integer.parseInt(userId);
-		if (authService.validateTrackingId(trackingId, authToken, false)) {
-			try {
-				User parent = parentService.findParentAccount(uid, trackingId);
-				List<ChildUser> children = parentService.findParentChildren(parent, trackingId);
-				resp = new FindChildrenResponse();
-				resp.parentChildren = new ParentChildren(children);
-				resp.forwardTo = Constants.FIND_PARENT_CHILDREN;
-				resp.authToken = authService.getAuthToken(trackingId);
-				response = Response.status(Response.Status.OK).entity(resp).build();
-			} catch (SpellingException spEx) {
-				resp = new FindChildrenResponse("There was an issue finding children for this parent.  Try again later?", "Oops!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			} catch (Exception ex) {
-				log.error("findParentChildren() ", ex);
-				resp = new FindChildrenResponse("We had a pretty big oops moment.  Try again later?", "Doh!");
-				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(resp).build();
-			}
-		} else {
-			resp = new FindChildrenResponse("Something wasn't quite right with the request, can you try again?", "Oops!");
-			response = Response.status(Response.Status.BAD_REQUEST).entity(resp).build();
-		}
+		User parent = parentService.findParentAccount(uid, trackingId);
+		List<ChildUser> children = parentService.findParentChildren(parent, trackingId);
+		resp = new FindChildrenResponse();
+		resp.parentChildren = new ParentChildren(children);
+		resp.forwardTo = Constants.FIND_PARENT_CHILDREN;
+		resp.authToken = authService.getAuthToken(trackingId);
+		response = Response.status(Response.Status.OK).entity(resp).build();
 		log.info("findParentChildren() completed. trackingId:{}", trackingId);
 		return response;
 	}

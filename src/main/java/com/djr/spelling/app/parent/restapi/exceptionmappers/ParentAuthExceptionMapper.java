@@ -64,7 +64,7 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 	}
 
 	public Response handleNotConfirmedPassword() {
-		return getParentErrorResponse("Passwords not the some.", "It seems ", Response.Status.NOT_ACCEPTABLE);
+		return getParentErrorResponse("your passwords not the same.", "It seems ", Response.Status.NOT_ACCEPTABLE);
 	}
 
 	public Response handleEmailExists() {
@@ -82,7 +82,7 @@ public class ParentAuthExceptionMapper implements ExceptionMapper<ParentAuthExce
 	}
 
 	public Response handleFindParentById() {
-		return getParentErrorResponse("It appears there was a problem changing your password.  Try again later?", "Oops!",
+		return getParentErrorResponse("We had a problem finding you!  Try again later?", "Oops!",
 				Response.Status.INTERNAL_SERVER_ERROR);
 	}
 

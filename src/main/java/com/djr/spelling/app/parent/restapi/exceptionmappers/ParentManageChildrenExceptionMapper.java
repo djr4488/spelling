@@ -3,6 +3,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import com.djr.spelling.app.ErrorResponse;
+import com.djr.spelling.app.parent.restapi.model.FindChildrenResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
@@ -22,6 +23,12 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 			case ParentApiConstants.CHILD_CREATE_GENERAL_FAIL: {
 				return handleChildCreateGeneralFail();
 			}
+			case ParentApiConstants.NO_CHILDREN_FOUND: {
+				return handleNoChildrenFound();
+			}
+			case ParentApiConstants.FIND_PARENT_CHILDREN_FAILED: {
+				return handleFindParentChildrenFailed();
+			}
 			default: {
 				return Response.serverError().build();
 			}
@@ -39,6 +46,18 @@ public class ParentManageChildrenExceptionMapper implements ExceptionMapper<Pare
 
 	public Response handleChildCreateGeneralFail() {
 		return getParentErrorResponse("We seemed to have an issue creating the child's account.  Try again?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response handleNoChildrenFound() {
+		return getFindChildrenResponse("We did find that you had any children.  Do you need to create them?", "Oops!", Response.Status.NOT_FOUND);
+	}
+
+	public Response handleFindParentChildrenFailed() {
+		return getParentErrorResponse("We had a pretty big oops moment.  Try again later?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response getFindChildrenResponse(String msg, String bold, Response.Status status) {
+		return getResponse(status, new FindChildrenResponse(msg, bold));
 	}
 
 	public Response getParentErrorResponse(String msg, String bold, Response.Status status) {

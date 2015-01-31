@@ -108,7 +108,7 @@ public class ParentServiceBean {
 	}
 
 	public List<ChildUser> findParentChildren(User user, String trackingId)
-	throws SpellingException {
+	throws ParentManageChildrenException {
 		log.debug("findParentChildren() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findChildrenUsersByParentUser", ChildUser.class);
@@ -116,7 +116,9 @@ public class ParentServiceBean {
 			return query.getResultList();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentChildren() no children found. trackingId:{}", trackingId);
-			throw new SpellingException("No children found for parent");
+			throw new ParentManageChildrenException(ParentApiConstants.NO_CHILDREN_FOUND);
+		} catch (Exception ex) {
+			throw new ParentManageChildrenException(ParentApiConstants.FIND_PARENT_CHILDREN_FAILED);
 		}
 	}
 
@@ -284,7 +286,7 @@ public class ParentServiceBean {
 	}
 
 	public boolean confirmPasswords(String password, String confirmPassword)
-	throws Exception {
+	throws ParentAuthException {
 		if (!password.equals(confirmPassword)) {
 			throw new ParentAuthException(ParentApiConstants.NOT_CONFIRMED);
 		}

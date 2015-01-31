@@ -15,4 +15,6 @@ public class ParentApiConstants {
 	public static final String CHILD_CREATE_GENERAL_FAIL = "Child create general fail";
 	public static final String FIND_PARENT_BY_ID = "Find parent by id";
 	public static final String FIND_PARENT_BY_ID_GENERAL_FAILURE = "Find parent by id general failure";
+	public static final String NO_CHILDREN_FOUND = "No children found";
+	public static final String FIND_PARENT_CHILDREN_FAILED = "FIND_PARENT_CHILDREN_FAILED";
 }
