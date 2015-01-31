@@ -196,7 +196,6 @@ public class ParentApi extends BaseApi {
 	throws ParentAuthException, ParentManageChildrenException, ParentWordException {
 		log.info("addWord() request:{}, trackingId:{}", request, trackingId);
 		AddWordResponse resp;
-		Response response;
 		User parent = parentService.findParentAccount(parentId, trackingId);
 		ChildUser child = parentService.findParentChild(childId, trackingId);
 		Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
@@ -209,6 +208,7 @@ public class ParentApi extends BaseApi {
 		resp.childId = childId;
 		resp.authToken = authService.getAuthToken(trackingId);
 		resp.forwardTo = Constants.ADD_WORD;
+		log.info("addWord() completed trackingId:{}", trackingId);
 		return Response.status(Response.Status.CREATED).entity(resp).build();
 	}
 
