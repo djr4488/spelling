@@ -28,6 +28,9 @@ public class AuthService {
 
 	private boolean validateAuthToken(String trackingId, String authToken) {
 		log.debug("validateAuthToken() trackingId:{}, authToken:{}", trackingId, authToken);
+		if (isProvidedAuthTokenNull(authToken)) {
+			return false;
+		}
 		String authTokenCalc = "<timestamp>"+trackingAuthMap.get(trackingId).timestamp.toString()+"</timestamp><tracking>"+
 				trackingId+"</tracking>";
 		String hashed = hashingUtil.generateHmacHash(authTokenCalc);
@@ -36,7 +39,8 @@ public class AuthService {
 	}
 
 	public boolean validateTrackingId(String trackingId, String authToken, boolean validateTrackingIdOnly) {
-		log.debug("validateTrackingId() trackingId:{}, authToken:{}", trackingId, authToken);
+		log.debug("validateTrackingId() trackingId:{}, authToken:{}, validateTrackingIdOnly:{}", trackingId, authToken,
+				validateTrackingIdOnly);
 		return trackingAuthMap.containsKey(trackingId) &&
 				trackingAuthMap.get(trackingId).exipiry.isAfter(new DateTime().minusMinutes(120)) &&
 				(validateTrackingIdOnly || validateAuthToken(trackingId, authToken));
@@ -69,6 +73,10 @@ public class AuthService {
 		log.debug("getPasswordHash()");
 		String passwordMessage = "<password>"+password+"</password>";
 		return hashingUtil.generateHmacHash(passwordMessage);
+	}
+
+	public boolean isProvidedAuthTokenNull(String authToken) {
+		return authToken == null;
 	}
 
 	@Schedules({

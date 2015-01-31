@@ -44,7 +44,8 @@ public class AuthFilter implements ContainerRequestFilter {
 				msg = "Haven't seen you around these parts!  Try again now, and it outta be all kinds of good.";
 				bold = "Oops!";
 				status = Response.Status.UNAUTHORIZED;
-			} else if (context.getRequest() == null) {
+			} else if (!context.hasEntity()) {
+				authenticated = false;
 				msg = "Something wasn't quite right with the request, can you try again?";
 				bold = "Oops!";
 				status = Response.Status.BAD_REQUEST;
