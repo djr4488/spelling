@@ -9,9 +9,8 @@ import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
-import com.djr.spelling.app.exceptions.SpellingException;
-import com.djr.spelling.app.parent.exceptions.ParentAuthException;
-import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
+import com.djr.spelling.app.exceptions.AuthException;
+import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
@@ -25,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by danny.rucker on 9/2/14.
@@ -68,7 +66,7 @@ public class ParentApi extends BaseApi {
 	public Response createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken)
-	throws ParentAuthException, ParentManageChildrenException {
+	throws AuthException, ParentApiException {
 		log.info("createChildUser() request:{}, trackingId:{}, parentId:{}", request, trackingId, parentId);
 		ChildUserCreateResponse resp;
 		Response response;
@@ -129,7 +127,7 @@ public class ParentApi extends BaseApi {
 	public Response findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                                   @PathParam(Constants.PARENT_ID) String userId)
-	throws ParentManageChildrenException, ParentAuthException {
+	throws ParentApiException, AuthException {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
 		Response response;
@@ -151,7 +149,7 @@ public class ParentApi extends BaseApi {
 	@Path("sp/{parentId}/child/{childId}")
 	public Response getChild(@HeaderParam(Constants.TRACKING_ID) String trackingId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                         @PathParam(Constants.PARENT_ID) Integer parentId, @PathParam(Constants.CHILD_ID) Integer childId)
-	throws ParentManageChildrenException {
+	throws ParentApiException {
 		log.info("getChild() trackingId:{}, parentId:{}, childId:{}", trackingId, parentId, childId);
 		EditChildResponse resp;
 		Response response;
@@ -172,7 +170,7 @@ public class ParentApi extends BaseApi {
 	public Response editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                          @HeaderParam(Constants.TRACKING_ID) String trackingId)
-	throws ParentAuthException, ParentManageChildrenException {
+	throws AuthException, ParentApiException {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		Response response;
@@ -193,7 +191,7 @@ public class ParentApi extends BaseApi {
 	public Response addWord(AddWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                        @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                        @HeaderParam(Constants.TRACKING_ID) String trackingId)
-	throws ParentAuthException, ParentManageChildrenException, ParentWordException {
+	throws AuthException, ParentApiException, ParentWordException {
 		log.info("addWord() request:{}, trackingId:{}", request, trackingId);
 		AddWordResponse resp;
 		User parent = parentService.findParentAccount(parentId, trackingId);

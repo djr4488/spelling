@@ -6,9 +6,8 @@ import com.djr.spelling.User;
 import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.WordLocation;
-import com.djr.spelling.app.exceptions.SpellingException;
-import com.djr.spelling.app.parent.exceptions.ParentAuthException;
-import com.djr.spelling.app.parent.exceptions.ParentManageChildrenException;
+import com.djr.spelling.app.exceptions.AuthException;
+import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
@@ -21,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,42 +36,42 @@ public class ParentServiceBean {
 	private DoubleMetaphone doubleMetaphone;
 
 	public void createParentAccount(User user, String trackingId)
-	throws ParentAuthException {
+	throws AuthException {
 		log.debug("createParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
 			query.setParameter("emailAddress", user.emailAddress);
 			query.getSingleResult();
-			throw new ParentAuthException(ParentApiConstants.EMAIL_EXISTS);
+			throw new AuthException(ParentApiConstants.EMAIL_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
 		} catch (Exception ex) {
 			log.debug("createParentAccount() exception occurred", ex);
-			throw new ParentAuthException(ParentApiConstants.GENERAL_CREATE);
+			throw new AuthException(ParentApiConstants.GENERAL_CREATE);
 		}
 		em.persist(user);
 	}
 
 	public void createChildAccount(ChildUser user, String trackingId)
-	throws ParentManageChildrenException {
+	throws ParentApiException {
 		log.debug("createChildAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
 			query.setParameter("username", user.username);
 			query.getSingleResult();
-			throw new ParentAuthException(ParentApiConstants.CHILD_EXISTS);
+			throw new AuthException(ParentApiConstants.CHILD_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
 		} catch (Exception ex) {
 			log.debug("createChildAccount() exception occurred", ex);
-			throw new ParentManageChildrenException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
+			throw new ParentApiException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
 		}
 		log.debug("createChildAccount() persisting childUser:{}", user);
 		em.persist(user);
 	}
 
 	public User findParentAccount(User user, String trackingId)
-	throws ParentAuthException {
+	throws AuthException {
 		log.debug("findParentAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class);
@@ -82,21 +80,21 @@ public class ParentServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
-			throw new ParentAuthException(ParentApiConstants.USER_NOT_FOUND);
+			throw new AuthException(ParentApiConstants.USER_NOT_FOUND);
 		} catch (Exception ex) {
 			log.debug("findParentAccount() general exception occurred", ex);
-			throw new ParentAuthException(ParentApiConstants.GENERAL_AUTH);
+			throw new AuthException(ParentApiConstants.GENERAL_AUTH);
 		}
 	}
 
 	public User findParentAccount(Integer userId, String trackingId)
-	throws ParentAuthException {
+	throws AuthException {
 		log.debug("findParentAccount() userId:{}, trackingId:{}", userId, trackingId);
 		try {
 			return em.find(User.class, userId);
 		} catch (Exception ex) {
 			log.error("findParentAccount() trackingId:{}, userId:{}", trackingId, userId);
-			throw new ParentAuthException(ParentApiConstants.FIND_PARENT_BY_ID);
+			throw new AuthException(ParentApiConstants.FIND_PARENT_BY_ID);
 		}
 	}
 
@@ -109,7 +107,7 @@ public class ParentServiceBean {
 	}
 
 	public List<ChildUser> findParentChildren(User user, String trackingId)
-	throws ParentManageChildrenException {
+	throws ParentApiException {
 		log.debug("findParentChildren() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findChildrenUsersByParentUser", ChildUser.class);
@@ -117,27 +115,27 @@ public class ParentServiceBean {
 			return query.getResultList();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentChildren() no children found. trackingId:{}", trackingId);
-			throw new ParentManageChildrenException(ParentApiConstants.NO_CHILDREN_FOUND);
+			throw new ParentApiException(ParentApiConstants.NO_CHILDREN_FOUND);
 		} catch (Exception ex) {
-			throw new ParentManageChildrenException(ParentApiConstants.FIND_PARENT_CHILDREN_FAILED);
+			throw new ParentApiException(ParentApiConstants.FIND_PARENT_CHILDREN_FAILED);
 		}
 	}
 
 	public ChildUser findParentChild(Integer childId, String trackingId)
-	throws ParentManageChildrenException {
+	throws ParentApiException {
 		log.debug("findParentChild() childId:{}, trackingId:{}", childId, trackingId);
 		try {
 			return em.find(ChildUser.class, childId);
 		} catch (NoResultException nrEx) {
 			log.debug("findParentChild() no child found. trackingId:{}", trackingId);
-			throw new ParentManageChildrenException(ParentApiConstants.NO_CHILD_BY_ID);
+			throw new ParentApiException(ParentApiConstants.NO_CHILD_BY_ID);
 		} catch (Exception ex) {
-			throw new ParentManageChildrenException(ParentApiConstants.FIND_PARENT_CHILD_FAILED);
+			throw new ParentApiException(ParentApiConstants.FIND_PARENT_CHILD_FAILED);
 		}
 	}
 
 	public void editChildPassword(ChildUser original, String password, String trackingId)
-	throws ParentManageChildrenException {
+	throws ParentApiException {
 		log.debug("findParentChildren() original:{}, password:{}, trackingId:{}", original, password, trackingId);
 		original.password = password;
 		try {
@@ -145,7 +143,7 @@ public class ParentServiceBean {
 				em.merge(original);
 			}
 		} catch (Exception ex) {
-			throw new ParentManageChildrenException(ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED);
+			throw new ParentApiException(ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED);
 		}
 	}
 
@@ -298,9 +296,9 @@ public class ParentServiceBean {
 	}
 
 	public boolean confirmPasswords(String password, String confirmPassword)
-	throws ParentAuthException {
+	throws AuthException {
 		if (!password.equals(confirmPassword)) {
-			throw new ParentAuthException(ParentApiConstants.NOT_CONFIRMED);
+			throw new AuthException(ParentApiConstants.NOT_CONFIRMED);
 		}
 		return true;
 	}
