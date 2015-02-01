@@ -2,7 +2,6 @@ package com.djr.spelling.app.services.auth;
 
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.ErrorResponse;
-import com.djr.spelling.app.services.auth.AuthService;
 import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
