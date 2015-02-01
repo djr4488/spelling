@@ -1,6 +1,7 @@
 package com.djr.spelling.app;
 
 import com.djr.spelling.app.child.restapi.ChildApi;
+import com.djr.spelling.app.child.restapi.exceptionmappers.ChildApiExceptionMapper;
 import com.djr.spelling.app.parent.restapi.ParentApi;
 import com.djr.spelling.app.parent.restapi.exceptionmappers.ParentApiExceptionMapper;
 import com.djr.spelling.app.parent.restapi.exceptionmappers.ParentWordExceptionMapper;
@@ -21,6 +22,6 @@ public class SpellingApplication extends Application {
 	public Set<Class<?>> getClasses() {
 		return new HashSet<Class<?>>(Arrays.asList(ParentApi.class, ChildApi.class, SpellingExceptionMapper.class,
 				AuthExceptionMapper.class, ParentApiExceptionMapper.class, AuthFilter.class,
-				ParentWordExceptionMapper.class ));
+				ParentWordExceptionMapper.class, ChildApiExceptionMapper.class ));
 	}
 }
