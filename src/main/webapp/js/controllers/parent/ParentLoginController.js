@@ -32,25 +32,19 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
         }
         $scope.login = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
-            $http.post($scope.url, $scope.req, config).success(
+            console.log("login() config:"+config+" req:"+$scope.req.parentLoginRequest);
+            $http.post($scope.url, $scope.req.parentLoginRequest, config).success(
                 function (data, status) {
                     console.log("posted - success");
                     console.log(data);
                     $scope.status = status;
-                    $scope.resp = data;
-                    if ($scope.resp.parentLoginResponse.errorMsg != null &&
-                        $scope.resp.parentLoginResponse.errorMsg.length > 0) {
-                        console.log("In error page");
-                        $scope.errorMsg = $scope.resp.parentLoginResponse.errorMsg;
-                        $scope.errorBold = $scope.resp.parentLoginResponse.errorBold;
-                    } else {
-                        console.log("In redirect page");
-                        console.log($scope.resp.parentLoginResponse.forwardTo);
-                        $rootScope.authToken = $scope.resp.parentLoginResponse.authToken;
-                        $rootScope.parentId = $scope.resp.parentLoginResponse.id;
-                        if ($scope.resp.parentLoginResponse.forwardTo == 'parentLanding') {
-                            window.location.replace('#parent-landing');
-                        }
+                    $scope.resp.parentLoginResponse = data;
+                    console.log("In redirect page");
+                    console.log($scope.resp.parentLoginResponse.forwardTo);
+                    $rootScope.authToken = $scope.resp.parentLoginResponse.authToken;
+                    $rootScope.parentId = $scope.resp.parentLoginResponse.id;
+                    if ($scope.resp.parentLoginResponse.forwardTo == 'parentLanding') {
+                        window.location.replace('#parent-landing');
                     }
                 }
             ).error(
@@ -61,8 +55,8 @@ parentLoginController.controller('ParentLoginCtrl', ['$rootScope', '$scope', '$h
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
                     $scope.resp = data;
-                    $scope.errorMsg = $scope.resp.errorResponse.errorMsg;
-                    $scope.errorBold = $scope.resp.errorResponse.errorBold;
+                    $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
+                    $scope.errorBold = $scope.errorResp.errorResponse.errorBold;
                 }
             )
         };

@@ -55,8 +55,8 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
                     console.log(status);
                     $scope.data = data || "Request failed.";
                     $scope.status = status;
-                    $scope.errorMsg = $scope.resp.errorResponse.errorMsg;
-                    $scope.errorBold = $scope.resp.errorResponse.errorBold;
+                    $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
+                    $scope.errorBold = $scope.errorResp.errorResponse.errorBold;
                 }
             )
         }

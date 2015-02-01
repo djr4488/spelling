@@ -16,7 +16,8 @@ trackingIdController.controller('TrackingIdCtrl', function ($rootScope, $scope, 
     function init() {
         trackingIdParentService.getTrackingId().then(
             function(data) {
-                $scope.resp.trackingIdResponse = data.data.trackingIdResponse;
+                console.log("getTrackingId() " + data);
+                $scope.resp.trackingIdResponse = data.data;
                 if ($scope.resp.trackingIdResponse.trackingId != null &&
                     $scope.resp.trackingIdResponse.trackingId.length != 0) {
                     $rootScope.trackingId = $scope.resp.trackingIdResponse.trackingId;

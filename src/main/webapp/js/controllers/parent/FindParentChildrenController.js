@@ -20,8 +20,8 @@ findParentChildrenController.controller('FindParentChildrenCtrl', function ($roo
     function init() {
         findParentChildrenService.findParentChildren().then(
             function(data) {
-                $scope.resp.findChildrenResponse = data.data.findChildrenResponse;
-                $scope.children = data.data.findChildrenResponse.parentChildren.child;
+                $scope.resp.findChildrenResponse = data.data;
+                $scope.children = $scope.resp.findChildrenResponse.parentChildren.child;
                 console.log("findChildrenResponse: ");
                 console.log(data);
             }
