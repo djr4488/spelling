@@ -29,7 +29,7 @@ import java.util.List;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ParentServiceBean {
-	@PersistenceContext(name = "jdbc/SpellingPersistence")
+	@PersistenceContext(name = "SpellingPersistence")
 	private EntityManager em;
 	@Inject
 	private Logger log;

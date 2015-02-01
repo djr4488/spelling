@@ -23,7 +23,7 @@ import java.util.List;
 public class ChildServiceBean {
 	@Inject
 	private Logger log;
-	@PersistenceContext(name = "jdbc/SpellingPersistence")
+	@PersistenceContext(name = "SpellingPersistence")
 	private EntityManager em;
 
 	public ChildUser findChildUser(String username, String password, String trackingId)

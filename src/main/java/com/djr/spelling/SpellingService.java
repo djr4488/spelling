@@ -16,7 +16,7 @@ import javax.persistence.TypedQuery;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class SpellingService {
-	@PersistenceContext(name = "jdbc/SpellingPersistence")
+	@PersistenceContext(name = "SpellingPersistence")
 	private EntityManager em;
 	@Inject
 	private Logger log;
