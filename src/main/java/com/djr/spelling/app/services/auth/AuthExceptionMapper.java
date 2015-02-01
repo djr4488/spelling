@@ -1,7 +1,7 @@
-package com.djr.spelling.app;
+package com.djr.spelling.app.services.auth;
 
+import com.djr.spelling.app.BaseExceptionMapper;
 import com.djr.spelling.app.exceptions.AuthException;
-import com.djr.spelling.app.parent.restapi.ParentApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -22,22 +22,22 @@ public class AuthExceptionMapper extends BaseExceptionMapper implements Exceptio
 	public Response toResponse(AuthException e) {
 		log.error("toResponse() request:{}, exception:{}", request, e);
 		switch(e.getMessage()) {
-			case ParentApiConstants.USER_NOT_FOUND: {
+			case AuthConstants.USER_NOT_FOUND: {
 				return handleAuthException();
 			}
-			case ParentApiConstants.GENERAL_AUTH: {
+			case AuthConstants.GENERAL_AUTH: {
 				return handleAuthGeneralException();
 			}
-			case ParentApiConstants.NOT_CONFIRMED: {
+			case AuthConstants.NOT_CONFIRMED: {
 				return handleNotConfirmedPassword();
 			}
-			case ParentApiConstants.EMAIL_EXISTS: {
+			case AuthConstants.EMAIL_EXISTS: {
 				return handleEmailExists();
 			}
-			case ParentApiConstants.GENERAL_CREATE: {
+			case AuthConstants.GENERAL_CREATE: {
 				return handleGeneralCreate();
 			}
-			case ParentApiConstants.CREATE_INVALID_TRACKING: {
+			case AuthConstants.CREATE_INVALID_TRACKING: {
 				return handleCreateInvalidTracking();
 			}
 			default: {

@@ -2,9 +2,13 @@ package com.djr.spelling.app.child.service;
 
 
 import com.djr.spelling.*;
+import com.djr.spelling.app.child.ChildConstants;
+import com.djr.spelling.app.child.exceptions.ChildApiException;
 import com.djr.spelling.app.child.model.QuizWordModel;
 import com.djr.spelling.app.child.model.QuizWordWrapper;
+import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.exceptions.SpellingException;
+import com.djr.spelling.app.services.auth.AuthConstants;
 import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,7 +27,7 @@ public class ChildServiceBean {
 	private EntityManager em;
 
 	public ChildUser findChildUser(String username, String password, String trackingId)
-	throws SpellingException {
+	throws AuthException {
 		log.debug("findChildUser() trackingId:{}, username:{}", trackingId, username);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findChildUser", ChildUser.class);
@@ -32,12 +36,15 @@ public class ChildServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findChildUser() no results found");
-			throw new SpellingException("No child found");
+			throw new AuthException(AuthConstants.USER_NOT_FOUND);
+		} catch (Exception ex) {
+			throw new AuthException(AuthConstants.GENERAL_AUTH);
 		}
 	}
 
+
 	public QuizWordWrapper createQuiz(String timeType, String locationType, Integer childId, String trackingId)
-	throws SpellingException {
+	throws ChildApiException {
 		log.debug("getQuiz() timeType:{}, locationType:{}, childId:{}, trackingId:{}", timeType, locationType,
 				childId, trackingId);
 		String query = getQuizQuery(timeType, locationType, trackingId);
@@ -60,7 +67,10 @@ public class ChildServiceBean {
 			return new QuizWordWrapper(qwmList, quiz.id);
 		} catch (NoResultException nrEx) {
 			log.debug("getQuiz() no results found");
-			throw new SpellingException("Something went wrong generating quiz");
+			throw new ChildApiException(ChildConstants.CREATE_QUIZ_NO_RESULT);
+		} catch (Exception ex) {
+			log.error("createQuiz() ex:{}", ex);
+			throw new ChildApiException(ChildConstants.CREATE_QUIZ_FAILED);
 		}
 	}
 

@@ -4,6 +4,8 @@ import com.djr.spelling.app.child.restapi.ChildApi;
 import com.djr.spelling.app.parent.restapi.ParentApi;
 import com.djr.spelling.app.parent.restapi.exceptionmappers.ParentApiExceptionMapper;
 import com.djr.spelling.app.parent.restapi.exceptionmappers.ParentWordExceptionMapper;
+import com.djr.spelling.app.services.auth.AuthExceptionMapper;
+import com.djr.spelling.app.services.auth.AuthFilter;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Arrays;

@@ -1,9 +1,8 @@
 package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.BaseExceptionMapper;
-import com.djr.spelling.app.ErrorResponse;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
-import com.djr.spelling.app.parent.restapi.ParentApiConstants;
+import com.djr.spelling.app.parent.ParentApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;

@@ -9,7 +9,8 @@ import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
-import com.djr.spelling.app.parent.restapi.ParentApiConstants;
+import com.djr.spelling.app.parent.ParentApiConstants;
+import com.djr.spelling.app.services.auth.AuthConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import javax.ejb.Stateless;
@@ -42,12 +43,12 @@ public class ParentServiceBean {
 			TypedQuery<User> query = em.createNamedQuery("findExistingUserByEmailAddress", User.class);
 			query.setParameter("emailAddress", user.emailAddress);
 			query.getSingleResult();
-			throw new AuthException(ParentApiConstants.EMAIL_EXISTS);
+			throw new AuthException(AuthConstants.EMAIL_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
 		} catch (Exception ex) {
 			log.debug("createParentAccount() exception occurred", ex);
-			throw new AuthException(ParentApiConstants.GENERAL_CREATE);
+			throw new AuthException(AuthConstants.GENERAL_CREATE);
 		}
 		em.persist(user);
 	}
@@ -80,10 +81,10 @@ public class ParentServiceBean {
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
-			throw new AuthException(ParentApiConstants.USER_NOT_FOUND);
+			throw new AuthException(AuthConstants.USER_NOT_FOUND);
 		} catch (Exception ex) {
 			log.debug("findParentAccount() general exception occurred", ex);
-			throw new AuthException(ParentApiConstants.GENERAL_AUTH);
+			throw new AuthException(AuthConstants.GENERAL_AUTH);
 		}
 	}
 
@@ -298,7 +299,7 @@ public class ParentServiceBean {
 	public boolean confirmPasswords(String password, String confirmPassword)
 	throws AuthException {
 		if (!password.equals(confirmPassword)) {
-			throw new AuthException(ParentApiConstants.NOT_CONFIRMED);
+			throw new AuthException(AuthConstants.NOT_CONFIRMED);
 		}
 		return true;
 	}

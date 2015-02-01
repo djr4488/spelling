@@ -2,8 +2,7 @@ package com.djr.spelling.app.parent.restapi.exceptionmappers;
 
 import com.djr.spelling.app.BaseExceptionMapper;
 import com.djr.spelling.app.parent.exceptions.ParentApiException;
-import com.djr.spelling.app.parent.restapi.ParentApiConstants;
-import com.djr.spelling.app.ErrorResponse;
+import com.djr.spelling.app.parent.ParentApiConstants;
 import com.djr.spelling.app.parent.restapi.model.FindChildrenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,8 @@ public class ParentApiExceptionMapper extends BaseExceptionMapper implements Exc
 	}
 
 	public Response handleNoChildrenFound() {
-		return getFindChildrenResponse("We did find that you had any children.  Do you need to create them?", "Oops!", Response.Status.NOT_FOUND);
+		return getFindChildrenResponse("We didn't find that you had any children.  Do you need to create them?",
+				"Oops!", Response.Status.NOT_FOUND);
 	}
 
 	public Response handleFindParentChildrenFailed() {
