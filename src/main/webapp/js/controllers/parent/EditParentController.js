@@ -35,10 +35,10 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
         $scope.editParent = function() {
             console.log("editParent() id:" + $rootScope.parentId);
             var config = {headers: { 'trackingId': $rootScope.trackingId, 'auth-token': $rootScope.authToken }};
-            $http.post($scope.url, $scope.req, config).success(
+            $http.post($scope.url, $scope.req.editParentRequest, config).success(
                 function(data, status) {
                     $scope.status = status;
-                    $scope.resp = data;
+                    $scope.resp.editParentResponse = data;
                     console.log("editParent() status:" + status + " resp:" + $scope.resp);
                     if ($scope.resp.editParentResponse.errorMsg != null &&
                         $scope.resp.editParentResponse.errorMsg.length > 0) {
@@ -56,7 +56,7 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
                     console.log("Failed request");
                     console.log(data);
                     console.log(status);
-                    $scope.data = data || "Request failed.";
+                    $scope.data.errorResp = data || "Request failed.";
                     $scope.status = status;
                     $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
                     $scope.errorBold = $scope.errorResp.errorResponse.errorBold;
