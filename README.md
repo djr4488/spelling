@@ -11,7 +11,7 @@ Bring kids, parents, and educators together.
 
 Future?
 
-Add other things to help kids learn, like math and reading.  But I think the key is parent and teach involvement.  Also I think that competition is good, so why not have weekly competitive objectives?  See how kids from around the country(world maybe?) compete?
+Add other things to help kids learn, like math and reading.  But I think the key is parent and teacher involvement.  Also I think that competition is good, so why not have weekly competitive objectives?  See how kids from around the country(world maybe?) compete?
 
 Want to contribute?
 
