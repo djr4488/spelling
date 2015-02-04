@@ -11,6 +11,7 @@
         </div>
     </div>
 </div>
+<div class="page-header banner"></div>
 <div class="alert alert-warning" ng-show="errorMsg">
     <strong>{{errorBold}} </strong>{{errorMsg}}
 </div>
@@ -18,7 +19,6 @@
     <strong>{{msgBold}} </strong>{{msg}}
 </div>
 <div class="container">
-    <div class="page-header banner"></div>
     <accordion close-others="oneAtATime">
         <accordion-group heading="{{child.username}}" ng-repeat="child in children">
             <form class="form-signin">

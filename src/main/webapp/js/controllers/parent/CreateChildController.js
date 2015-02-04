@@ -59,7 +59,7 @@ createChildController.controller('CreateChildCtrl', ['$rootScope', '$scope', '$h
                     console.log("Failed request");
                     console.log(data);
                     console.log(status);
-                    $scope.data = data || "Request failed.";
+                    $scope.errorResp.errorResponse = data || "Request failed.";
                     $scope.status = status;
                     $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
                     $scope.errorBold = $scope.errorResp.errorResponse.errorBold;
