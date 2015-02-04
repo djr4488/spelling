@@ -32,13 +32,15 @@ public class AuthFilter implements ContainerRequestFilter {
 		Response.Status status = null;
 		boolean authenticated = false;
 		if (path.contains("parent/sp/")) {
+			log.debug("filter() checking semi-protected request");
 			trackingId = context.getHeaderString(Constants.TRACKING_ID);
 			authToken = context.getHeaderString(Constants.AUTH_TOKEN);
 			authenticated = authService.validateTrackingId(trackingId, authToken, false);
 			msg = "Didn't recognize you!  Maybe you typed the wrong password or need to create a user name?";
 			bold = "Oops!";
 			status = Response.Status.UNAUTHORIZED;
-		} else if (path.contains("parent/login")) {
+		} else if (path.contains("parent/login") || path.contains("parent/createParent")) {
+			log.debug("filter() checking tracked request");
 			trackingId = context.getHeaderString(Constants.TRACKING_ID);
 			authenticated = authService.validateTrackingId(trackingId, null, true);
 			if (!authenticated) {
@@ -52,6 +54,7 @@ public class AuthFilter implements ContainerRequestFilter {
 				status = Response.Status.BAD_REQUEST;
 			}
 		} else {
+			log.debug("filter() tracking id request");
 			authenticated = true;
 		}
 		if (!authenticated) {

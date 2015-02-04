@@ -5,7 +5,7 @@ var parentCreateController = angular.module("parentCreateController", []);
 
 parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '$http',
     function($rootScope, $scope, $http) {
-        $scope.url = '/api/parent/createParentUser';
+        $scope.url = '/api/parent/createParent';
         $scope.req = {
             parentCreateRequest: {
                 username: "",
@@ -34,10 +34,10 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
         }
         $scope.createParent = function() {
             var config = {headers: { 'trackingId': $rootScope.trackingId }};
-            $http.post($scope.url, $scope.req, config).success(
+            $http.post($scope.url, $scope.req.parentCreateRequest, config).success(
                 function (data, status) {
                     $scope.status = status;
-                    $scope.resp = data;
+                    $scope.resp.parentCreateResponse = data;
                     if ($scope.resp.parentCreateResponse.errorMsg != null &&
                         $scope.resp.parentCreateResponse.errorMsg.length > 0) {
                         $scope.errorMsg = $scope.resp.parentCreateResponse.errorMsg;
@@ -53,7 +53,7 @@ parentCreateController.controller('ParentCreateCtrl', ['$rootScope', '$scope', '
                     console.log("Failed request");
                     console.log(data);
                     console.log(status);
-                    $scope.data = data || "Request failed.";
+                    $scope.errorResp.errorResponse = data || "Request failed.";
                     $scope.status = status;
                     $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
                     $scope.errorBold = $scope.errorResp.errorResponse.errorBold;

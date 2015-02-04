@@ -99,10 +99,10 @@ public class ParentApi extends BaseApi {
 		return response;
 	}
 
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("sp/{parentId}/edit}")
+	@Path("sp/{parentId}/editParent")
 	public Response editParent(EditParentRequest request, @PathParam(Constants.PARENT_ID) Integer userId,
 	                           @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                           @HeaderParam(Constants.AUTH_TOKEN) String authToken)

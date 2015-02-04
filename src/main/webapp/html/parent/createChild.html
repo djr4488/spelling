@@ -12,11 +12,11 @@
         </div>
     </div>
 </div>
+<div class="page-header banner"></div>
 <div class="alert alert-warning" ng-show="errorMsg">
     <strong>{{errorBold}} </strong>{{errorMsg}}
 </div>
 <div class="container">
-    <div class="page-header banner"></div>
     <form class="form-create">
         <h2 class="form-create-heading">Create an account</h2>
         <input type="text" ng-model="req.childUserCreateRequest.username" placeholder="User name"
@@ -40,3 +40,22 @@
     </form>
 </div>
 <hr class="featurette-divider"/>
+<div class="container marketing">
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Manage children</h2>
+            <p><a href="#create-child">Create</a> a child account</p>
+            <p><a href="#find-children">Edit</a> a child account</p>
+            <p><a href="#edit-word">Check </a>how your child is doing</p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Manage words</h2>
+            <p><a href="#create-word">Create</a> a new word</p>
+            <p><a href="#edit-word">Edit </a> incorrectly spelled words</p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Manage yourself</h2>
+            <p><a href="#edit-parent">Edit </a> your account</p>
+        </div>
+    </div>
+</div>
