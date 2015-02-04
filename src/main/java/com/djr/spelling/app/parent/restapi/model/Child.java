@@ -1,5 +1,6 @@
 package com.djr.spelling.app.parent.restapi.model;
 
+import com.djr.spelling.ChildUser;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -15,11 +16,28 @@ public class Child {
 	public String username;
 	@XmlElement
 	public Integer id;
+	@XmlElement
+	public String state;
+	@XmlElement
+	public String city;
+	@XmlElement
+	public String school;
+	@XmlElement
+	public String grade;
 
 	public Child() {}
 
 	public Child(String username, Integer id) {
 		this.username= username;
 		this.id = id;
+	}
+
+	public Child(ChildUser childUser) {
+		this.username = childUser.username;
+		this.id = childUser.id;
+		this.state = childUser.location.state.stateAbbr;
+		this.city = childUser.location.city.cityName;
+		this.school = childUser.location.school.schoolName;
+		this.grade = childUser.grade.grade;
 	}
 }

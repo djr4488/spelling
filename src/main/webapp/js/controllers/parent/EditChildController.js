@@ -8,7 +8,10 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
                 originalPassword: "",
                 password: "",
                 confirmPassword: "",
-                childId: ""
+                stateAbbr:"",
+                cityName:"",
+                schoolName:"",
+                grade:""
             }
         }
         $scope.resp = {

@@ -25,7 +25,7 @@ public class ParentChildren extends BaseResponse implements Serializable {
 	public ParentChildren(List<ChildUser> childUsers) {
 		parentChildren = new ArrayList<>();
 		for (ChildUser childUser : childUsers) {
-			parentChildren.add(new Child(childUser.username, childUser.id));
+			parentChildren.add(new Child(childUser));
 		}
 	}
 }

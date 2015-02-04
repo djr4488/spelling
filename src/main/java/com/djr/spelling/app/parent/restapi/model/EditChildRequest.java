@@ -28,6 +28,18 @@ public class EditChildRequest extends BaseRequest implements Serializable {
 	@XmlElement
 	@NotNull
 	public String confirmPassword;
+	@XmlElement
+	@NotNull
+	public String stateAbbr;
+	@XmlElement
+	@NotNull
+	public String cityName;
+	@XmlElement
+	@NotNull
+	public String schoolName;
+	@XmlElement
+	@NotNull
+	public String grade;
 
 	public ChildUser getUserEntity() {
 		return new ChildUser(username, password);
