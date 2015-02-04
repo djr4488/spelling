@@ -3,9 +3,9 @@
  */
 var editParentController = angular.module("editParentController", []);
 
-editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http',
+editParentController.controller('EditParentCtrl', ['$rootScope', '$scope', '$http',
     function($rootScope, $scope, $http) {
-        $scope.url = '/api/parent/sp/'+$rootScope.parentId+'/edit';
+        $scope.url = '/api/parent/sp/'+$rootScope.parentId+'/editParent';
         $scope.req = {
             editParentRequest: {
                 originalPassword: "",
@@ -56,7 +56,7 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
                     console.log("Failed request");
                     console.log(data);
                     console.log(status);
-                    $scope.data.errorResp = data || "Request failed.";
+                    $scope.errorResp.errorResponse = data || "Request failed.";
                     $scope.status = status;
                     $scope.errorMsg = $scope.errorResp.errorResponse.errorMsg;
                     $scope.errorBold = $scope.errorResp.errorResponse.errorBold;

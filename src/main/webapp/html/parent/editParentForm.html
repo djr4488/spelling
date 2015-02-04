@@ -21,11 +21,29 @@
 <div class="container">
     <form class="form-signin">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="email" ng-model="req.editParentRequest.oldPassword" placeholder="old password"
-               class="form-control"/>
+        <input type="password" ng-model="req.editParentRequest.originalPassword" placeholder="original password" class="form-control"/>
         <input type="password" ng-model="req.editParentRequest.password" placeholder="password" class="form-control"/>
         <input type="password" ng-model="req.editParentRequest.confirmPassword" placeholder="confirm password" class="form-control"/><br/>
-        <button id="update-password" ng-click="updatePassword()" class="btn btn-lg btn-primary btn-block">Update Password</button>
+        <button id="editParentPassword" ng-click="editParent()" class="btn btn-lg btn-primary btn-block">Update Password</button>
     </form>
 </div>
 <hr class="featurette-divider"/>
+<div class="container marketing">
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Manage children</h2>
+            <p><a href="#create-child">Create</a> a child account</p>
+            <p><a href="#find-children">Edit</a> a child account</p>
+            <p><a href="#edit-word">Check </a>how your child is doing</p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Manage words</h2>
+            <p><a href="#create-word">Create</a> a new word</p>
+            <p><a href="#edit-word">Edit </a> incorrectly spelled words</p>
+        </div>
+        <div class="col-lg-4">
+            <h2>Manage yourself</h2>
+            <p><a href="#edit-parent">Edit </a> your account</p>
+        </div>
+    </div>
+</div>
