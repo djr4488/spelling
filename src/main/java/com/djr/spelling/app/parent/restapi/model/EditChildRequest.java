@@ -1,7 +1,8 @@
 package com.djr.spelling.app.parent.restapi.model;
 
-import com.djr.spelling.ChildUser;
+import com.djr.spelling.*;
 import com.djr.spelling.app.BaseRequest;
+import com.djr.spelling.app.services.auth.AuthService;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,6 +44,16 @@ public class EditChildRequest extends BaseRequest implements Serializable {
 
 	public ChildUser getUserEntity() {
 		return new ChildUser(username, password);
+	}
+
+	public ChildUser getChildUser(SpellingService spellingService, AuthService authService, User parent) {
+		State state = spellingService.createOrFindState(new State(null, stateAbbr));
+		City city = spellingService.createOrFindCity(new City(cityName));
+		School school = spellingService.createOrFindSchool(new School(schoolName, false, false));
+		Grade gradeEntity = spellingService.createOrFindGrade(new Grade(grade));
+		Location location = spellingService.createOrFindLocation(new Location(state, city, school));
+		ChildUser childUser = new ChildUser(username, password, location, gradeEntity, parent, authService);
+		return childUser;
 	}
 
 	@Override

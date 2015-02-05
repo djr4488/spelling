@@ -16,13 +16,13 @@ public class Child {
 	public String username;
 	@XmlElement
 	public Integer id;
-	@XmlElement
+	@XmlElement(name="stateAbbr")
 	public String state;
-	@XmlElement
+	@XmlElement(name="cityName")
 	public String city;
-	@XmlElement
+	@XmlElement(name="schoolName")
 	public String school;
-	@XmlElement
+	@XmlElement(name="grade")
 	public String grade;
 
 	public Child() {}
