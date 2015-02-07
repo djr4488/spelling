@@ -65,7 +65,7 @@ addWordController.controller('AddWordCtrl', ['$rootScope', '$scope', '$http', 'f
                         $scope.errorBold = $scope.addWordResponse.errorBold;
                     } else {
                         $rootScope.authToken = $scope.addWordResponse.authToken;
-                        window.location.replace('#find-children')
+                        window.location.replace('#add-word')
                     }
                 }
             ).error(
