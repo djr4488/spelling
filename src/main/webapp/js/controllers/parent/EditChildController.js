@@ -2,7 +2,7 @@ var editChildController = angular.module("editChildController", []);
 
 editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http', 'findParentChildrenService',
     function($rootScope, $scope, $http, findParentChildrenService) {
-        $scope.url = '/api/parent/sp/'+$rootScope.parentId+'/editChild/';
+        $scope.baseUrl = '/api/parent/sp/'+$rootScope.parentId+'/editChild/';
         $scope.req = {
             editChildRequest: {
                 originalPassword: "",
@@ -59,7 +59,7 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
         $scope.editChild = function(childId, stateAbbr, cityName, schoolName, grade) {
             console.log("editChild() childId:" + childId);
             var config = {headers: { 'trackingId': $rootScope.trackingId, 'auth-token': $rootScope.authToken }};
-            $scope.url = $scope.url + childId;
+            $scope.url = $scope.baseUrl + childId;
             $scope.req.editChildRequest.stateAbbr = stateAbbr;
             $scope.req.editChildRequest.cityName = cityName;
             $scope.req.editChildRequest.schoolName = schoolName;

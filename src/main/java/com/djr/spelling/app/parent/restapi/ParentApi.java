@@ -188,7 +188,7 @@ public class ParentApi extends BaseApi {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("sp/{parentId}/word/{childId}")
+	@Path("sp/{parentId}/addWord/{childId}")
 	public Response addWord(AddWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                        @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                        @HeaderParam(Constants.TRACKING_ID) String trackingId)
