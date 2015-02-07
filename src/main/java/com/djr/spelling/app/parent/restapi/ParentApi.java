@@ -176,7 +176,8 @@ public class ParentApi extends BaseApi {
 		Response response;
 		parentService.confirmPasswords(request.password, request.confirmPassword);
 		ChildUser originalUser = parentService.findParentChild(childId, trackingId);
-		parentService.editChildPassword(originalUser, authService.getPasswordHash(request.password), trackingId);
+		User parent = parentService.findParentAccount(parentId, trackingId);
+		parentService.editChild(originalUser, request.getChildUser(spellingService, authService, parent), trackingId);
 		resp = new EditChildResponse(Constants.EDIT_CHILD_LANDING);
 		resp.authToken = authService.getAuthToken(trackingId);
 		response = Response.status(Response.Status.OK).entity(resp).build();

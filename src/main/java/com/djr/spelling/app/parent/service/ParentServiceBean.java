@@ -47,7 +47,7 @@ public class ParentServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
 		} catch (Exception ex) {
-			log.debug("createParentAccount() exception occurred", ex);
+			log.error("createParentAccount() exception occurred ex:{}", ex);
 			throw new AuthException(AuthConstants.GENERAL_CREATE);
 		}
 		em.persist(user);
@@ -64,7 +64,7 @@ public class ParentServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
 		} catch (Exception ex) {
-			log.debug("createChildAccount() exception occurred", ex);
+			log.error("createChildAccount() exception occurred ex:{}", ex);
 			throw new ParentApiException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
 		}
 		log.debug("createChildAccount() persisting childUser:{}", user);
@@ -83,7 +83,7 @@ public class ParentServiceBean {
 			log.debug("findParentAccount() no user account found trackingId:{}", trackingId);
 			throw new AuthException(AuthConstants.USER_NOT_FOUND);
 		} catch (Exception ex) {
-			log.debug("findParentAccount() general exception occurred", ex);
+			log.error("findParentAccount() general exception occurred ex:{}", ex);
 			throw new AuthException(AuthConstants.GENERAL_AUTH);
 		}
 	}
@@ -118,6 +118,7 @@ public class ParentServiceBean {
 			log.debug("findParentChildren() no children found. trackingId:{}", trackingId);
 			throw new ParentApiException(ParentApiConstants.NO_CHILDREN_FOUND);
 		} catch (Exception ex) {
+			log.error("findParentChildren() ex:{}", ex);
 			throw new ParentApiException(ParentApiConstants.FIND_PARENT_CHILDREN_FAILED);
 		}
 	}
@@ -131,19 +132,21 @@ public class ParentServiceBean {
 			log.debug("findParentChild() no child found. trackingId:{}", trackingId);
 			throw new ParentApiException(ParentApiConstants.NO_CHILD_BY_ID);
 		} catch (Exception ex) {
+			log.error("findParentChild() ex:{}", ex);
 			throw new ParentApiException(ParentApiConstants.FIND_PARENT_CHILD_FAILED);
 		}
 	}
 
-	public void editChildPassword(ChildUser original, String password, String trackingId)
+	public void editChild(ChildUser original, ChildUser updated, String trackingId)
 	throws ParentApiException {
-		log.debug("findParentChildren() original:{}, password:{}, trackingId:{}", original, password, trackingId);
-		original.password = password;
+		log.debug("findParentChildren() original:{}, updated:{}, trackingId:{}", original, updated, trackingId);
+		original.updateChildUser(updated);
 		try {
 			if (!em.contains(original)) {
 				em.merge(original);
 			}
 		} catch (Exception ex) {
+			log.error("editChildPassword() ex:{}", ex);
 			throw new ParentApiException(ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED);
 		}
 	}

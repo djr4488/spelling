@@ -58,6 +58,12 @@ public class ChildUser extends Identifiable {
 		this.password = password;
 	}
 
+	public void updateChildUser(ChildUser updated) {
+		this.password = updated.password;
+		this.location = updated.location;
+		this.grade = updated.grade;
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
