@@ -16,6 +16,7 @@ import com.djr.spelling.app.parent.restapi.model.*;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
 import org.apache.commons.codec.language.DoubleMetaphone;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -198,7 +199,9 @@ public class ParentApi extends BaseApi {
 		User parent = parentService.findParentAccount(parentId, trackingId);
 		ChildUser child = parentService.findParentChild(childId, trackingId);
 		Word word = parentService.createOrFindWord(parent, request.getWordEntity(dm), trackingId);
-		Week week = parentService.createOrFindWeek(getWeekEntity(request.startOfWeek, request.endOfWeek), trackingId);
+		DateTime startOfWeek = DateTime.parse(request.startOfWeek).withTimeAtStartOfDay();
+		DateTime endOfWeek = DateTime.parse(request.endOfWeek).withTimeAtStartOfDay();
+		Week week = parentService.createOrFindWeek(getWeekEntity(startOfWeek.toDate(), endOfWeek.toDate()), trackingId);
 		WordLocation wordLocation = getWordLocationEntity(child, word, week);
 		parentService.createOrFindWordLocation(wordLocation, trackingId);
 		parentService.createOrFindWordSentence(getSentenceEntity(request.sentence, word), trackingId);

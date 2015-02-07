@@ -29,10 +29,10 @@ public class AddWordRequest extends BaseRequest implements Serializable {
 	public String sentence;
 	@XmlElement
 	@NotNull
-	public Date startOfWeek;
+	public String startOfWeek;
 	@XmlElement
 	@NotNull
-	public Date endOfWeek;
+	public String endOfWeek;
 
 	public Word getWordEntity(DoubleMetaphone dm) {
 		Word word = new Word(this.word, dm.doubleMetaphone(this.word));
