@@ -22,19 +22,12 @@
     <accordion close-others="oneAtATime" ng-init="children">
         <accordion-group heading="{{parentChild.username}}" ng-repeat="parentChild in children">
             <form class="form-signin">
-                <h2 class="form-signin-heading">Provide the original and new passwords below</h2>
-                <input type="password" ng-model="req.editChildRequest.originalPassword" placeholder="Original password"
-                       class="form-control"/>
-                <input type="password" ng-model="req.editChildRequest.password" placeholder="New password"
-                       class="form-control"/>
-                <input type="password" ng-model="req.editChildRequest.confirmPassword" placeholder="Confirm password"
-                       class="form-control"/>
-                <input type="text" ng-model="parentChild.stateAbbr" class="form-control"/>
-                <input type="text" ng-model="parentChild.cityName" class="form-control"/>
-                <input type="text" ng-model="parentChild.schoolName" class="form-control"/>
-                <input type="text" ng-model="parentChild.grade" class="form-control"/>
-                <button id="editChildPassword" ng-click="editChild(parentChild.id, parentChild.stateAbbr, parentChild.cityName, parentChild.schoolName, parentChild.grade)"
-                        class="btn btn-lg btn-primary btn-block">Update Child</button>
+                <h2 class="form-signin-heading">Type a word below you wish to add</h2>
+                <input type="text" ng-model="addWordRequest.word" class="form-control"/>
+                <input type="text" ng-model="addWordRequest.sentence" class="form-control"/>
+                <input type="date" ng-model="addWordRequest.startOfWeek" class="form-control"/>
+                <input type="date" ng-model="addWordRequest.endOfWeek" class="form-control"/>
+                <button id="addWordForChild" ng-click="addWordForChild(parentChild.id)" class="btn btn-lg btn-primary btn-block">Update Child</button>
             </form>
         </accordion-group>
     </accordion>
@@ -59,4 +52,3 @@
         </div>
     </div>
 </div>
-
