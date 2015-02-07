@@ -19,8 +19,8 @@
     <strong>{{msgBold}} </strong>{{msg}}
 </div>
 <div class="container">
-    <accordion close-others="oneAtATime">
-        <accordion-group heading="{{child.username}}" ng-repeat="child in children">
+    <accordion close-others="oneAtATime" ng-init="children">
+        <accordion-group heading="{{parentChild.username}}" ng-repeat="parentChild in children">
             <form class="form-signin">
                 <h2 class="form-signin-heading">Provide the original and new passwords below</h2>
                 <input type="password" ng-model="req.editChildRequest.originalPassword" placeholder="Original password"
@@ -29,11 +29,12 @@
                        class="form-control"/>
                 <input type="password" ng-model="req.editChildRequest.confirmPassword" placeholder="Confirm password"
                        class="form-control"/>
-                <input type="text" ng-model="req.editChildRequest.stateAbbr" value="{{child.stateAbbr}}" class="form-control"/>
-                <input type="text" ng-model="req.editChildRequest.cityName" value="{{child.cityName}}" class="form-control"/>
-                <input type="text" ng-model="req.editChildRequest.schoolName" value="{{child.schoolName}}" class="form-control"/>
-                <input type="text" ng-model="req.editChildRequest.grade" value="{{child.grade}}" class="form-control"/>
-                <button id="editChildPassword" ng-click="editChild(child.id)" class="btn btn-lg btn-primary btn-block">Update Child</button>
+                <input type="text" ng-model="parentChild.stateAbbr" class="form-control"/>
+                <input type="text" ng-model="parentChild.cityName" class="form-control"/>
+                <input type="text" ng-model="parentChild.schoolName" class="form-control"/>
+                <input type="text" ng-model="parentChild.grade" class="form-control"/>
+                <button id="editChildPassword" ng-click="editChild(child.id, parentChild.stateAbbr, parentChild.cityName, parentChild.schoolName, parentChild.grade)"
+                        class="btn btn-lg btn-primary btn-block">Update Child</button>
             </form>
         </accordion-group>
     </accordion>

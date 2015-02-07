@@ -17,7 +17,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ParentChildren extends BaseResponse implements Serializable {
 	private static final long serialVersionUID = 1;
-	@XmlElement(name="child")
+	@XmlElement(name="parentChild")
 	public List<Child> parentChildren;
 
 	public ParentChildren() { }

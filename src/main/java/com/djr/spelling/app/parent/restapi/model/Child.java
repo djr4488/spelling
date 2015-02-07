@@ -39,5 +39,13 @@ public class Child {
 		this.city = childUser.location.city.cityName;
 		this.school = childUser.location.school.schoolName;
 		this.grade = childUser.grade.grade;
+		System.out.println(toString());
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder("Child{id=");
+		sb.append(id).append(",state=").append(state).append(",city=").append(city);
+		sb.append("school=").append(school).append(",grade=").append(grade).append("}");
+		return sb.toString();
 	}
 }

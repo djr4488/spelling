@@ -31,7 +31,7 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
                 errorBold: "",
                 authToken: "",
                 parentChildren: {
-                    child: [{ }]
+                    parentChild: [{ }]
                 }
             }
         }
@@ -50,16 +50,20 @@ editChildController.controller('EditChildCtrl', ['$rootScope', '$scope', '$http'
             findParentChildrenService.findParentChildren().then(
                 function(data) {
                     $scope.respInit.findChildrenResponse = data.data;
-                    $scope.children = data.data.parentChildren.child;
+                    $scope.children = data.data.parentChildren.parentChild;
                     console.log("findChildrenResponse: ");
                     console.log(data);
                 }
             );
         }
-        $scope.editChild = function(childId) {
+        $scope.editChild = function(childId, stateAbbr, cityName, schoolName, grade) {
             console.log("editChild() childId:" + childId);
             var config = {headers: { 'trackingId': $rootScope.trackingId, 'auth-token': $rootScope.authToken }};
             $scope.url = $scope.url + childId;
+            $scope.req.editChildRequest.stateAbbr = stateAbbr;
+            $scope.req.editChildRequest.cityName = cityName;
+            $scope.req.editChildRequest.schoolName = schoolName;
+            $scope.req.editChildRequest.grade = grade;
             $http.post($scope.url, $scope.req.editChildRequest, config).success(
                 function (data, status) {
                     $scope.status = status;
