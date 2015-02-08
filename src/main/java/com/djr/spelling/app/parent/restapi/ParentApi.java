@@ -214,6 +214,27 @@ public class ParentApi extends BaseApi {
 		return Response.status(Response.Status.CREATED).entity(resp).build();
 	}
 
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("sp/{parentId}/editWord")
+	public Response editWord(EditWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
+	                         @HeaderParam(Constants.AUTH_TOKEN) String authToken,
+	                         @HeaderParam(Constants.TRACKING_ID) String trackingId)
+	throws AuthException, ParentApiException, ParentWordException {
+		log.info("editWord() request:{}, parentId:{}, trackingId:{}", request, parentId, trackingId);
+		EditWordResponse resp;
+		User parent = parentService.findParentAccount(parentId, trackingId);
+		Word originalWord = parentService.findWord(request.getWordEntity(dm), trackingId);
+		parentService.editWord(parent, originalWord, request.getEditedWordEntity(dm), trackingId);
+		resp = new EditWordResponse();
+		resp.wordId = originalWord.id;
+		resp.authToken = authService.getAuthToken(trackingId);
+		resp.forwardTo = Constants.PARENT_LANDING;
+		log.debug("editWord() completed trackingId:{}", trackingId);
+		return Response.status(Response.Status.OK).entity(resp).build();
+	}
+
 	private WordLocation getWordLocationEntity(ChildUser child, Word word, Week week) {
 		WordLocation wordLocation = new WordLocation();
 		wordLocation.grade = child.grade;
