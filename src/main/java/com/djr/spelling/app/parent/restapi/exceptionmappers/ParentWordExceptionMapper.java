@@ -24,7 +24,8 @@ public class ParentWordExceptionMapper extends BaseExceptionMapper implements Ex
 			case ParentApiConstants.CREATE_OR_FIND_WORD_FAILED:
 			case ParentApiConstants.CREATE_OR_FIND_WEEK_FAILED:
 			case ParentApiConstants.CREATE_OR_FIND_WORD_LOCATION_FAILED:
-			case ParentApiConstants.CREATE_OR_FIND_WORD_SENTENCE_FAILED: {
+			case ParentApiConstants.CREATE_OR_FIND_WORD_SENTENCE_FAILED:
+			case ParentApiConstants.EDIT_WORD: {
 				return handleCreateOrFindWordFailed();
 			}
 			default: {
@@ -34,7 +35,7 @@ public class ParentWordExceptionMapper extends BaseExceptionMapper implements Ex
 	}
 
 	public Response handleCreateOrFindWordFailed() {
-		return getErrorResponse("Something prevented me from adding this word.", "Can you try again?",
+		return getErrorResponse("Something prevented me from adding/editing this word.", "Can you try again?",
 				Response.Status.INTERNAL_SERVER_ERROR);
 	}
 }

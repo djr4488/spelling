@@ -290,12 +290,17 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void editWord(User user, Word originalWord, Word editedWord, String trackingId) {
-		log.debug("editWord() user:{}, word:{}, trackingId:{}");
+	public void editWord(User user, Word originalWord, Word editedWord, String trackingId)
+	throws ParentWordException {
+		log.debug("editWord() user:{}, originalWord:{}, editedWord:{}, trackingId:{}", user, originalWord, editedWord, trackingId);
 		originalWord.word = editedWord.word;
 		originalWord.metaphone = editedWord.metaphone;
-		if (!em.contains(originalWord)) {
-			em.merge(originalWord);
+		try {
+			if (!em.contains(originalWord)) {
+				em.merge(originalWord);
+			}
+		} catch (Exception ex) {
+			throw new ParentWordException(ParentApiConstants.EDIT_WORD);
 		}
 	}
 
