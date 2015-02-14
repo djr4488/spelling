@@ -218,7 +218,7 @@ public class ParentApi extends BaseApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("sp/{parentId}/editWord")
-	public Response editWord(EditWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
+	public EditWordResponse editWord(EditWordRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                         @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                         @HeaderParam(Constants.TRACKING_ID) String trackingId)
 	throws AuthException, ParentApiException, ParentWordException {
@@ -230,9 +230,9 @@ public class ParentApi extends BaseApi {
 		resp = new EditWordResponse();
 		resp.wordId = originalWord.id;
 		resp.authToken = authService.getAuthToken(trackingId);
-		resp.forwardTo = Constants.PARENT_LANDING;
+		resp.forwardTo = Constants.EDIT_WORD_LANDING;
 		log.debug("editWord() completed trackingId:{}", trackingId);
-		return Response.status(Response.Status.OK).entity(resp).build();
+		return resp;
 	}
 
 	private WordLocation getWordLocationEntity(ChildUser child, Word word, Week week) {
