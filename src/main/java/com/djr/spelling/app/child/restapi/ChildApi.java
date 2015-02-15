@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 @ApplicationScoped
 @Path("child")
 public class ChildApi extends BaseApi {
+	//TODO test this
 	@Inject
 	private Logger log;
 	@Inject
