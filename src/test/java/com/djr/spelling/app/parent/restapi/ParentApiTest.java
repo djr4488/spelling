@@ -191,6 +191,107 @@ public class ParentApiTest extends TestCase {
 		assertEquals("testChild", (resp.parentChildren.parentChildren.get(0).username));
 	}
 
+	//scenario: viewing a child's information
+	//given: a validly logged in parent
+	//and: an existing child for that parent
+	//when: parent clicks on child to view
+	//then: child information will be retrieved
+	@Test
+	public void testGetChild() {
+		EditChildResponse resp = null;
+		ChildUser child = new ChildUser();
+		child.id = 1;
+		child.username = "test";
+		try {
+			when(psb.findParentChild(1, "test tracking")).thenReturn(child);
+			resp = api.getChild("test tracking", "test token", 1, 1);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+		assertNotNull(resp);
+		assertEquals(Constants.EDIT_CHILD_LANDING, resp.forwardTo);
+		assertEquals(1, resp.childId.intValue());
+		assertEquals("test", resp.username);
+	}
+
+	//scenario: parent is changing a child's information
+	//given: parent who is logged in
+	//and: parent has a child
+	//when: parent edits child information
+	//then: expect a response indicating success
+	@Test
+	public void testEditChild() {
+		EditChildRequest req = new EditChildRequest();
+		EditChildResponse resp = null;
+		ChildUser child = new ChildUser();
+		child.id = 1;
+		child.username = "testChild";
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "testParent";
+		parent.emailAddress = "test@test.com";
+		try {
+			when(psb.confirmPasswords("test", "test")).thenReturn(true);
+			when(as.getPasswordHash("test")).thenReturn("password hash");
+			when(as.getAuthToken("test tracking")).thenReturn("auth token");
+			when(ss.createOrFindSchool(any(School.class))).thenReturn(new School());
+			when(ss.createOrFindState(any(State.class))).thenReturn(new State());
+			when(ss.createOrFindCity(any(City.class))).thenReturn(new City());
+			when(ss.createOrFindGrade(any(Grade.class))).thenReturn(new Grade());
+			when(ss.createOrFindLocation(any(Location.class))).thenReturn(new Location());
+			resp = api.editChild(req, 1, 1, "auth token", "test tracking");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+		assertNotNull(resp);
+		assertEquals(Constants.EDIT_CHILD_LANDING, resp.forwardTo);
+	}
+
+	//scenario: parent creates a new word
+	//given: parent who is logged in
+	//and: supplies a word
+	//and: word is supplied for a given child
+	//and: child has a valid location
+	//and: parent provides a valid sentence
+	//when: submits to add word
+	//then: expect a response indicating success
+	@Test
+	public void testAddWord() {
+		AddWordRequest req = new AddWordRequest();
+		req.word = "test";
+		req.sentence = "the student had a test on spelling";
+		req.startOfWeek = "2015-01-01";
+		req.endOfWeek = "2015-07-01";
+		AddWordResponse resp = null;
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "testParent";
+		ChildUser child = new ChildUser();
+		child.id = 1;
+		child.username = "testChild";
+		Word word = new Word();
+		word.id = 1;
+		word.word = "test";
+		word.metaphone = "TST";
+		Week week = new Week();
+		week.id = 1;
+		try {
+			when(psb.findParentAccount(1, "test tracking")).thenReturn(parent);
+			when(psb.findParentChild(1, "test tracking")).thenReturn(child);
+			when(psb.createOrFindWeek(any(Week.class), anyString())).thenReturn(week);
+			doNothing().when(psb).createOrFindWordLocation(any(WordLocation.class), anyString());
+			doNothing().when(psb).createOrFindWordSentence(any(Sentence.class), anyString());
+			resp = api.addWord(req, 1, 1, "auth token", "test tracking");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+		assertNotNull(resp);
+		assertEquals(Constants.ADD_WORD, resp.forwardTo);
+	}
+
 	//scenario: parent who is editing word
 	//given: user who is a parent
 	//and: successful finding of original word
