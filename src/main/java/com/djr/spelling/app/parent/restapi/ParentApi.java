@@ -87,7 +87,7 @@ public class ParentApi extends BaseApi {
 		ParentLoginResponse resp;
 		User parent = parentService.findParentAccount(request.getUserEntity(authService), trackingId);
 		authService.addTrackingId(trackingId, parent.id);
-		resp = new ParentLoginResponse("parentLanding");
+		resp = new ParentLoginResponse(Constants.PARENT_LANDING);
 		resp.authToken = authService.getAuthToken(trackingId);
 		resp.id = parent.id;
 		log.info("login() completed. trackingId:{}", trackingId);
@@ -119,12 +119,11 @@ public class ParentApi extends BaseApi {
 	@Path("sp/{parentId}/children")
 	public FindChildrenResponse findParentChildren(@HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                   @HeaderParam(Constants.AUTH_TOKEN) String authToken,
-	                                   @PathParam(Constants.PARENT_ID) String userId)
+	                                   @PathParam(Constants.PARENT_ID) Integer userId)
 	throws ParentApiException, AuthException {
 		log.info("findParentChildren() trackingId:{}, userId:{}", trackingId, userId);
 		FindChildrenResponse resp;
-		Integer uid = Integer.parseInt(userId);
-		User parent = parentService.findParentAccount(uid, trackingId);
+		User parent = parentService.findParentAccount(userId, trackingId);
 		List<ChildUser> children = parentService.findParentChildren(parent, trackingId);
 		resp = new FindChildrenResponse();
 		resp.parentChildren = new ParentChildren(children);
