@@ -37,10 +37,10 @@ editWordController.controller('EditWordCtrl', ['$rootScope', '$scope', '$http',
         $scope.editWord = function() {
             console.log("editWord() id:" + $rootScope.parentId);
             var config = {headers: { 'trackingId': $rootScope.trackingId, 'auth-token': $rootScope.authToken }};
-            $http.post($scope.url, $scope.req.editParentRequest, config).success(
+            $http.post($scope.url, $scope.req.editWordRequest, config).success(
                 function(data, status) {
                     $scope.status = status;
-                    $scope.resp.editParentResponse = data;
+                    $scope.resp.editWordResponse = data;
                     console.log("editWord() status:" + status + " resp:" + $scope.resp);
                     if ($scope.resp.editWordResponse.errorMsg != null &&
                         $scope.resp.editWordResponse.errorMsg.length > 0) {

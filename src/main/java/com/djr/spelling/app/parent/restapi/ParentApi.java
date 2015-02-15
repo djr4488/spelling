@@ -225,7 +225,7 @@ public class ParentApi extends BaseApi {
 		log.info("editWord() request:{}, parentId:{}, trackingId:{}", request, parentId, trackingId);
 		EditWordResponse resp;
 		User parent = parentService.findParentAccount(parentId, trackingId);
-		Word originalWord = parentService.findWord(request.getWordEntity(dm), trackingId);
+		Word originalWord = parentService.findWordToEdit(request.getWordEntity(dm), trackingId);
 		parentService.editWord(parent, originalWord, request.getEditedWordEntity(dm), trackingId);
 		resp = new EditWordResponse();
 		resp.wordId = originalWord.id;

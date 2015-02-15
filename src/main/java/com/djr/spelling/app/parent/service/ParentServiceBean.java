@@ -187,6 +187,17 @@ public class ParentServiceBean {
 		}
 	}
 
+	//TODO: distance searches, sounds like searches should probably be done here
+	public Word findWordToEdit(Word word, String trackingId)
+	throws ParentWordException {
+		log.debug("findWordToEdit() word:{}, trackingId:{}", word, trackingId);
+		Word toEdit = findWord(word, trackingId);
+		if (toEdit == null) {
+			throw new ParentWordException(ParentApiConstants.EDIT_WORD);
+		}
+		return toEdit;
+	}
+
 	public void createOrFindWordLocation(WordLocation wordLocation, String trackingId)
 	throws ParentWordException {
 		log.debug("createOrFindWordLocation() wordLocation:{}, trackingId:{}", wordLocation, trackingId);
