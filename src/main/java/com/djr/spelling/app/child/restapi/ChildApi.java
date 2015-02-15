@@ -38,37 +38,33 @@ public class ChildApi extends BaseApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("login")
-	public Response login(@HeaderParam("trackingId") String trackingId, ChildLoginRequest request)
+	public ChildLoginResponse login(@HeaderParam("trackingId") String trackingId, ChildLoginRequest request)
 	throws AuthException {
 		log.info("login() trackingId:{}, request:{}", trackingId, request);
-		Response response = null;
 		ChildLoginResponse resp;
 		ChildUser childUser = childServiceBean.findChildUser(request.username, authService.getPasswordHash(request.password),
 				trackingId);
 		resp = new ChildLoginResponse(Constants.CHILD_QUIZ_LANDING);
 		resp.authToken = authService.getAuthToken(trackingId);
 		resp.id = childUser.id;
-		response = Response.status(Response.Status.OK).entity(resp).build();
 		log.info("login() completed");
-		return response;
+		return resp;
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("createQuiz/{timeType}/{locationType}/{childId}")
-	public Response createQuiz(@HeaderParam("trackingId") String trackingId, @HeaderParam("auth-token") String authToken,
+	public GetQuizResponse createQuiz(@HeaderParam("trackingId") String trackingId, @HeaderParam("auth-token") String authToken,
 	                        @PathParam("timeType") String timeType, @PathParam("locationType") String locationType,
 	                        @PathParam("childId") Integer childId)
 	throws ChildApiException {
 		log.info("createQuiz() trackingId{}, timeType:{}, locationType:{}, childId:{}", trackingId, timeType, locationType,
 				childId);
-		Response response = null;
 		GetQuizResponse resp;
 		resp = new GetQuizResponse(Constants.TAKE_QUIZ);
 		resp.authToken = authService.getAuthToken(trackingId);
 		resp.quizWordWrapper = childServiceBean.createQuiz(timeType, locationType, childId, trackingId);
-		response = Response.status(Response.Status.OK).entity(resp).build();
-		return response;
+		return resp;
 	}
 }

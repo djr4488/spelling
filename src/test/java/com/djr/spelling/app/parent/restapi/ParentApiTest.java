@@ -5,6 +5,8 @@ import com.djr.spelling.Word;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.parent.restapi.model.EditWordRequest;
 import com.djr.spelling.app.parent.restapi.model.EditWordResponse;
+import com.djr.spelling.app.parent.restapi.model.ParentCreateRequest;
+import com.djr.spelling.app.parent.restapi.model.ParentCreateResponse;
 import com.djr.spelling.app.parent.service.ParentServiceBean;
 import com.djr.spelling.app.services.auth.AuthService;
 import junit.framework.TestCase;
@@ -40,6 +42,32 @@ public class ParentApiTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	//scenario: user is creating a user as a parent
+	//given: a valid request with password and confirm password the same
+	//and: non used parent user name
+	//and: a valid tracking id
+	//when: request is submitted
+	//then: expect a response returned indicating success
+	@Test
+	public void testCreateParentUser() {
+		ParentCreateRequest parentCreateRequest = new ParentCreateRequest();
+		parentCreateRequest.username = "test";
+		parentCreateRequest.password = "test";
+		parentCreateRequest.confirmPassword = "test";
+		parentCreateRequest.emailAddress = "test@test.com";
+		ParentCreateResponse resp = null;
+		try {
+			when(psb.confirmPasswords("test", "test")).thenReturn(true);
+			when(as.getPasswordHash("test")).thenReturn("password hash");
+			doNothing().when(psb).createParentAccount(any(User.class), anyString());
+			resp = api.createParentUser("test tracking", parentCreateRequest);
+		} catch (Exception ex) {
+			fail("did not expect exception");
+		}
+		assertNotNull(resp);
+		assertEquals(Constants.LOGIN_LANDING, resp.forwardTo);
 	}
 
 	//scenario: parent who is editing word
