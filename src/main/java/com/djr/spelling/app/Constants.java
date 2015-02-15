@@ -28,4 +28,7 @@ public final class Constants {
 	public static final String CHILD_QUIZ_LANDING="childQuizLanding";
 	public static final String TAKE_QUIZ = "takeQuizLanding";
 
+	//word constants
+	public static final String EDIT_WORD_LANDING = "editWordLanding";
+
 }

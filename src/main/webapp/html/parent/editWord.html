@@ -19,25 +19,13 @@
     <strong>{{msgBold}} </strong>{{msg}}
 </div>
 <div class="container">
-    <accordion close-others="oneAtATime" ng-init="children">
-        <accordion-group heading="{{parentChild.username}}" ng-repeat="parentChild in children">
-            <form class="form-signin">
-                <h2 class="form-signin-heading">Provide the original and new passwords below</h2>
-                <input type="password" ng-model="req.editChildRequest.originalPassword" placeholder="Original password"
-                       class="form-control"/>
-                <input type="password" ng-model="req.editChildRequest.password" placeholder="New password"
-                       class="form-control"/>
-                <input type="password" ng-model="req.editChildRequest.confirmPassword" placeholder="Confirm password"
-                       class="form-control"/>
-                <input type="text" ng-model="parentChild.stateAbbr" class="form-control"/>
-                <input type="text" ng-model="parentChild.cityName" class="form-control"/>
-                <input type="text" ng-model="parentChild.schoolName" class="form-control"/>
-                <input type="text" ng-model="parentChild.grade" class="form-control"/>
-                <button id="editChildPassword" ng-click="editChild(parentChild.id, parentChild.stateAbbr, parentChild.cityName, parentChild.schoolName, parentChild.grade)"
-                        class="btn btn-lg btn-primary btn-block">Update Child</button>
-            </form>
-        </accordion-group>
-    </accordion>
+    <form class="form-signin">
+        <h2 class="form-signin-heading">Change your password</h2>
+        <input type="text" ng-model="req.editWordRequest.word" placeholder="original word" class="form-control"/>
+        <input type="text" ng-model="req.editWordRequest.editedWord" placeholder="edited word" class="form-control"/>
+        <input type="text" ng-model="req.editWordRequest.sentence" placeholder="optional sentence" class="form-control"/><br/>
+        <button id="editWord" ng-click="editWord()" class="btn btn-lg btn-primary btn-block">Edit Word</button>
+    </form>
 </div>
 <hr class="featurette-divider"/>
 <div class="container marketing">
@@ -59,4 +47,3 @@
         </div>
     </div>
 </div>
-

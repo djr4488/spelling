@@ -18,4 +18,5 @@ public class ParentApiConstants {
 	public static final String CREATE_OR_FIND_WEEK_FAILED = "Create or find week failed";
 	public static final String CREATE_OR_FIND_WORD_LOCATION_FAILED = "Create or find word location failed";
 	public static final String CREATE_OR_FIND_WORD_SENTENCE_FAILED = "Create or find word sentence failed";
+	public static final String EDIT_WORD = "Edit word";
 }

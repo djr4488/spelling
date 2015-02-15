@@ -18,6 +18,10 @@ public class BaseResponse implements Serializable {
 	@XmlElement
 	public String errorBold;
 	@XmlElement
+	public String successMsg;
+	@XmlElement
+	public String successBold;
+	@XmlElement
 	public String forwardTo;
 	@XmlElement
 	public String authToken;
@@ -33,5 +37,11 @@ public class BaseResponse implements Serializable {
 
 	public BaseResponse(String forwardTo) {
 		this.forwardTo = forwardTo;
+	}
+
+	public BaseResponse(String forwardTo, String successMsg, String successBold) {
+		this(forwardTo);
+		this.successMsg = successMsg;
+		this.successBold = successBold;
 	}
 }

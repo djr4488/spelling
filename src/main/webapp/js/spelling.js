@@ -13,7 +13,8 @@ var spellingApp = angular.module('spellingApp', [
     'findParentChildrenController',
     'editChildController',
     'editParentController',
-    'addWordController'
+    'addWordController',
+    'editWordController'
 ]);
 
 spellingApp.config(['$routeProvider',
@@ -58,6 +59,10 @@ spellingApp.config(['$routeProvider',
             when('/add-word', {
                 templateUrl: 'parent/addWordForChild.html',
                 controller: 'AddWordCtrl'
+            }).
+            when('/edit-word', {
+                templateUrl: 'parent/editWord.html',
+                controller: 'EditWordCtrl'
             }).
             otherwise({
                 redirectTo: '/home'

@@ -17,4 +17,20 @@ public class EditWordResponse extends BaseResponse implements Serializable {
 
 	@XmlElement
 	public Integer wordId;
+
+	public EditWordResponse() {
+		super();
+	}
+
+	public EditWordResponse(String errorMsg, String errorBold) {
+		super(errorMsg, errorBold);
+	}
+
+	public EditWordResponse(String forwardTo) {
+		super(forwardTo);
+	}
+
+	public EditWordResponse(String forwardTo, String successMsg, String successBold) {
+		super(forwardTo, successMsg, successBold);
+	}
 }
