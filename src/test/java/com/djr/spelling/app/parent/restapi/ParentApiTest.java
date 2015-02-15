@@ -39,7 +39,7 @@ public class ParentApiTest extends TestCase {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(api);
+		MockitoAnnotations.initMocks(this);
 	}
 
 	//scenario: parent who is editing word
@@ -67,7 +67,7 @@ public class ParentApiTest extends TestCase {
 		correctedWord.metaphone = "rd";
 		try {
 			when(psb.findParentAccount(1, "Testing EditWord")).thenReturn(parent);
-			when(psb.findWord(any(Word.class), anyString())).thenReturn(wronglySpelledWord);
+			when(psb.findWordToEdit(any(Word.class), anyString())).thenReturn(wronglySpelledWord);
 			when(as.getAuthToken("Testing EditWord")).thenReturn("New Auth");
 			doNothing().when(psb).editWord(parent, wronglySpelledWord, correctedWord, "Testing EditWord");
 			resp = api.editWord(request, 1, "auth", "Testing EditWord");
