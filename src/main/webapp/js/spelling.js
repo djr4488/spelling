@@ -13,7 +13,8 @@ var spellingApp = angular.module('spellingApp', [
     'findParentChildrenController',
     'editChildController',
     'editParentController',
-    'addWordController'
+    'addWordController',
+    'editWordController'
 ]);
 
 spellingApp.config(['$routeProvider',
