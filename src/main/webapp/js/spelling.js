@@ -60,6 +60,10 @@ spellingApp.config(['$routeProvider',
                 templateUrl: 'parent/addWordForChild.html',
                 controller: 'AddWordCtrl'
             }).
+            when('/edit-word', {
+                templateUrl: 'parent/editWord.html',
+                controller: 'EditWordCtrl'
+            }).
             otherwise({
                 redirectTo: '/home'
             });
