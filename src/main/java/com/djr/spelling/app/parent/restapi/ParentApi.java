@@ -231,6 +231,8 @@ public class ParentApi extends BaseApi {
 		resp.wordId = originalWord.id;
 		resp.authToken = authService.getAuthToken(trackingId);
 		resp.forwardTo = Constants.EDIT_WORD_LANDING;
+		resp.successMsg = "Edit word was successful!";
+		resp.successBold = "Alright then!";
 		log.debug("editWord() completed trackingId:{}", trackingId);
 		return resp;
 	}
