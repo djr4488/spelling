@@ -317,7 +317,7 @@ public class ParentServiceBean {
 
 	public boolean confirmPasswords(String password, String confirmPassword)
 	throws AuthException {
-		if (!password.equals(confirmPassword)) {
+		if (password == null || confirmPassword == null || !password.equals(confirmPassword)) {
 			throw new AuthException(AuthConstants.NOT_CONFIRMED);
 		}
 		return true;
