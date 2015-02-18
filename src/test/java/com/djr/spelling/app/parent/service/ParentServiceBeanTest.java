@@ -1,11 +1,14 @@
 package com.djr.spelling.app.parent.service;
 
 import com.djr.spelling.User;
+import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import junit.framework.TestCase;
 import org.apache.commons.codec.language.DoubleMetaphone;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +18,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
 import static org.mockito.Mockito.*;
 
@@ -29,6 +34,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private Logger log;
 	@Mock
 	private DoubleMetaphone dm;
+	@Mock
+	private TypedQuery<Week> weekQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -36,6 +43,85 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testCreateOrFindWeekWhenWeekExistsAlready() {
+		DateTime startWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(1).withYear(2015)
+				.withTimeAtStartOfDay();
+		DateTime endWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(7).withYear(2015)
+				.withTimeAtStartOfDay();
+		Week week = new Week(startWeek.toDate(), endWeek.toDate());
+		when(em.createNamedQuery("findWeek", Week.class)).thenReturn(weekQuery);
+		when(weekQuery.getSingleResult()).thenReturn(week);
+		try {
+			Week result = psb.createOrFindWeek(week, "test tracking");
+			assertNotNull(result);
+			assertEquals(result.weekStart, week.weekStart);
+			assertEquals(result.weekEnd, week.weekEnd);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWeekWhenNoWeekFound() {
+		DateTime startWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(1).withYear(2015)
+				.withTimeAtStartOfDay();
+		DateTime endWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(7).withYear(2015)
+				.withTimeAtStartOfDay();
+		Week week = new Week(startWeek.toDate(), endWeek.toDate());
+		when(em.createNamedQuery("findWeek", Week.class)).thenReturn(weekQuery);
+		when(weekQuery.getSingleResult()).thenThrow(new NoResultException("testing week not found"));
+		try {
+			Week result = psb.createOrFindWeek(week, "test tracking");
+			assertNotNull(result);
+			assertEquals(result.weekStart, week.weekStart);
+			assertEquals(result.weekEnd, week.weekEnd);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+		verify(em, times(1)).persist(week);
+	}
+
+	@Test(expected = ParentWordException.class)
+	public void testCreateOrFindWeekWhenRuntimeExceptionDuringFindWeek()
+	throws ParentWordException {
+		DateTime startWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(1).withYear(2015)
+				.withTimeAtStartOfDay();
+		DateTime endWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(7).withYear(2015)
+				.withTimeAtStartOfDay();
+		Week week = new Week(startWeek.toDate(), endWeek.toDate());
+		when(em.createNamedQuery("findWeek", Week.class)).thenReturn(weekQuery);
+		when(weekQuery.getSingleResult()).thenThrow(new NoResultException("testing week not found"));
+		doThrow(new RuntimeException("testing exception at perist")).when(em).persist(week);
+		Week result = psb.createOrFindWeek(week, "test tracking");
+		assertNotNull(result);
+		assertEquals(result.weekStart, week.weekStart);
+		assertEquals(result.weekEnd, week.weekEnd);
+		verify(em, times(1)).persist(week);
+	}
+
+	@Test
+	public void testCreateOrFindWeekWhenPersistThrowsRuntimeException() {
+		DateTime startWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(1).withYear(2015)
+				.withTimeAtStartOfDay();
+		DateTime endWeek = DateTime.now().withMonthOfYear(DateTimeConstants.JANUARY).withDayOfMonth(7).withYear(2015)
+				.withTimeAtStartOfDay();
+		Week week = new Week(startWeek.toDate(), endWeek.toDate());
+		when(em.createNamedQuery("findWeek", Week.class)).thenReturn(weekQuery);
+		when(weekQuery.getSingleResult()).thenThrow(new RuntimeException("testing week not found"));
+		try {
+			Week result = psb.createOrFindWeek(week, "test tracking");
+			assertNotNull(result);
+			assertEquals(result.weekStart, week.weekStart);
+			assertEquals(result.weekEnd, week.weekEnd);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	//scenario: parent is editing a word

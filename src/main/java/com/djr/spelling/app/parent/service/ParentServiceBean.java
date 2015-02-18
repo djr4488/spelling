@@ -298,6 +298,8 @@ public class ParentServiceBean {
 		} catch (NoResultException nrEx) {
 			log.debug("findWeek() no results found. trackingId:{}", trackingId);
 			return null;
+		} catch (Exception ex) {
+			return null;
 		}
 	}
 
