@@ -10,7 +10,7 @@ Status
 ======
 
 * Build: [![Build Status](https://travis-ci.org/djr4488/spelling.svg?branch=master)](https://travis-ci.org/djr4488/spelling)
-* Coverage: [![Coverage Status](https://coveralls.io/repos/djr4488/spelling/badge.svg)](https://coveralls.io/r/djr4488/spelling)
+* Coverage: [![Coverage Status](https://coveralls.io/repos/djr4488/spelling/badge.svg?branch=master)](https://coveralls.io/r/djr4488/spelling?branch=master)
 
 What are my goals with it?
 ==========================
