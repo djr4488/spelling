@@ -9,7 +9,7 @@ It is an easy thing to do to help kids learn.
 Status
 ======
 
-[![Build Status](https://travis-ci.org/djr4488/spelling.svg?branch=master)](https://travis-ci.org/djr4488/spelling)
+Build Status: [![Build Status](https://travis-ci.org/djr4488/spelling.svg?branch=master)](https://travis-ci.org/djr4488/spelling)
 
 What are my goals with it?
 ==========================
