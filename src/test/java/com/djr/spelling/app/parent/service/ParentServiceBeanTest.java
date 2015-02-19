@@ -1,9 +1,11 @@
 package com.djr.spelling.app.parent.service;
 
+import com.djr.spelling.Sentence;
 import com.djr.spelling.User;
 import com.djr.spelling.Week;
 import com.djr.spelling.Word;
 import com.djr.spelling.app.exceptions.AuthException;
+import com.djr.spelling.app.parent.ParentApiConstants;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import junit.framework.TestCase;
 import org.apache.commons.codec.language.DoubleMetaphone;
@@ -36,6 +38,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private DoubleMetaphone dm;
 	@Mock
 	private TypedQuery<Week> weekQuery;
+	@Mock
+	private TypedQuery<Sentence> sentenceQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -43,6 +47,51 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testCreateOrFindWordSentencesExistsAlready() {
+		Sentence sentence = new Sentence("This is a sentence");
+		when(em.createNamedQuery("findSentence", Sentence.class)).thenReturn(sentenceQuery);
+		when(sentenceQuery.getSingleResult()).thenReturn(sentence);
+		try {
+			psb.createOrFindWordSentence(sentence, "test tracking");
+			verify(em, never()).persist(sentence);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordSentenceNoResultFound() {
+		Sentence sentence = new Sentence("This is a sentence");
+		when(em.createNamedQuery("findSentence", Sentence.class)).thenReturn(sentenceQuery);
+		when(sentenceQuery.getSingleResult()).thenThrow(new NoResultException("no result found test"));
+		try {
+			psb.createOrFindWordSentence(sentence, "test tracking");
+			verify(em, times(1)).persist(sentence);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordSentenceWhenPersistThrowsException() {
+		Sentence sentence = new Sentence("This is a sentence");
+		when(em.createNamedQuery("findSentence", Sentence.class)).thenReturn(sentenceQuery);
+		when(sentenceQuery.getSingleResult()).thenThrow(new NoResultException("no result found test"));
+		doThrow(new RuntimeException("persist fails")).when(em).persist(sentence);
+		try {
+			psb.createOrFindWordSentence(sentence, "test tracking");
+			verify(em, times(1)).persist(sentence);
+		} catch (ParentWordException pwEx) {
+			assertEquals(ParentApiConstants.CREATE_OR_FIND_WORD_SENTENCE_FAILED, pwEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	@Test
