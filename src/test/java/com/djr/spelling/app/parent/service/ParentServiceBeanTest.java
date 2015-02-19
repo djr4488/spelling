@@ -1,9 +1,6 @@
 package com.djr.spelling.app.parent.service;
 
-import com.djr.spelling.Sentence;
-import com.djr.spelling.User;
-import com.djr.spelling.Week;
-import com.djr.spelling.Word;
+import com.djr.spelling.*;
 import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.parent.ParentApiConstants;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
@@ -40,6 +37,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private TypedQuery<Week> weekQuery;
 	@Mock
 	private TypedQuery<Sentence> sentenceQuery;
+	@Mock
+	private TypedQuery<WordLocation> wordLocationQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -47,6 +46,67 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testCreateOrFindWordLocationExistsAlready() {
+		Location locationMock = mock(Location.class);
+		Grade gradeMock = mock(Grade.class);
+		Word wordMock = mock(Word.class);
+		WordLocation wordLocation = new WordLocation();
+		wordLocation.location = locationMock;
+		wordLocation.grade = gradeMock;
+		wordLocation.word = wordMock;
+		when(em.createNamedQuery("findWordLocation", WordLocation.class)).thenReturn(wordLocationQuery);
+		when(wordLocationQuery.getSingleResult()).thenReturn(wordLocation);
+		try {
+			psb.createOrFindWordLocation(wordLocation, "test tracking");
+			verify(em, never()).persist(wordLocation);
+		} catch (Exception ex) {
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordLocationNoResultsFound() {
+		Location locationMock = mock(Location.class);
+		Grade gradeMock = mock(Grade.class);
+		Word wordMock = mock(Word.class);
+		WordLocation wordLocation = new WordLocation();
+		wordLocation.location = locationMock;
+		wordLocation.grade = gradeMock;
+		wordLocation.word = wordMock;
+		when(em.createNamedQuery("findWordLocation", WordLocation.class)).thenReturn(wordLocationQuery);
+		when(wordLocationQuery.getSingleResult()).thenThrow(new NoResultException("test no results"));
+		try {
+			psb.createOrFindWordLocation(wordLocation, "test tracking");
+			verify(em, times(1)).persist(wordLocation);
+		} catch (Exception ex) {
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordLocationWhenPersistThrowsException() {
+		Location locationMock = mock(Location.class);
+		Grade gradeMock = mock(Grade.class);
+		Word wordMock = mock(Word.class);
+		WordLocation wordLocation = new WordLocation();
+		wordLocation.location = locationMock;
+		wordLocation.grade = gradeMock;
+		wordLocation.word = wordMock;
+		when(em.createNamedQuery("findWordLocation", WordLocation.class)).thenReturn(wordLocationQuery);
+		when(wordLocationQuery.getSingleResult()).thenThrow(new NoResultException("test no results"));
+		doThrow(new RuntimeException("persist throws exception")).when(em).persist(wordLocation);
+		try {
+			psb.createOrFindWordLocation(wordLocation, "test tracking");
+			verify(em, times(1)).persist(wordLocation);
+		} catch (ParentWordException pwEx) {
+			assertEquals(ParentApiConstants.CREATE_OR_FIND_WORD_LOCATION_FAILED, pwEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	@Test
