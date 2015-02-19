@@ -39,6 +39,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private TypedQuery<Sentence> sentenceQuery;
 	@Mock
 	private TypedQuery<WordLocation> wordLocationQuery;
+	@Mock
+	private TypedQuery<Word> wordQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -46,6 +48,84 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testCreateOrFindWordWhenWordExists() {
+		Word word = new Word("word", "ART");
+		User parent = new User();
+		when(em.createNamedQuery("findWord", Word.class)).thenReturn(wordQuery);
+		when(wordQuery.getSingleResult()).thenReturn(word);
+		try {
+			Word result = psb.createOrFindWord(parent, word, "test tracking");
+			assertEquals("word", result.word);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordWhenWordNotExists() {
+		Word word = new Word("word", "ART");
+		User parent = new User();
+		when(em.createNamedQuery("findWord", Word.class)).thenReturn(wordQuery);
+		when(wordQuery.getSingleResult()).thenThrow(new NoResultException("word not found"));
+		try {
+			Word result = psb.createOrFindWord(parent, word, "test tracking");
+			assertEquals("word", result.word);
+			verify(em, times(1)).persist(word);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testCreateOrFindWordWhenPersistFails() {
+		Word word = new Word("word", "ART");
+		User parent = new User();
+		when(em.createNamedQuery("findWord", Word.class)).thenReturn(wordQuery);
+		when(wordQuery.getSingleResult()).thenThrow(new NoResultException("word not found"));
+		doThrow(new RuntimeException("persist fails")).when(em).persist(word);
+		try {
+			psb.createOrFindWord(parent, word, "test tracking");
+			verify(em, times(1)).persist(word);
+		} catch (ParentWordException pwEx) {
+			assertEquals(ParentApiConstants.CREATE_OR_FIND_WORD_FAILED, pwEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindWordToEditWhenWordFound() {
+		Word word = new Word("word", "ART");
+		when(em.createNamedQuery("findWord", Word.class)).thenReturn(wordQuery);
+		when(wordQuery.getSingleResult()).thenReturn(word);
+		try {
+			Word result = psb.findWordToEdit(word, "test tracking");
+			assertEquals("word", result.word);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindWordToEditWhenWordNotFound() {
+		Word word = new Word("word", "ART");
+		when(em.createNamedQuery("findWord", Word.class)).thenReturn(wordQuery);
+		when(wordQuery.getSingleResult()).thenThrow(new NoResultException("word not found"));
+		try {
+			Word result = psb.findWordToEdit(word, "test tracking");
+		} catch (ParentWordException pwEx) {
+			assertEquals(ParentApiConstants.EDIT_WORD, pwEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	@Test
