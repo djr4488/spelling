@@ -3,6 +3,7 @@ package com.djr.spelling.app.parent.service;
 import com.djr.spelling.*;
 import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.parent.ParentApiConstants;
+import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import junit.framework.TestCase;
 import org.apache.commons.codec.language.DoubleMetaphone;
@@ -48,6 +49,142 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testFindParentChildIsFound() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		when(em.find(ChildUser.class, 1)).thenReturn(original);
+		try {
+			ChildUser result = psb.findParentChild(1, "test tracking");
+			assertEquals("test", result.username);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentChildIsNotFound() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		when(em.find(ChildUser.class, 1)).thenThrow(new NoResultException("no child id"));
+		try {
+			ChildUser result = psb.findParentChild(1, "test tracking");
+			assertEquals("test", result.username);
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.NO_CHILD_BY_ID, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentChildGeneralException() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		when(em.find(ChildUser.class, 1)).thenThrow(new RuntimeException("find failed"));
+		try {
+			ChildUser result = psb.findParentChild(1, "test tracking");
+			assertEquals("test", result.username);
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.FIND_PARENT_CHILD_FAILED, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testEditChildWhenEmContainsOriginal() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		ChildUser updated = new ChildUser();
+		updated.username = "test";
+		updated.password = "test1";
+		updated.grade = mock(Grade.class);
+		updated.location = mock(Location.class);
+		updated.parent = mock(User.class);
+		when(em.contains(original)).thenReturn(true);
+		try {
+			psb.editChild(original, updated, "test tracking");
+			verify(em, times(1)).contains(original);
+			verify(em, never()).merge(original);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testEditChildWhenEmDoesNotContainOriginal() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		ChildUser updated = new ChildUser();
+		updated.username = "test";
+		updated.password = "test1";
+		updated.grade = mock(Grade.class);
+		updated.location = mock(Location.class);
+		updated.parent = mock(User.class);
+		when(em.contains(original)).thenReturn(false);
+		try {
+			psb.editChild(original, updated, "test tracking");
+			verify(em, times(1)).contains(original);
+			verify(em, times(1)).merge(original);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testEditChildWhenEmMergeThrowsException() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		ChildUser updated = new ChildUser();
+		updated.username = "test";
+		updated.password = "test1";
+		updated.grade = mock(Grade.class);
+		updated.location = mock(Location.class);
+		updated.parent = mock(User.class);
+		when(em.contains(original)).thenReturn(false);
+		when(em.merge(original)).thenThrow(new RuntimeException("merge fails"));
+		try {
+			psb.editChild(original, updated, "test tracking");
+			verify(em, times(1)).contains(original);
+			verify(em, times(1)).merge(original);
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	@Test
