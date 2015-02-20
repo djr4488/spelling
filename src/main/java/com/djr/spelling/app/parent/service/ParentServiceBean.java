@@ -99,11 +99,16 @@ public class ParentServiceBean {
 		}
 	}
 
-	public void editParentPassword(User original, User edited, String trackingId) {
+	public void editParentPassword(User original, User edited, String trackingId)
+	throws ParentApiException {
 		log.debug("editParentPassword() original:{}, edited:{}, trackingId:{}", original, edited, trackingId);
 		original.password = edited.password;
-		if (!em.contains(original)) {
-			em.merge(original);
+		try {
+			if (!em.contains(original)) {
+				em.merge(original);
+			}
+		} catch (Exception ex) {
+			throw new ParentApiException(ParentApiConstants.EDIT_PARENT_PASSWORD_FAILED);
 		}
 	}
 

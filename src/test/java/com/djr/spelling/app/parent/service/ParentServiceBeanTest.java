@@ -21,6 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import java.util.ArrayList;
+import java.util.List;
 import static org.mockito.Mockito.*;
 
 /**
@@ -42,6 +44,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private TypedQuery<WordLocation> wordLocationQuery;
 	@Mock
 	private TypedQuery<Word> wordQuery;
+	@Mock
+	private TypedQuery<ChildUser> childUserQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -49,6 +53,102 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testEditParentPasswordInEmSuccess() {
+		User original = new User("test@test.com", "test");
+		User edited = new User("test@test.com", "test2");
+		when(em.contains(original)).thenReturn(true);
+		try {
+			psb.editParentPassword(original, edited, "test tracking");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testEditParentPasswordRequiresMergeSuccess() {
+		User original = new User("test@test.com", "test");
+		User edited = new User("test@test.com", "test2");
+		when(em.contains(original)).thenReturn(false);
+		try {
+			psb.editParentPassword(original, edited, "test tracking");
+			verify(em, times(1)).merge(original);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testEditParentPasswordRequiresMergeButException() {
+		User original = new User("test@test.com", "test");
+		User edited = new User("test@test.com", "test2");
+		when(em.contains(original)).thenReturn(false);
+		when(em.merge(original)).thenThrow(new RuntimeException("problems abound"));
+		try {
+			psb.editParentPassword(original, edited, "test tracking");
+			verify(em, times(1)).merge(original);
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.EDIT_PARENT_PASSWORD_FAILED, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentChildrenSuccess() {
+		ChildUser original = new ChildUser();
+		original.username = "test";
+		original.password = "test";
+		original.grade = mock(Grade.class);
+		original.location = mock(Location.class);
+		original.parent = mock(User.class);
+		List<ChildUser> parentChildren = new ArrayList<>();
+		parentChildren.add(original);
+		User user = mock(User.class);
+		when(em.createNamedQuery("findChildrenUsersByParentUser", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getResultList()).thenReturn(parentChildren);
+		try {
+			List<ChildUser> result = psb.findParentChildren(user, "test tracking");
+			assertEquals(original.username, result.get(0).username);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentChildrenNoResults() {
+		User user = mock(User.class);
+		when(em.createNamedQuery("findChildrenUsersByParentUser", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getResultList()).thenThrow(new NoResultException("no results"));
+		try {
+			psb.findParentChildren(user, "test tracking");
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.NO_CHILDREN_FOUND, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentChildrenGeneralException() {
+		User user = mock(User.class);
+		when(em.createNamedQuery("findChildrenUsersByParentUser", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getResultList()).thenThrow(new RuntimeException("general exception"));
+		try {
+			psb.findParentChildren(user, "test tracking");
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.FIND_PARENT_CHILDREN_FAILED, paEx.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
 	}
 
 	@Test

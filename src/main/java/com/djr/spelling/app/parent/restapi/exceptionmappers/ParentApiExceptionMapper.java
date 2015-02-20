@@ -52,6 +52,9 @@ public class ParentApiExceptionMapper extends BaseExceptionMapper implements Exc
 			case ParentApiConstants.EDIT_CHILD_PASSWORD_FAILED: {
 				return handleEditChildPasswordFailed();
 			}
+			case ParentApiConstants.EDIT_PARENT_PASSWORD_FAILED: {
+				return handleEditParentPasswordFailed();
+			}
 			default: {
 				return Response.serverError().build();
 			}
@@ -105,6 +108,10 @@ public class ParentApiExceptionMapper extends BaseExceptionMapper implements Exc
 	public Response handleEditChildPasswordFailed() {
 		return getErrorResponse("It appears there was a problem changing your password.  Try again later?", "Oops!",
 				Response.Status.INTERNAL_SERVER_ERROR);
+	}
+
+	public Response handleEditParentPasswordFailed() {
+		return getErrorResponse("We could not change your password at this time.", "Oops!", Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
 	public Response getFindChildrenResponse(String msg, String bold, Response.Status status) {
