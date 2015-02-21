@@ -76,4 +76,40 @@ public class AuthServiceTest extends BaseTest {
 		authSvc.addTrackingId("123", 1);
 		verify(authModelManager, times(1)).addAuthModel(any(AuthModel.class));
 	}
+
+	@Test
+	public void testGetAuthToken() {
+		AuthModel authModel = new AuthModel("123", 1, 1);
+		authModel.timestamp = DateTime.now();
+		when(authModelManager.getAuthModelByTrackingId("123")).thenReturn(authModel);
+		when(hashUtil.generateHmacHash(anyString())).thenReturn("hashtest");
+		assertEquals("hashtest", authSvc.getAuthToken("123"));
+	}
+
+	@Test
+	public void testGetUserId() {
+		AuthModel authModel = new AuthModel("123", 1, 1);
+		authModel.timestamp = DateTime.now();
+		when(authModelManager.getAuthModelByTrackingId("123")).thenReturn(authModel);
+		assertEquals(1, authSvc.getUserId("123").intValue());
+	}
+
+	@Test
+	public void testGetPasswordHash() {
+		when(hashUtil.generateHmacHash(anyString())).thenReturn("hashed");
+		assertEquals("hashed", authSvc.getPasswordHash("test"));
+	}
+
+	@Test
+	public void testIsProvidedAuthTokenNull() {
+		assertTrue(authSvc.isProvidedAuthTokenNull(null));
+		assertFalse(authSvc.isProvidedAuthTokenNull("auth token"));
+	}
+
+	@Test
+	public void testIsAuthModelNull() {
+		AuthModel authModel = new AuthModel("123", 1, 1);
+		assertFalse(authSvc.isAuthModelNull(authModel));
+		assertTrue(authSvc.isAuthModelNull(null));
+	}
 }
