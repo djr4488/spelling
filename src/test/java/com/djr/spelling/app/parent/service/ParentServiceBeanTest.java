@@ -5,6 +5,7 @@ import com.djr.spelling.app.exceptions.AuthException;
 import com.djr.spelling.app.parent.ParentApiConstants;
 import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
+import com.djr.spelling.app.services.auth.AuthConstants;
 import junit.framework.TestCase;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.joda.time.DateTime;
@@ -46,6 +47,8 @@ public class ParentServiceBeanTest extends TestCase {
 	private TypedQuery<Word> wordQuery;
 	@Mock
 	private TypedQuery<ChildUser> childUserQuery;
+	@Mock
+	private TypedQuery<User> userQuery;
 
 	@InjectMocks
 	private ParentServiceBean psb = new ParentServiceBean();
@@ -53,6 +56,176 @@ public class ParentServiceBeanTest extends TestCase {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	 public void testCreateParentAccountWhenTaken() {
+		User user = mock(User.class);
+		when(em.createNamedQuery("findExistingUserByEmailAddress", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenReturn(user);
+		try {
+			psb.createParentAccount(mock(User.class), "test tracking");
+			fail("expected auth exception");
+		} catch (AuthException aEx) {
+			assertEquals(AuthConstants.EMAIL_EXISTS, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("did not expect general exception");
+		}
+		verify(em, never()).persist(any(User.class));
+	}
+
+	@Test
+	public void testCreateParentAccountWhenAvailable() {
+		User user = mock(User.class);
+		when(em.createNamedQuery("findExistingUserByEmailAddress", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenThrow(new NoResultException("no results"));
+		try {
+			psb.createParentAccount(mock(User.class), "test tracking");
+		} catch (AuthException aEx) {
+			fail("did not expect auth exception");
+		} catch (Exception ex) {
+			fail("wrong exception");
+		}
+		verify(em, times(1)).persist(any(User.class));
+	}
+
+	@Test
+	public void testCreateParentAccountWhenGeneralException() {
+		User user = mock(User.class);
+		when(em.createNamedQuery("findExistingUserByEmailAddress", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenThrow(new RuntimeException("kablamo!"));
+		try {
+			psb.createParentAccount(mock(User.class), "test tracking");
+		} catch (AuthException aEx) {
+			assertEquals(AuthConstants.GENERAL_CREATE, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception");
+		}
+		verify(em, never()).persist(any(User.class));
+	}
+
+	@Test
+	public void testCreateChildAccountWhenTaken() {
+		ChildUser user = mock(ChildUser.class);
+		when(em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getSingleResult()).thenReturn(user);
+		try {
+			psb.createChildAccount(mock(ChildUser.class), "test tracking");
+			fail("expected auth exception");
+		} catch (AuthException aEx) {
+			assertEquals(ParentApiConstants.CHILD_EXISTS, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception");
+		}
+		verify(em, never()).persist(any(ChildUser.class));
+	}
+
+	@Test
+	public void testCreateChildAccountWhenAvailable() {
+		when(em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getSingleResult()).thenThrow(new NoResultException("no accounts found"));
+		try {
+			psb.createChildAccount(mock(ChildUser.class), "test tracking");
+		} catch (AuthException aEx) {
+			fail("did not expect auth exception");
+		} catch (Exception ex) {
+			fail("did not expect general exception");
+		}
+		verify(em, times(1)).persist(any(ChildUser.class));
+	}
+
+	@Test
+	public void testCreateChildAccountWhenGeneralException() {
+		when(em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class)).thenReturn(childUserQuery);
+		when(childUserQuery.getSingleResult()).thenThrow(new RuntimeException("general exception"));
+		try {
+			psb.createChildAccount(mock(ChildUser.class), "test tracking");
+			fail("expected auth exception");
+		} catch (AuthException aEx) {
+			fail("expected parent api exception");
+		} catch (ParentApiException paEx) {
+			assertEquals(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL, paEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception");
+		}
+		verify(em, never()).persist(any(ChildUser.class));
+	}
+
+	@Test
+	public void testFindParentAccountByUserExists() {
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "test";
+		when(em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenReturn(parent);
+		try {
+			User result = psb.findParentAccount(parent, "test tracking");
+			assertEquals(result.id, parent.id);
+		} catch (Exception ex) {
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentAccountByUserNoResultException() {
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "test";
+		when(em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenThrow(new NoResultException("no results"));
+		try {
+			psb.findParentAccount(parent, "test tracking");
+			fail("expected an auth exception");
+		} catch (AuthException aEx) {
+			assertEquals(AuthConstants.USER_NOT_FOUND, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception type");
+		}
+	}
+
+	@Test
+	public void testFindParentAccountByUserGeneralException() {
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "test";
+		when(em.createNamedQuery("findExistingUserByUserNameAndPassword", User.class)).thenReturn(userQuery);
+		when(userQuery.getSingleResult()).thenThrow(new RuntimeException("it blew up!"));
+		try {
+			psb.findParentAccount(parent, "test tracking");
+			fail("expected an auth exception");
+		} catch (AuthException aEx) {
+			assertEquals(AuthConstants.GENERAL_AUTH, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception type");
+		}
+	}
+
+	@Test
+	public void testFindParentByIdAccountExists() {
+		User parent = new User();
+		parent.id = 1;
+		parent.username = "test";
+		when(em.find(User.class, 1)).thenReturn(parent);
+		try {
+			User result = psb.findParentAccount(1, "test tracking");
+			assertEquals(result.id, parent.id);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("did not expect any exception here");
+		}
+	}
+
+	@Test
+	public void testFindParentAccountByIdWhenException() {
+		when(em.find(User.class, 1)).thenThrow(new NoResultException("no results"));
+		try {
+			psb.findParentAccount(1, "test tracking");
+			fail("expected an exception");
+		} catch (AuthException aEx) {
+			assertEquals(ParentApiConstants.FIND_PARENT_BY_ID, aEx.getMessage());
+		} catch (Exception ex) {
+			fail("wrong exception");
+		}
 	}
 
 	@Test

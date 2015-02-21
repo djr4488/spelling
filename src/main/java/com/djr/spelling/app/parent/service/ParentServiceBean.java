@@ -46,6 +46,8 @@ public class ParentServiceBean {
 			throw new AuthException(AuthConstants.EMAIL_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createParentAccount() no results found, so good to continue");
+		} catch (AuthException aEx) {
+			throw aEx;
 		} catch (Exception ex) {
 			log.error("createParentAccount() exception occurred ex:{}", ex);
 			throw new AuthException(AuthConstants.GENERAL_CREATE);
@@ -54,7 +56,7 @@ public class ParentServiceBean {
 	}
 
 	public void createChildAccount(ChildUser user, String trackingId)
-	throws ParentApiException {
+	throws ParentApiException, AuthException {
 		log.debug("createChildAccount() user:{}, trackingId:{}", user, trackingId);
 		try {
 			TypedQuery<ChildUser> query = em.createNamedQuery("findExistingChildUserByUsername", ChildUser.class);
@@ -63,6 +65,8 @@ public class ParentServiceBean {
 			throw new AuthException(ParentApiConstants.CHILD_EXISTS);
 		} catch (NoResultException nrEx) {
 			log.debug("createChildAccount() no results found, so continuing");
+		} catch (AuthException aEx) {
+			throw aEx;
 		} catch (Exception ex) {
 			log.error("createChildAccount() exception occurred ex:{}", ex);
 			throw new ParentApiException(ParentApiConstants.CHILD_CREATE_GENERAL_FAIL);
