@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 /**
  * Created by IMac on 2/21/2015.
  */
-public class BaseTest extends TestCase {
+public abstract class BaseTest extends TestCase {
 	public void  addIntegerField(Object object, String fieldName, Integer value)
 	throws Exception {
 		Field field = object.getClass().getDeclaredField(fieldName);
