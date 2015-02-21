@@ -4,7 +4,6 @@ import com.djr.spelling.app.BaseTest;
 import com.djr.spelling.app.services.auth.model.AuthModel;
 import com.djr.spelling.app.services.auth.util.HashingUtil;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

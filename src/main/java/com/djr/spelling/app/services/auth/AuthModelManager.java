@@ -71,13 +71,14 @@ public class AuthModelManager {
 					}
 				}
 				timeAuthMapKeys.remove();
-				startedAt = DateTime.now();
 			}
 			log.debug("removeExpired() completed");
 		}
 	}
 
 	public boolean keepCleaning(DateTime startedAt) {
-		return DateTime.now().plusSeconds(5).isBefore(startedAt);
+		DateTime minus5Seconds = DateTime.now().minusSeconds(5);
+		log.debug("keepCleaning() startedAt:{}, now plus 5 seconds:{}", startedAt.toString(), minus5Seconds.toString());
+		return minus5Seconds.isBefore(startedAt);
 	}
 }
