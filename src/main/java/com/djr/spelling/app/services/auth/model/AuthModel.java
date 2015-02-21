@@ -17,9 +17,9 @@ public class AuthModel {
 
 	public AuthModel() {}
 
-	public AuthModel(String trackingId, Integer userId) {
+	public AuthModel(String trackingId, Integer userId, Integer timeToLive) {
 		this.trackingId = trackingId;
-		this.exipiry = new DateTime().plusMinutes(120);
+		this.exipiry = new DateTime().plusMinutes(timeToLive);
 		this.timestamp = new DateTime();
 		this.userId = userId;
 	}
