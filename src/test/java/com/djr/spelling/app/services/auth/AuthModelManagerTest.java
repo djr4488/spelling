@@ -61,4 +61,14 @@ public class AuthModelManagerTest extends BaseTest {
 		assertNull(amm.getAuthModelByTrackingId("123"));
 		assertEquals(authModelNotExpired, amm.getAuthModelByTrackingId("124"));
 	}
+
+	@Test
+	public void removeExpiredAllExpired() {
+		AuthModel authModelExpired = new AuthModel("123", 1, 1);
+		authModelExpired.exipiry = DateTime.now().minusMinutes(500);
+		amm.addAuthModel(authModelExpired);
+		assertEquals(authModelExpired, amm.getAuthModelByTrackingId("123"));
+		amm.removeExpired();
+		assertNull(amm.getAuthModelByTrackingId("123"));
+	}
 }
