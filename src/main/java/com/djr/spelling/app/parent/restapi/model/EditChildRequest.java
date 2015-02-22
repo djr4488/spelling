@@ -2,6 +2,7 @@ package com.djr.spelling.app.parent.restapi.model;
 
 import com.djr.spelling.*;
 import com.djr.spelling.app.BaseRequest;
+import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.services.auth.AuthService;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,7 +47,8 @@ public class EditChildRequest extends BaseRequest implements Serializable {
 		return new ChildUser(username, password);
 	}
 
-	public ChildUser getChildUser(SpellingService spellingService, AuthService authService, User parent) {
+	public ChildUser getChildUser(SpellingService spellingService, AuthService authService, User parent)
+	throws SpellingException {
 		State state = spellingService.createOrFindState(new State(null, stateAbbr));
 		City city = spellingService.createOrFindCity(new City(cityName));
 		School school = spellingService.createOrFindSchool(new School(schoolName, false, false));

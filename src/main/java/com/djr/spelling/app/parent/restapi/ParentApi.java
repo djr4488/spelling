@@ -10,6 +10,7 @@ import com.djr.spelling.WordLocation;
 import com.djr.spelling.app.BaseApi;
 import com.djr.spelling.app.Constants;
 import com.djr.spelling.app.exceptions.AuthException;
+import com.djr.spelling.app.exceptions.SpellingException;
 import com.djr.spelling.app.parent.exceptions.ParentApiException;
 import com.djr.spelling.app.parent.exceptions.ParentWordException;
 import com.djr.spelling.app.parent.restapi.model.*;
@@ -65,7 +66,7 @@ public class ParentApi extends BaseApi {
 	public ChildUserCreateResponse createChildUser(ChildUserCreateRequest request, @PathParam("parentId") Integer parentId,
 	                                @HeaderParam(Constants.TRACKING_ID) String trackingId,
 	                                @HeaderParam(Constants.AUTH_TOKEN) String authToken)
-	throws AuthException, ParentApiException {
+	throws AuthException, ParentApiException, SpellingException {
 		log.info("createChildUser() request:{}, trackingId:{}, parentId:{}", request, trackingId, parentId);
 		ChildUserCreateResponse resp;
 		parentService.confirmPasswords(request.password, request.confirmPassword);
@@ -158,7 +159,7 @@ public class ParentApi extends BaseApi {
 	public EditChildResponse editChild(EditChildRequest request, @PathParam(Constants.PARENT_ID) Integer parentId,
 	                          @PathParam(Constants.CHILD_ID) Integer childId, @HeaderParam(Constants.AUTH_TOKEN) String authToken,
 	                          @HeaderParam(Constants.TRACKING_ID) String trackingId)
-	throws AuthException, ParentApiException {
+	throws AuthException, ParentApiException, SpellingException {
 		log.info("editChild() request:{}, trackingId:{}", request, trackingId);
 		EditChildResponse resp;
 		parentService.confirmPasswords(request.password, request.confirmPassword);

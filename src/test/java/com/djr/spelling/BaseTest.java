@@ -1,4 +1,4 @@
-package com.djr.spelling.app;
+package com.djr.spelling;
 
 import junit.framework.TestCase;
 import org.slf4j.LoggerFactory;

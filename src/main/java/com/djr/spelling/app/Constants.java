@@ -31,4 +31,10 @@ public final class Constants {
 	//word constants
 	public static final String EDIT_WORD_LANDING = "editWordLanding";
 
+	//spelling exception constants
+	public static final String CREATE_OR_FIND_LOCATION_FAILED = "Create or find location failed";
+	public static final String CREATE_OR_FIND_CITY_FAILED = "Create or find city failed";
+	public static final String CREATE_OR_FIND_STATE_FAILED = "Create or find state failed";
+	public static final String CREATE_OR_FIND_SCHOOL_FAILED = "Create or find school failed";
+	public static final String CREATE_OR_FIND_GRADE_FAILED = "Create or find grade failed";
 }

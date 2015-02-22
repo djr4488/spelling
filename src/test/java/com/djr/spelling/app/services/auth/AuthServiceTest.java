@@ -1,6 +1,6 @@
 package com.djr.spelling.app.services.auth;
 
-import com.djr.spelling.app.BaseTest;
+import com.djr.spelling.BaseTest;
 import com.djr.spelling.app.services.auth.model.AuthModel;
 import com.djr.spelling.app.services.auth.util.HashingUtil;
 import org.joda.time.DateTime;

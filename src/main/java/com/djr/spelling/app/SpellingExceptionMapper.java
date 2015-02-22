@@ -10,13 +10,13 @@ import javax.ws.rs.ext.Provider;
  * Created by IMac on 1/27/2015.
  */
 @Provider
-public class SpellingExceptionMapper implements ExceptionMapper<Exception> {
+public class SpellingExceptionMapper extends BaseExceptionMapper implements ExceptionMapper<Exception> {
 	@Override
 	public Response toResponse(Exception e) {
 		if (e instanceof SpellingException) {
 			return handleParentAuthException();
 		}
-		return Response.serverError().build();
+		return handleUncaughtExceptions();
 	}
 
 	public Response handleParentAuthException() {
@@ -25,10 +25,8 @@ public class SpellingExceptionMapper implements ExceptionMapper<Exception> {
 		return getResponse(Response.Status.UNAUTHORIZED, parentLoginResponse);
 	}
 
-	public Response handleParentAuthGeneralException() {
-		ParentLoginResponse parentLoginResponse =
-				new ParentLoginResponse("", "");
-		return getResponse(Response.Status.INTERNAL_SERVER_ERROR, parentLoginResponse);
+	public Response handleUncaughtExceptions() {
+		return getErrorResponse("Not sure what happened, perhaps we broke space time?", "Doh!", Response.Status.INTERNAL_SERVER_ERROR);
 	}
 
 	public Response getResponse(Response.Status status, Object entity) {
