@@ -15,8 +15,18 @@ public class Quiz extends Identifiable implements Serializable {
 	@Column(name = "created_at")
 	@Temporal(TemporalType.DATE)
 	public Date createdAt;
+	@Column(name = "quiz_type")
+	public String quizType;
+	@JoinColumn(name = "word_location_id")
+	@ManyToOne
+	public WordLocation wordLocation;
 
 	public Quiz() {
 		createdAt = new Date();
+	}
+
+	public Quiz(String quizType, WordLocation wordLocation) {
+		this.quizType = quizType;
+		this.wordLocation = wordLocation;
 	}
 }

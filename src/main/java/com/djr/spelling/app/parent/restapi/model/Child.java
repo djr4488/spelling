@@ -38,7 +38,7 @@ public class Child {
 		this.state = childUser.location.state.stateAbbr;
 		this.city = childUser.location.city.cityName;
 		this.school = childUser.location.school.schoolName;
-		this.grade = childUser.grade.grade;
+		this.grade = childUser.grade.gradeName;
 		System.out.println(toString());
 	}
 

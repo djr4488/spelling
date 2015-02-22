@@ -9,8 +9,6 @@
         <class>com.djr.spelling.Grade</class>
         <class>com.djr.spelling.Location</class>
         <class>com.djr.spelling.Quiz</class>
-        <class>com.djr.spelling.QuizResult</class>
-        <class>com.djr.spelling.QuizWord</class>
         <class>com.djr.spelling.School</class>
         <class>com.djr.spelling.Sentence</class>
         <class>com.djr.spelling.State</class>

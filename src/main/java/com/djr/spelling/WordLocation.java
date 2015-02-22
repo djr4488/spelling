@@ -19,10 +19,13 @@ import java.io.Serializable;
 				"wLoc.week.weekStart >= :weekStart and wLoc.week.weekEnd <= :weekEnd"),
 	@NamedQuery(name="findWordsByGradeAndLocation",
 		query="select wLoc from WordLocation wLoc where wLoc.location = :location and wLoc.grade = :grade"),
-	@NamedQuery(name="findWordsByGrade",
-		query="select wLoc from WordLocation wLoc where wLoc.grade = :grade"),
+	@NamedQuery(name="findWordLocationsByGrade",
+		query="select wLoc from WordLocation wLoc where wLoc.grade = :schoolGrade order by function('RAND')"),
 	@NamedQuery(name="findWordsByLocation",
-		query="select wLoc from WordLocation wLoc where wLoc.location = :location")
+		query="select wLoc from WordLocation wLoc where wLoc.location = :location"),
+	@NamedQuery(name="findWordLocationsByStateAndGrade",
+		query="select wLoc from WordLocation wLoc where wLoc.location.state = :state and wLoc.grade = :grade " +
+				"order by function('RAND')")
 })
 public class WordLocation extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;

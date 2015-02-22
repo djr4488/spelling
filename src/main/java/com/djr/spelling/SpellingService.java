@@ -87,7 +87,7 @@ public class SpellingService {
 	throws SpellingException {
 		try {
 			TypedQuery<Grade> query = em.createNamedQuery("findGrade", Grade.class);
-			query.setParameter("grade", grade.grade);
+			query.setParameter("gradeName", grade.gradeName);
 			return query.getSingleResult();
 		} catch (NoResultException nrEx) {
 			em.persist(grade);

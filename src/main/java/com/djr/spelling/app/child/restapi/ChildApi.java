@@ -62,10 +62,6 @@ public class ChildApi extends BaseApi {
 	throws ChildApiException {
 		log.info("createQuiz() trackingId{}, timeType:{}, locationType:{}, childId:{}", trackingId, timeType, locationType,
 				childId);
-		GetQuizResponse resp;
-		resp = new GetQuizResponse(Constants.TAKE_QUIZ);
-		resp.authToken = authService.getAuthToken(trackingId);
-		resp.quizWordWrapper = childServiceBean.createQuiz(timeType, locationType, childId, trackingId);
-		return resp;
+		throw new ChildApiException("Not yet implemented");
 	}
 }

@@ -16,17 +16,19 @@ import java.io.Serializable;
 @Table(name = "grades")
 @NamedQueries({
 	@NamedQuery(name="findGrade",
-		query="select grade from Grade grade where grade.grade = :grade")
+		query="select grade from Grade grade where grade.gradeName = :gradeName"),
+	@NamedQuery(name="getAllGrades",
+		query="select grade from Grade grade")
 })
 public class Grade extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
 	@Column(name = "grade")
-	public String grade;
+	public String gradeName;
 
 	public Grade() {}
 
-	public Grade(String grade) {
-		this.grade = grade;
+	public Grade(String gradeName) {
+		this.gradeName = gradeName;
 	}
 
 	@Override
