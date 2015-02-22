@@ -42,7 +42,7 @@ public class ChildServiceBean {
 		}
 	}
 
-
+	//TODO this should get an existing generated quiz(or possibly one that is generated on the fly)
 	public QuizWordWrapper createQuiz(String timeType, String locationType, Integer childId, String trackingId)
 	throws ChildApiException {
 		log.debug("getQuiz() timeType:{}, locationType:{}, childId:{}, trackingId:{}", timeType, locationType,
