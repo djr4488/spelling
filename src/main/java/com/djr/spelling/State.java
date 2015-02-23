@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Table(name = "states", uniqueConstraints = {@UniqueConstraint(columnNames = { "state_abbr" })})
 @NamedQueries({
 	@NamedQuery(name="findState",
-		query="select state from State state where state.stateAbbr = :stateAbbr")
+		query="select state from State state where state.stateAbbr = :stateAbbr"),
+	@NamedQuery(name="getAllStates",
+		query="select state from State state")
 })
 public class State extends Identifiable implements Serializable {
 	private static final long serialVersionUID = 1;
