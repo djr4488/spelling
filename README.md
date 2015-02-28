@@ -11,7 +11,6 @@ Status
 
 * Build: [![Build Status](https://travis-ci.org/djr4488/spelling.svg?branch=master)](https://travis-ci.org/djr4488/spelling)
 * Coverage: [![Coverage Status](https://coveralls.io/repos/djr4488/spelling/badge.svg?branch=master)](https://coveralls.io/r/djr4488/spelling?branch=master)
-* Bitdeli: [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/djr4488/spelling/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 What are my goals with it?
 ==========================
