@@ -41,4 +41,12 @@ public class ChildServiceBean {
 			throw new AuthException(AuthConstants.GENERAL_AUTH);
 		}
 	}
+
+	public void getWeeklyNationalQuiz() {
+
+	}
+
+	public void saveWeeklyNationalQuizResults() {
+
+	}
 }
